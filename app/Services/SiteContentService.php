@@ -19,10 +19,10 @@ class SiteContentService
     public function doktor(): array
     {
         if (! $this->api->isConfigured()) {
-            return array_merge($this->emptySkeleton(), config('doktor', []), [
+            return $this->applyLocalSettings(array_merge($this->emptySkeleton(), config('doktor', []), [
                 'api_synced' => false,
                 'api_error' => 'API anahtarı yapılandırılmamış (.env RANDEVU_API_KEY / SECRET).',
-            ]);
+            ]));
         }
 
         try {
