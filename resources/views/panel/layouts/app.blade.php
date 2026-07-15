@@ -195,14 +195,6 @@
             if (sidebar?.classList.contains('-translate-x-full')) open(); else close();
         });
         overlay?.addEventListener('click', close);
-
-        if (!isOpen && panel) {
-                    panel.classList.add('is-open');
-                    btn.classList.add('is-open');
-                    btn.setAttribute('aria-expanded', 'true');
-                }
-            });
-        });
     })();
 </script>
 {{-- Ana hekim paneli ile aynı onay modalı --}}
