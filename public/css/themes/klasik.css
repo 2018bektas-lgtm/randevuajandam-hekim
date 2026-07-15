@@ -4,6 +4,9 @@ body.theme-klasik {
 }
 
 body.theme-klasik .klasik-blog-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
   gap: 1.25rem;
 }
 
@@ -121,6 +124,18 @@ body.theme-klasik .klasik-blog-link span {
 
 body.theme-klasik .klasik-blog-link:hover span {
   transform: translateX(3px);
+}
+
+@media (max-width: 900px) {
+  body.theme-klasik .klasik-blog-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  body.theme-klasik .klasik-blog-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Dokuz menü öğesi ve iki aksiyon düğmesi orta genişlikte aynı satıra sığmaz.
