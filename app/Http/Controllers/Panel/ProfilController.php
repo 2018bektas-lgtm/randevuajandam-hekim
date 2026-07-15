@@ -69,7 +69,7 @@ class ProfilController extends Controller
         $payload = collect($data)->only([
             'ad_soyad', 'unvan', 'telefon', 'uzmanlik_alani', 'biyografi', 'adres',
             'klinik_adi', 'instagram', 'facebook', 'twitter', 'linkedin', 'youtube',
-            'web_sitesi', 'enlem', 'boylam',
+            'web_sitesi', 'enlem', 'boylam', 'il', 'ilce',
         ])->filter(fn ($v) => $v !== null)->all();
 
         try {
