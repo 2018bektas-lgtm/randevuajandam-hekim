@@ -751,7 +751,7 @@ button, input, select, textarea { font: inherit; }
   align-items: start;
 }
 .service-list li::before {
-  content: "ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“";
+  content: "\2713";
   color: var(--brand-600);
   font-weight: 700;
   flex-shrink: 0;
@@ -1041,7 +1041,7 @@ button, input, select, textarea { font: inherit; }
   color: var(--brand-700);
   font-weight: 400;
 }
-.faq details[open] summary::after { content: "ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“"; }
+.faq details[open] summary::after { content: "\2212"; }
 .faq details p {
   margin: .75rem 0 0;
   color: var(--muted);
@@ -1495,7 +1495,7 @@ button, input, select, textarea { font: inherit; }
   color: var(--brand-600);
   font-weight: 500;
 }
-.faq details[open] summary::after { content: "ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“"; }
+.faq details[open] summary::after { content: "\2212"; }
 .faq details[open] summary { border-bottom: 1px solid var(--line); margin-bottom: .5rem; }
 .service-card img { height: 200px; width: 100%; object-fit: cover; }
 .gallery-item img { transition: transform .55s ease; }
