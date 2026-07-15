@@ -1,4 +1,82 @@
-/* Klasik Klinik — base site.css varsayılanı; hafif ince ayar */
+/* Klasik Klinik */
 body.theme-klasik {
   --radius: 1.25rem;
+}
+
+/* Dokuz menü öğesi ve iki aksiyon düğmesi orta genişlikte aynı satıra sığmaz.
+   Bu aralıkta taşma yerine mobil menü kullanılır. */
+body.theme-klasik .header-inner {
+  gap: .75rem;
+}
+
+body.theme-klasik .brand {
+  flex: 1 1 auto;
+}
+
+body.theme-klasik .nav-desktop {
+  flex: 0 1 auto;
+}
+
+body.theme-klasik .nav-desktop a {
+  white-space: nowrap;
+}
+
+body.theme-klasik .header-actions {
+  flex: 0 0 auto;
+}
+
+@media (max-width: 1279px) {
+  body.theme-klasik .nav-desktop {
+    display: none;
+  }
+
+  body.theme-klasik .menu-toggle {
+    display: grid;
+  }
+}
+
+@media (min-width: 1280px) {
+  body.theme-klasik .nav-desktop {
+    display: flex;
+  }
+
+  body.theme-klasik .menu-toggle {
+    display: none;
+  }
+}
+
+@media (max-width: 639px) {
+  body.theme-klasik .header-inner {
+    width: min(100% - 1.25rem, 1180px);
+  }
+
+  body.theme-klasik .brand-mark {
+    width: 40px;
+    height: 40px;
+    border-radius: 13px;
+  }
+
+  body.theme-klasik .brand-text strong {
+    max-width: 9rem;
+    font-size: .82rem;
+  }
+
+  body.theme-klasik .brand-text span,
+  body.theme-klasik .header-actions .btn-dark-outline {
+    display: none;
+  }
+
+  body.theme-klasik .header-actions {
+    gap: .35rem;
+  }
+
+  body.theme-klasik .header-actions .btn-primary {
+    padding: .58rem .72rem;
+    font-size: .74rem;
+  }
+
+  body.theme-klasik .menu-toggle {
+    width: 38px;
+    height: 38px;
+  }
 }
