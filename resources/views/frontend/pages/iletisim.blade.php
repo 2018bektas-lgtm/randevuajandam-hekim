@@ -232,16 +232,46 @@
     }
     .kvkk-label {
         display: flex !important;
-        align-items: flex-start;
-        gap: .55rem;
+        align-items: center;
+        gap: .7rem;
+        min-height: 52px;
+        margin: 0 !important;
+        padding: .8rem .9rem;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: #fff;
         text-transform: none !important;
         letter-spacing: 0 !important;
         font-size: .86rem !important;
         font-weight: 500 !important;
         color: #475569 !important;
         cursor: pointer;
+        transition: border-color .15s, background .15s, box-shadow .15s;
     }
-    .kvkk-label input { margin-top: .2rem; width: auto; }
+    .kvkk-label:has(input:checked) {
+        border-color: var(--brand-500);
+        background: var(--brand-50);
+        box-shadow: 0 0 0 3px rgba(20, 184, 166, .1);
+    }
+    .kvkk-label input[type="checkbox"] {
+        appearance: none;
+        -webkit-appearance: none;
+        width: 20px !important;
+        height: 20px;
+        flex: 0 0 20px;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: 2px solid #94a3b8;
+        border-radius: 6px;
+        background: #fff;
+        cursor: pointer;
+        transition: background .15s, border-color .15s, box-shadow .15s;
+    }
+    .kvkk-label input[type="checkbox"]:checked {
+        border-color: var(--brand-600);
+        background: var(--brand-600);
+        box-shadow: inset 0 0 0 3px #fff;
+    }
     #saat:disabled, #hizmet_id:disabled, #booking-submit:disabled {
         opacity: .65;
         cursor: not-allowed;
