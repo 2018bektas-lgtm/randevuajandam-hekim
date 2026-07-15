@@ -127,17 +127,16 @@
                     @if(!empty($doktor['online_gorusme']))
                     <div class="field full" id="gorusme-tipi-block">
                         <label>Görüşme türü *</label>
-                        <div style="display:flex;flex-direction:column;gap:.45rem;margin-top:.35rem">
-                            <label style="display:flex;align-items:center;gap:.5rem;font-weight:500;cursor:pointer">
-                                <input type="radio" name="gorusme_tipi" value="yuz_yuze" checked> Yüz yüze
+                        <div class="meeting-type-options">
+                            <label class="meeting-type-option">
+                                <input type="radio" name="gorusme_tipi" value="yuz_yuze" checked>
+                                <span><strong>Yüz yüze</strong><small>Muayenehanede görüşme</small></span>
                             </label>
-                            <label style="display:flex;align-items:center;gap:.5rem;font-weight:500;cursor:pointer">
-                                <input type="radio" name="gorusme_tipi" value="online"> Online — sitemiz üzerinden görüntülü (Zoom yok)
+                            <label class="meeting-type-option">
+                                <input type="radio" name="gorusme_tipi" value="online">
+                                <span><strong>Online görüşme</strong><small>Onay sonrası görüşme bağlantınız paylaşılır.</small></span>
                             </label>
                         </div>
-                        <p class="text-muted" style="margin:.4rem 0 0;font-size:.78rem;line-height:1.4">
-                            Online seçilirse onay sonrası görüntülü oda otomatik açılır. Katılım randevu yönetim linkinizden yapılır.
-                        </p>
                     </div>
                     @else
                         <input type="hidden" name="gorusme_tipi" id="gorusme_tipi_hidden" value="yuz_yuze">

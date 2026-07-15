@@ -1085,6 +1085,59 @@ button, input, select, textarea { font: inherit; }
   border-color: var(--brand-500);
   box-shadow: 0 0 0 3px rgba(20, 184, 166, .15);
 }
+.meeting-type-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .75rem;
+  margin-top: .5rem;
+}
+.meeting-type-option {
+  display: flex !important;
+  align-items: flex-start;
+  gap: .65rem;
+  min-height: 76px;
+  margin: 0 !important;
+  padding: .85rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+  transition: border-color .15s, box-shadow .15s, background .15s;
+}
+.meeting-type-option:has(input:checked) {
+  border-color: var(--brand-500);
+  background: var(--brand-50);
+  box-shadow: 0 0 0 3px rgba(20, 184, 166, .12);
+}
+.meeting-type-option input[type="radio"] {
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
+  margin: .15rem 0 0;
+  padding: 0;
+  accent-color: var(--brand-600);
+}
+.meeting-type-option span {
+  display: grid;
+  gap: .2rem;
+}
+.meeting-type-option strong {
+  color: var(--ink);
+  font-size: .9rem;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.meeting-type-option small {
+  color: var(--muted);
+  font-size: .76rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  line-height: 1.35;
+}
+@media (max-width: 520px) {
+  .meeting-type-options { grid-template-columns: 1fr; }
+}
 
 /* Page hero (inner) */
 .page-hero {
