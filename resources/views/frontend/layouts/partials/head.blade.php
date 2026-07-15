@@ -1,14 +1,15 @@
 @php
+    $decodeEntities = static fn ($value): string => html_entity_decode((string) $value, ENT_QUOTES | ENT_HTML5, 'UTF-8');
     $seo = $doktor['seo'] ?? [];
-    $seoTitle = trim((string) ($seo['meta_baslik'] ?? ''));
-    $seoDesc = trim((string) ($seo['meta_aciklama'] ?? ''));
-    $seoKw = trim((string) ($seo['meta_anahtar'] ?? ''));
-    $defaultTitle = trim(($doktor['unvan'] ?? '').' '.($doktor['ad_soyad'] ?? 'Hekim').' | '.($doktor['uzmanlik'] ?? 'Klinik'));
+    $seoTitle = trim($decodeEntities($seo['meta_baslik'] ?? ''));
+    $seoDesc = trim($decodeEntities($seo['meta_aciklama'] ?? ''));
+    $seoKw = trim($decodeEntities($seo['meta_anahtar'] ?? ''));
+    $defaultTitle = trim($decodeEntities($doktor['unvan'] ?? '').' '.$decodeEntities($doktor['ad_soyad'] ?? 'Hekim').' | '.$decodeEntities($doktor['uzmanlik'] ?? 'Klinik'));
     if (! empty($doktor['site_baslik_ek'])) {
-        $defaultTitle .= ' '.$doktor['site_baslik_ek'];
+        $defaultTitle .= ' '.$decodeEntities($doktor['site_baslik_ek']);
     }
-    $pageTitle = trim($__env->yieldContent('baslik')) ?: ($seoTitle !== '' ? $seoTitle : $defaultTitle);
-    $pageDesc = trim($__env->yieldContent('meta_aciklama')) ?: ($seoDesc !== '' ? $seoDesc : ($doktor['kisa_bio'] ?? ''));
+    $pageTitle = trim($decodeEntities($__env->yieldContent('baslik'))) ?: ($seoTitle !== '' ? $seoTitle : $defaultTitle);
+    $pageDesc = trim($decodeEntities($__env->yieldContent('meta_aciklama'))) ?: ($seoDesc !== '' ? $seoDesc : $decodeEntities($doktor['kisa_bio'] ?? ''));
     $temaMeta = resolve_site_theme($doktor['tema_id'] ?? ($doktor['tema']['id'] ?? null));
     $theme = $doktor['tema_renk'] ?? ($temaMeta['renk'] ?? '#0d9488');
     $palette = theme_palette($theme);

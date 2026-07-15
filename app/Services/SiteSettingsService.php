@@ -226,8 +226,8 @@ class SiteSettingsService
                     // secret asla frontend bundle'a konmaz
                 ],
                 'iletisim' => [
-                    'baslik' => $this->option('iletisim_baslik', 'İletişim & online randevu'),
-                    'alt_metin' => $this->option('iletisim_alt_metin', ''),
+                    'baslik' => html_entity_decode($this->option('iletisim_baslik', 'İletişim & online randevu'), ENT_QUOTES | ENT_HTML5, 'UTF-8'),
+                    'alt_metin' => html_entity_decode($this->option('iletisim_alt_metin', ''), ENT_QUOTES | ENT_HTML5, 'UTF-8'),
                     'form_goster' => $this->boolOption('iletisim_form_goster', true),
                     'harita_goster' => $this->boolOption('iletisim_harita_goster', true),
                     'saatler_goster' => $this->boolOption('iletisim_saatler_goster', true),
