@@ -120,16 +120,28 @@
                         <div class="meeting-type-options">
                             <label class="meeting-type-option">
                                 <input type="radio" name="gorusme_tipi" value="yuz_yuze" checked>
-                                <span>
+                                <span class="meeting-type-icon" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6M8 10h.01M16 10h.01"/></svg>
+                                </span>
+                                <span class="meeting-type-content">
                                     <strong>Yüz yüze</strong>
                                     <small>Muayenehanede görüşme</small>
+                                </span>
+                                <span class="meeting-type-check" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m5 12 4.5 4.5L19 7"/></svg>
                                 </span>
                             </label>
                             <label class="meeting-type-option">
                                 <input type="radio" name="gorusme_tipi" value="online">
-                                <span>
+                                <span class="meeting-type-icon" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="13" height="14" rx="2"/><path stroke-linecap="round" stroke-linejoin="round" d="m16 10 5-3v10l-5-3"/></svg>
+                                </span>
+                                <span class="meeting-type-content">
                                     <strong>Online görüşme</strong>
                                     <small>Onay sonrası görüşme bağlantınız paylaşılır.</small>
+                                </span>
+                                <span class="meeting-type-check" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m5 12 4.5 4.5L19 7"/></svg>
                                 </span>
                             </label>
                         </div>
