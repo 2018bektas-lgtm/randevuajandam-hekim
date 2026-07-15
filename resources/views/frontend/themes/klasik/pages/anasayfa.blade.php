@@ -277,7 +277,7 @@
 
         @case('hizmetler')
             @if(!empty($doktor['hizmetler']))
-            <section class="section">
+            <section class="section klasik-blog-section">
                 <div class="container">
                     <div class="section-head reveal">
                         <div>
@@ -426,19 +426,21 @@
                         </div>
                         <a href="{{ route('frontend.blog') }}" class="link-more">Tüm yazılar →</a>
                     </div>
-                    <div class="blog-grid reveal">
+                    <div class="blog-grid klasik-blog-grid reveal">
                         @foreach (array_slice($doktor['bloglar'], 0, 3) as $yazi)
-                            <article class="card blog-card">
-                                <a href="{{ route('frontend.blog.detay', $yazi['slug']) }}">
+                            <article class="klasik-blog-card">
+                                <a class="klasik-blog-image" href="{{ route('frontend.blog.detay', $yazi['slug']) }}">
                                     <img src="{{ $yazi['image'] }}" alt="{{ $yazi['baslik'] }}" loading="lazy">
+                                    <span>Ağız ve diş sağlığı</span>
                                 </a>
-                                <div class="card-pad">
-                                    <div class="blog-meta">
+                                <div class="klasik-blog-body">
+                                    <div class="klasik-blog-meta">
                                         <span>{{ $yazi['tarih'] ?? '' }}</span>
                                         <span>{{ $yazi['okuma'] ?? '' }}</span>
                                     </div>
                                     <h3><a href="{{ route('frontend.blog.detay', $yazi['slug']) }}">{{ $yazi['baslik'] }}</a></h3>
                                     <p class="text-muted">{{ $yazi['ozet'] ?? '' }}</p>
+                                    <a class="klasik-blog-link" href="{{ route('frontend.blog.detay', $yazi['slug']) }}">Yazıyı oku <span aria-hidden="true">→</span></a>
                                 </div>
                             </article>
                         @endforeach
