@@ -2,8 +2,8 @@
 
 @php
     $iletisim = $doktor['iletisim_sayfa'] ?? [];
-    $pageBaslik = $iletisim['baslik'] ?? 'İletişim & online randevu';
-    $pageAlt = $iletisim['alt_metin'] ?? 'Hesap oluşturmadan randevu talebi bırakabilirsiniz. Onay sonrası bilgilendirilirsiniz.';
+    $pageBaslik = html_entity_decode(html_entity_decode($iletisim['baslik'] ?? 'İletişim & online randevu', ENT_QUOTES | ENT_HTML5, 'UTF-8'), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+    $pageAlt = html_entity_decode(html_entity_decode($iletisim['alt_metin'] ?? 'Hesap oluşturmadan randevu talebi bırakabilirsiniz. Onay sonrası bilgilendirilirsiniz.', ENT_QUOTES | ENT_HTML5, 'UTF-8'), ENT_QUOTES | ENT_HTML5, 'UTF-8');
     $formGoster = (bool) ($iletisim['form_goster'] ?? true);
     $haritaGoster = (bool) ($iletisim['harita_goster'] ?? true);
     $saatlerGoster = (bool) ($iletisim['saatler_goster'] ?? true);
