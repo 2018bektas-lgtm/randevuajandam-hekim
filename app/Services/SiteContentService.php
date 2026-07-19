@@ -311,6 +311,8 @@ class SiteContentService
                 Cache::forget('doktorsitesi.profile.v7.'.$hash.'.stale');
                 Cache::forget('doktorsitesi.profile.v8.'.$hash);
                 Cache::forget('doktorsitesi.profile.v8.'.$hash.'.stale');
+                Cache::forget('doktorsitesi.profile.v9.'.$hash);
+                Cache::forget('doktorsitesi.profile.v9.'.$hash.'.stale');
             }
         } catch (Throwable) {
             // ignore
@@ -321,7 +323,7 @@ class SiteContentService
     {
         $key = (string) config('randevu_api.api_key', 'none');
 
-        return 'doktorsitesi.profile.v8.'.md5($key);
+        return 'doktorsitesi.profile.v9.'.md5($key);
     }
 
     protected function emptySkeleton(): array
@@ -411,9 +413,18 @@ class SiteContentService
             $out['whatsapp'] = $wa;
         }
 
-        // Photo
-        if (! empty($profile['profil_resmi'])) {
-            $out['profil_resmi'] = media_url($profile['profil_resmi']);
+        // Photo — boş string / null güvenli; absolute + relative yollar media_url ile
+        $rawPhoto = $profile['profil_resmi']
+            ?? $profile['foto']
+            ?? $profile['avatar']
+            ?? $profile['resim']
+            ?? null;
+        if (is_string($rawPhoto) || is_numeric($rawPhoto)) {
+            $rawPhoto = trim((string) $rawPhoto);
+            if ($rawPhoto !== '' && strcasecmp($rawPhoto, 'null') !== 0) {
+                $resolved = media_url($rawPhoto);
+                $out['profil_resmi'] = (is_string($resolved) && $resolved !== '') ? $resolved : $rawPhoto;
+            }
         }
 
         // Mezuniyet

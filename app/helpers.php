@@ -12,25 +12,70 @@ if (! function_exists('media_url')) {
             return null;
         }
 
-        // Already absolute
+        $path = str_replace('\\', '/', trim($path));
+
+        // Already absolute or data URI
         if (preg_match('#^(https?:)?//#i', $path) || str_starts_with($path, 'data:')) {
-            // Rewrite stale :8000 site URLs to media base
-            if (preg_match('#^https?://[^/]+(?::\d+)?/(uploads|storage)/(.+)$#i', $path, $m)) {
-                return rtrim(media_base(), '/').'/'.$m[1].'/'.$m[2];
+            // Her host'taki uploads/storage yollarını medya tabanına çek
+            if (preg_match('#^https?://[^/]+/(?:public/)?(uploads|storage)/(.+)$#i', $path, $m)) {
+                return rtrim(media_base(), '/').'/'.$m[1].'/'.ltrim($m[2], '/');
             }
-            // Already on /media/ host — keep
+            // /media/uploads/... absolute
+            if (preg_match('#^https?://[^/]+/media/(.+)$#i', $path, $m)) {
+                return rtrim(media_base(), '/').'/'.ltrim($m[1], '/');
+            }
+
             return $path;
         }
 
-        $path = str_replace('\\', '/', $path);
         $path = ltrim($path, '/');
 
         // Strip leading "media/" if present
         if (str_starts_with($path, 'media/')) {
             $path = substr($path, 6);
         }
+        // storage/app/public/x → storage/x or uploads
+        if (str_starts_with($path, 'storage/app/public/')) {
+            $path = 'storage/'.substr($path, strlen('storage/app/public/'));
+        }
+        // public/uploads/...
+        if (str_starts_with($path, 'public/')) {
+            $path = substr($path, 7);
+        }
 
         return rtrim(media_base(), '/').'/'.$path;
+    }
+}
+
+if (! function_exists('doctor_photo')) {
+    /**
+     * Hekim profil fotoğrafı — boş string / bozuk yol için fallback.
+     */
+    function doctor_photo(?array $doktor, ?string $fallback = null): string
+    {
+        $fallback = $fallback
+            ?: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=1000&q=80';
+
+        if (! is_array($doktor)) {
+            return $fallback;
+        }
+
+        foreach (['profil_resmi', 'foto', 'avatar', 'resim', 'logo'] as $key) {
+            $raw = $doktor[$key] ?? null;
+            if (! is_string($raw) && ! is_numeric($raw)) {
+                continue;
+            }
+            $raw = trim((string) $raw);
+            if ($raw === '' || strcasecmp($raw, 'null') === 0) {
+                continue;
+            }
+            $url = media_url($raw);
+            if (is_string($url) && $url !== '') {
+                return $url;
+            }
+        }
+
+        return $fallback;
     }
 }
 

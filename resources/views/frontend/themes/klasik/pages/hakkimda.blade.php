@@ -6,8 +6,9 @@
 @section('icerik')
 <div class="th-klasik-page">
 @php
-    $photo = $doktor['profil_resmi']
-        ?? 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=1000&q=80';
+    $photo = function_exists('doctor_photo')
+        ? doctor_photo($doktor ?? null)
+        : ($doktor['profil_resmi'] ?? 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=1000&q=80');
     $mezuniyet = $doktor['mezuniyet'] ?? [];
     $egitim = $doktor['egitim'] ?? [];
 @endphp
@@ -33,7 +34,11 @@
 <section class="section">
     <div class="container two-col">
         <div class="media-frame">
-            <img src="{{ $photo }}" alt="{{ $doktor['ad_soyad'] ?? 'Hekim' }}">
+            <img src="{{ $photo }}"
+                 alt="{{ $doktor['ad_soyad'] ?? 'Hekim' }}"
+                 loading="eager"
+                 decoding="async"
+                 onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=1000&q=80';">
         </div>
         <div class="prose">
             <span class="eyebrow">Özgeçmiş</span>

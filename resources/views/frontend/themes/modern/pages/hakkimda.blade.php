@@ -5,8 +5,7 @@
 
 @section('icerik')
 @php
-    $photo = $doktor['profil_resmi']
-        ?? 'https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?auto=format&fit=crop&w=1000&q=80';
+    $photo = doctor_photo($doktor ?? null);
     $mezuniyet = $doktor['mezuniyet'] ?? [];
 @endphp
 
@@ -29,7 +28,13 @@
     <div class="mp-container">
         <div class="mp-about-grid">
             <div class="mp-about-photo">
-                <img src="{{ $photo }}" alt="{{ $doktor['ad_soyad'] ?? 'Hekim' }}">
+                <img src="{{ $photo }}"
+                     alt="{{ $doktor['ad_soyad'] ?? 'Hekim' }}"
+                     width="560"
+                     height="640"
+                     loading="eager"
+                     decoding="async"
+                     onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=1000&q=80';">
             </div>
             <div>
                 <span class="mp-eyebrow" style="color:var(--mp-blue);font-weight:600;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase">Özgeçmiş</span>

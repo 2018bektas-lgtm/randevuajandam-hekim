@@ -5,8 +5,9 @@
 
 @section('icerik')
 @php
-    $photo = $doktor['profil_resmi']
-        ?? 'https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?auto=format&fit=crop&w=1200&q=80';
+    $photo = function_exists('doctor_photo')
+        ? doctor_photo($doktor ?? null, 'https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?auto=format&fit=crop&w=1200&q=80')
+        : ($doktor['profil_resmi'] ?? 'https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?auto=format&fit=crop&w=1200&q=80');
     $slider = collect($doktor['slider'] ?? [])->filter(fn ($s) => is_array($s))->values()->all();
     // Panel/API slider yoksa en az bir slayt üret
     if ($slider === []) {
