@@ -89,17 +89,22 @@
 <link rel="icon" href="{{ asset('favicon.ico') }}">
 @endif
 
+@php
+    // APP_URL yanlış olsa bile (127.0.0.1 vb.) CSS aynı host'tan yüklensin
+    $cssBase = rtrim((string) request()->getBasePath(), '/');
+    $safeTema = preg_replace('/[^a-z0-9\-_]/i', '', (string) $temaCssId) ?: 'klasik';
+    $siteCss = $cssBase.'/css/site.css';
+    $themeCss = $cssBase.'/css/themes/'.$safeTema.'.css';
+    $cssVer = '10';
+@endphp
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
-@if(!empty(config('randevu_api.media_base')))
-<link rel="preconnect" href="{{ parse_url(config('randevu_api.media_base'), PHP_URL_SCHEME).'://'.parse_url(config('randevu_api.media_base'), PHP_URL_HOST) }}" crossorigin>
-@endif
-<link href="https://fonts.googleapis.com/css2?family={{ $googleFonts }}&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-<noscript><link href="https://fonts.googleapis.com/css2?family={{ $googleFonts }}&display=swap" rel="stylesheet"></noscript>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="{{ asset('css/site.css') }}?v=3">
-<link rel="stylesheet" href="{{ asset('css/themes/'.$temaCssId.'.css') }}?v=8">
+<link href="https://fonts.googleapis.com/css2?family={{ $googleFonts }}&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+{{-- Kök-relative path: asset()/APP_URL'e bağlı değil --}}
+<link rel="stylesheet" href="{{ $siteCss }}?v={{ $cssVer }}">
+<link rel="stylesheet" href="{{ $themeCss }}?v={{ $cssVer }}">
 <style>
 :root {
   --brand-50: {{ $palette['50'] }};
@@ -114,6 +119,11 @@
   --font: "{{ $temaMeta['font_sans'] ?? 'Inter' }}", system-ui, sans-serif;
   --display: "{{ $temaMeta['font_display'] ?? 'Cormorant Garamond' }}", "Times New Roman", serif;
 }
+/* Minimal fallback — site.css yüklenmezse bile okunabilir layout */
+body { margin: 0; font-family: var(--font), system-ui, sans-serif; color: #334155; background: #f7f5f1; line-height: 1.6; }
+img { max-width: 100%; height: auto; display: block; }
+a { color: inherit; }
+.container, .mp-container { max-width: 1140px; margin-left: auto; margin-right: auto; padding-left: 16px; padding-right: 16px; }
 </style>
 <script type="application/ld+json">{!! json_encode(array_filter($schema, fn ($v) => $v !== null && $v !== ''), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
 
