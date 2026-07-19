@@ -231,22 +231,26 @@ body.layout-modern .site-main {
   .mp-mobile { display: none !important; }
 }
 
-/* ---------- Hero ---------- */
+/* ---------- Hero (multi-slide swiper) ---------- */
 .mp-hero {
+  position: relative;
+  background: #0B1C39;
+  color: #fff;
+  overflow: hidden;
+}
+.mp-hero-swiper { width: 100%; }
+.mp-hero-slide {
   position: relative;
   min-height: 560px;
   display: flex;
   align-items: center;
-  background: #0B1C39;
-  color: #fff;
-  overflow: hidden;
 }
 .mp-hero-bg {
   position: absolute;
   inset: 0;
   background-size: cover;
   background-position: center;
-  opacity: 0.45;
+  opacity: 0.5;
 }
 .mp-hero-overlay {
   position: absolute;
@@ -260,6 +264,76 @@ body.layout-modern .site-main {
   margin: 0 auto;
   padding: 72px 16px;
   width: 100%;
+}
+.mp-hero-pagination {
+  position: absolute;
+  bottom: 22px !important;
+  z-index: 5;
+}
+.mp-hero-pagination .swiper-pagination-bullet {
+  background: #fff;
+  opacity: 0.45;
+}
+.mp-hero-pagination .swiper-pagination-bullet-active {
+  opacity: 1;
+  background: var(--mp-blue, #1A76D1);
+}
+.mp-hero-prev,
+.mp-hero-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 0;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--mp-navy, #0B1C39);
+  font-size: 1.4rem;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  display: none;
+}
+@media (min-width: 768px) {
+  .mp-hero-prev, .mp-hero-next { display: grid; place-items: center; }
+}
+.mp-hero-prev { left: 16px; }
+.mp-hero-next { right: 16px; }
+.mp-svc-thumb {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-bottom: 14px;
+  background: #e8eef5;
+}
+.mp-gal-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+@media (min-width: 768px) {
+  .mp-gal-grid { grid-template-columns: repeat(3, 1fr); }
+}
+.mp-gal-item {
+  margin: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--line, #e6e6e6);
+  background: #fff;
+}
+.mp-gal-item img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
+}
+.mp-gal-item figcaption {
+  padding: 10px 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--mp-navy, #0B1C39);
 }
 .mp-hero-eyebrow {
   display: inline-block;

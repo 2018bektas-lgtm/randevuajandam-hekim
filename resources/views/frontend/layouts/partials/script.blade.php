@@ -89,6 +89,39 @@
         initSwiper(heroEl, heroOpts);
     }
 
+    // ---------- MEDIPLUS MODERN HERO SLIDER ----------
+    const mpHeroEl = document.querySelector('.mp-hero-swiper');
+    if (mpHeroEl) {
+        const slides = mpHeroEl.querySelectorAll('.swiper-slide');
+        const multi = slides.length > 1;
+        const nextEl = mpHeroEl.querySelector('.mp-hero-next');
+        const prevEl = mpHeroEl.querySelector('.mp-hero-prev');
+        const pagEl = mpHeroEl.querySelector('.mp-hero-pagination');
+        const mpOpts = {
+            loop: multi,
+            speed: 700,
+            effect: 'fade',
+            fadeEffect: { crossFade: true },
+            grabCursor: multi,
+            allowTouchMove: true,
+            keyboard: { enabled: true },
+        };
+        if (multi) {
+            mpOpts.autoplay = {
+                delay: 5500,
+                disableOnInteraction: false,
+                pauseOnMouseEnter: true,
+            };
+            if (nextEl && prevEl) {
+                mpOpts.navigation = { nextEl, prevEl };
+            }
+            if (pagEl) {
+                mpOpts.pagination = { el: pagEl, clickable: true };
+            }
+        }
+        initSwiper(mpHeroEl, mpOpts);
+    }
+
     // Services slider
     const servicesEl = document.querySelector('.services-swiper');
     if (servicesEl) {

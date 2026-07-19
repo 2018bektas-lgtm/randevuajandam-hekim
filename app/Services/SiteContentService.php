@@ -187,15 +187,28 @@ class SiteContentService
                 ->all();
         }
 
-        // Slider: yalnızca panelden eklenen slaytlar (otomatik API üretimi yok)
+        // Slider: panel slaytları varsa onları kullan; yoksa fromApi/buildSlider (veya mevcut) kalsın
         if (! empty($slider['slides']) && is_array($slider['slides'])) {
-            $out['slider'] = array_values(array_filter(
+            $panelSlides = array_values(array_filter(
                 $slider['slides'],
                 fn ($s) => ! empty($s['baslik']) || ! empty($s['image'])
             ));
-        } else {
-            $out['slider'] = [];
+            if ($panelSlides !== []) {
+                // medya URL'lerini normalize et
+                $out['slider'] = array_map(function ($s) {
+                    $s = is_array($s) ? $s : (array) $s;
+                    if (! empty($s['image'])) {
+                        $s['image'] = media_url($s['image']) ?: $s['image'];
+                    }
+                    if (! empty($s['thumb'])) {
+                        $s['thumb'] = media_url($s['thumb']) ?: $s['thumb'];
+                    }
+
+                    return $s;
+                }, $panelSlides);
+            }
         }
+        // Panel boşsa $out['slider'] (API/auto) bozulmaz
 
         // Ana sayfa bölümleri: görünürlük + sıralama + özel başlıklar
         $defaultBolumler = [

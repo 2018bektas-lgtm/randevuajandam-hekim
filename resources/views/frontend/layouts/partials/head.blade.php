@@ -95,7 +95,7 @@
     $safeTema = preg_replace('/[^a-z0-9\-_]/i', '', (string) $temaCssId) ?: 'klasik';
     $siteCss = $cssBase.'/css/site.css';
     $themeCss = $cssBase.'/css/themes/'.$safeTema.'.css';
-    $cssVer = '10';
+    $cssVer = '11';
 @endphp
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

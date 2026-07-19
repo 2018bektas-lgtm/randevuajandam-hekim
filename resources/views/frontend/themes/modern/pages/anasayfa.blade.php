@@ -7,12 +7,28 @@
 @php
     $photo = $doktor['profil_resmi']
         ?? 'https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?auto=format&fit=crop&w=1200&q=80';
-    $heroImg = ($doktor['slider'][0]['image'] ?? null) ?: $photo;
+    $slider = collect($doktor['slider'] ?? [])->filter(fn ($s) => is_array($s))->values()->all();
+    // Panel/API slider yoksa en az bir slayt üret
+    if ($slider === []) {
+        $slider = [[
+            'baslik' => 'Güvenebileceğiniz medikal hizmet sunuyoruz',
+            'baslik_vurgulu' => $doktor['uzmanlik'] ?? null,
+            'alt' => $doktor['kisa_bio'] ?? $doktor['slogan'] ?? '',
+            'etiket' => $doktor['vitrin_badge'] ?? ($doktor['uzmanlik'] ?? 'Medikal Klinik'),
+            'image' => $photo,
+            'cta' => 'Randevu Al',
+            'cta_url' => route('frontend.randevu'),
+            'cta2' => 'Hizmetlerimiz',
+            'cta2_url' => route('frontend.hizmetler'),
+        ]];
+    }
     $hizmetler = collect($doktor['hizmetler'] ?? [])->take(6);
     $bloglar = collect($doktor['bloglar'] ?? [])->take(3);
     $yorumlar = collect($doktor['yorumlar'] ?? [])->take(3);
+    $galeri = collect($doktor['galeri'] ?? [])->take(6);
     $stats = collect($doktor['istatistikler'] ?? [])->take(4);
     $cs = $doktor['calisma_saatleri'] ?? [];
+    $bolum = $doktor['anasayfa_bolumler'] ?? [];
     $ozellikler = collect($doktor['ozellikler'] ?? [])->take(3);
     if ($ozellikler->isEmpty()) {
         $ozellikler = collect([
@@ -22,35 +38,77 @@
         ]);
     }
     $ad = trim(($doktor['unvan'] ?? '').' '.($doktor['ad_soyad'] ?? 'Hekim'));
-    $heroTitle = $doktor['slider'][0]['baslik'] ?? null;
-    if (! $heroTitle) {
-        $heroTitle = 'Güvenebileceğiniz medikal hizmet sunuyoruz';
-    }
-    $heroLead = $doktor['slider'][0]['alt'] ?? ($doktor['kisa_bio'] ?? $doktor['slogan'] ?? '');
+    $show = fn (string $key) => (bool) ($bolum[$key] ?? true);
 @endphp
 
-{{-- Hero --}}
-<section class="mp-hero">
-    <div class="mp-hero-bg" style="background-image:url('{{ $heroImg }}')"></div>
-    <div class="mp-hero-overlay"></div>
-    <div class="mp-hero-inner">
-        <p class="mp-hero-eyebrow">{{ $doktor['vitrin_badge'] ?? ($doktor['uzmanlik'] ?? 'Medikal Klinik') }}</p>
-        <h1>
-            @if(!empty($doktor['slider'][0]['baslik_vurgulu']))
-                {{ $heroTitle }} <em>{{ $doktor['slider'][0]['baslik_vurgulu'] }}</em>
-            @else
-                {{ $heroTitle }}
-            @endif
-        </h1>
-        @if($heroLead)
-            <p class="mp-hero-lead">{{ \Illuminate\Support\Str::limit(strip_tags($heroLead), 180) }}</p>
-        @endif
-        <div class="mp-hero-actions">
-            <a href="{{ route('frontend.randevu') }}" class="mp-btn mp-btn-primary mp-btn-lg">Randevu Al</a>
-            <a href="{{ route('frontend.hizmetler') }}" class="mp-btn mp-btn-white mp-btn-lg">Hizmetlerimiz</a>
+{{-- Hero slider (panel slider + API fallback) --}}
+@if($show('slider'))
+<section class="mp-hero" aria-label="Ana slider">
+    <div class="swiper mp-hero-swiper">
+        <div class="swiper-wrapper">
+            @foreach ($slider as $slide)
+                @php
+                    $meta = is_array($slide['meta'] ?? null) ? $slide['meta'] : [];
+                    $img = $slide['image'] ?? $slide['thumb'] ?? $photo;
+                    $title = $slide['baslik'] ?? $ad;
+                    $vurgulu = $slide['baslik_vurgulu'] ?? ($meta['baslik_vurgulu'] ?? null);
+                    $alt = $slide['alt'] ?? '';
+                    $etiket = $slide['etiket'] ?? ($slide['badge'] ?? ($doktor['vitrin_badge'] ?? null));
+                    $cta = $slide['cta'] ?? 'Randevu Al';
+                    $ctaUrl = $slide['cta_url'] ?? route('frontend.randevu');
+                    $cta2 = $slide['cta2'] ?? null;
+                    $cta2Url = $slide['cta2_url'] ?? null;
+                    if ($ctaUrl === '/randevu') { $ctaUrl = route('frontend.randevu'); }
+                    if ($cta2Url === '/hizmetler') { $cta2Url = route('frontend.hizmetler'); }
+                    if ($cta2Url === '/hakkimda') { $cta2Url = route('frontend.hakkimda'); }
+                    if ($cta2Url === '/iletisim') { $cta2Url = route('frontend.iletisim'); }
+                @endphp
+                <div class="swiper-slide">
+                    <div class="mp-hero-slide">
+                        <div class="mp-hero-bg" style="background-image:url('{{ $img }}')"></div>
+                        <div class="mp-hero-overlay"></div>
+                        <div class="mp-hero-inner">
+                            @if($etiket)
+                                <p class="mp-hero-eyebrow">{{ $etiket }}</p>
+                            @endif
+                            <h1>
+                                {{ $title }}
+                                @if($vurgulu)
+                                    <em>{{ $vurgulu }}</em>
+                                @endif
+                            </h1>
+                            @if($alt !== '' && $alt !== null)
+                                <p class="mp-hero-lead">{{ \Illuminate\Support\Str::limit(strip_tags((string) $alt), 200) }}</p>
+                            @endif
+                            <div class="mp-hero-actions">
+                                @if($cta && $ctaUrl)
+                                    <a href="{{ $ctaUrl }}" class="mp-btn mp-btn-primary mp-btn-lg"
+                                       @if(\Illuminate\Support\Str::startsWith((string)$ctaUrl, ['http://','https://'])) target="_blank" rel="noopener" @endif>
+                                        {{ $cta }}
+                                    </a>
+                                @endif
+                                @if($cta2 && $cta2Url)
+                                    <a href="{{ $cta2Url }}" class="mp-btn mp-btn-white mp-btn-lg"
+                                       @if(\Illuminate\Support\Str::startsWith((string)$cta2Url, ['http://','https://'])) target="_blank" rel="noopener" @endif>
+                                        {{ $cta2 }}
+                                    </a>
+                                @elseif(!$cta2)
+                                    <a href="{{ route('frontend.hizmetler') }}" class="mp-btn mp-btn-white mp-btn-lg">Hizmetlerimiz</a>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
         </div>
+        @if(count($slider) > 1)
+            <div class="mp-hero-pagination"></div>
+            <button type="button" class="mp-hero-prev" aria-label="Önceki">‹</button>
+            <button type="button" class="mp-hero-next" aria-label="Sonraki">›</button>
+        @endif
     </div>
 </section>
+@endif
 
 {{-- Feature strip --}}
 <div class="mp-features">
@@ -120,7 +178,7 @@
 </section>
 
 {{-- Stats --}}
-@if($stats->isNotEmpty())
+@if($show('istatistik') && $stats->isNotEmpty())
 <section class="mp-stats">
     <div class="mp-stats-grid">
         @foreach ($stats as $st)
@@ -184,7 +242,7 @@
 @endif
 
 {{-- Services --}}
-@if($hizmetler->isNotEmpty())
+@if($show('hizmetler') && $hizmetler->isNotEmpty())
 <section class="mp-section">
     <div class="mp-container">
         <div class="mp-section-head">
@@ -195,7 +253,11 @@
         <div class="mp-svc-grid">
             @foreach ($hizmetler as $h)
                 <a href="{{ route('frontend.hizmet.detay', $h['slug'] ?? $h['id'] ?? '') }}" class="mp-svc-card">
-                    <div class="mp-svc-icon">✚</div>
+                    @if(!empty($h['image']))
+                        <img src="{{ $h['image'] }}" alt="" class="mp-svc-thumb" loading="lazy">
+                    @else
+                        <div class="mp-svc-icon">✚</div>
+                    @endif
                     <h3>{{ $h['baslik'] ?? $h['ad'] ?? 'Hizmet' }}</h3>
                     <p>{{ \Illuminate\Support\Str::limit(strip_tags((string)($h['kisa'] ?? $h['aciklama'] ?? '')), 110) }}</p>
                     <div class="mp-svc-meta">
@@ -278,9 +340,35 @@
     </div>
 </section>
 
-{{-- Testimonials --}}
-@if($yorumlar->isNotEmpty())
+{{-- Gallery --}}
+@if($show('galeri') && $galeri->isNotEmpty())
 <section class="mp-section mp-section-alt">
+    <div class="mp-container">
+        <div class="mp-section-head">
+            <span class="mp-eyebrow">Galeri</span>
+            <h2>Klinik ve ortamdan kareler</h2>
+            <p>Panelden yüklenen galeri görselleri.</p>
+        </div>
+        <div class="mp-gal-grid">
+            @foreach ($galeri as $g)
+                <figure class="mp-gal-item">
+                    <img src="{{ $g['image'] ?? '' }}" alt="{{ $g['baslik'] ?? 'Galeri' }}" loading="lazy">
+                    @if(!empty($g['baslik']))
+                        <figcaption>{{ $g['baslik'] }}</figcaption>
+                    @endif
+                </figure>
+            @endforeach
+        </div>
+        <div style="text-align:center;margin-top:24px">
+            <a href="{{ route('frontend.galeri') }}" class="mp-btn mp-btn-outline">Tüm galeri</a>
+        </div>
+    </div>
+</section>
+@endif
+
+{{-- Testimonials --}}
+@if($show('yorumlar') && $yorumlar->isNotEmpty())
+<section class="mp-section">
     <div class="mp-container">
         <div class="mp-section-head">
             <span class="mp-eyebrow">Yorumlar</span>
@@ -304,8 +392,8 @@
 @endif
 
 {{-- Blog --}}
-@if($bloglar->isNotEmpty())
-<section class="mp-section">
+@if($show('blog') && $bloglar->isNotEmpty())
+<section class="mp-section mp-section-alt">
     <div class="mp-container">
         <div class="mp-section-head">
             <span class="mp-eyebrow">Blog</span>
