@@ -99,7 +99,7 @@
 <noscript><link href="https://fonts.googleapis.com/css2?family={{ $googleFonts }}&display=swap" rel="stylesheet"></noscript>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="{{ asset('css/site.css') }}?v=3">
-<link rel="stylesheet" href="{{ asset('css/themes/'.$temaCssId.'.css') }}?v=7">
+<link rel="stylesheet" href="{{ asset('css/themes/'.$temaCssId.'.css') }}?v=8">
 <style>
 :root {
   --brand-50: {{ $palette['50'] }};

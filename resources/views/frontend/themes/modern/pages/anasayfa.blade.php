@@ -1,99 +1,345 @@
 @extends(theme_layout())
 
 @section('baslik', trim(($doktor['unvan'] ?? '').' '.($doktor['ad_soyad'] ?? 'Hekim').' | '.($doktor['uzmanlik'] ?? 'Klinik')))
-@section('meta_aciklama', $doktor['kisa_bio'] ?? '')
+@section('meta_aciklama', $doktor['kisa_bio'] ?? $doktor['slogan'] ?? '')
 
 @section('icerik')
 @php
     $photo = $doktor['profil_resmi']
-        ?? 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=1200&q=80';
+        ?? 'https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?auto=format&fit=crop&w=1200&q=80';
+    $heroImg = ($doktor['slider'][0]['image'] ?? null) ?: $photo;
     $hizmetler = collect($doktor['hizmetler'] ?? [])->take(6);
     $bloglar = collect($doktor['bloglar'] ?? [])->take(3);
+    $yorumlar = collect($doktor['yorumlar'] ?? [])->take(3);
+    $stats = collect($doktor['istatistikler'] ?? [])->take(4);
+    $cs = $doktor['calisma_saatleri'] ?? [];
+    $ozellikler = collect($doktor['ozellikler'] ?? [])->take(3);
+    if ($ozellikler->isEmpty()) {
+        $ozellikler = collect([
+            ['baslik' => 'Güvenilir yaklaşım', 'aciklama' => 'Kişiye özel değerlendirme ve güncel tıbbi yaklaşım.'],
+            ['baslik' => 'Kolay randevu', 'aciklama' => 'Online randevu ile size uygun saati saniyeler içinde seçin.'],
+            ['baslik' => 'Platform senkron', 'aciklama' => 'Randevu ve içerikler Randevu Ajandam ile senkron yönetilir.'],
+        ]);
+    }
+    $ad = trim(($doktor['unvan'] ?? '').' '.($doktor['ad_soyad'] ?? 'Hekim'));
+    $heroTitle = $doktor['slider'][0]['baslik'] ?? null;
+    if (! $heroTitle) {
+        $heroTitle = 'Güvenebileceğiniz medikal hizmet sunuyoruz';
+    }
+    $heroLead = $doktor['slider'][0]['alt'] ?? ($doktor['kisa_bio'] ?? $doktor['slogan'] ?? '');
 @endphp
 
-{{-- Modern: full-bleed dark hero, farklı iskelet --}}
-<section class="th-modern-hero">
-    <div class="th-modern-hero-bg" style="background-image:url('{{ ($doktor['slider'][0]['image'] ?? null) ?: $photo }}')"></div>
-    <div class="th-modern-hero-overlay"></div>
-    <div class="container th-modern-hero-content">
-        <p class="th-modern-eyebrow">{{ $doktor['vitrin_badge'] ?? 'Modern klinik' }}</p>
-        <h1>{{ trim(($doktor['unvan'] ?? '').' '.($doktor['ad_soyad'] ?? 'Hekim')) }}</h1>
-        <p class="th-modern-lead">{{ $doktor['kisa_bio'] ?? $doktor['slogan'] ?? ($doktor['uzmanlik'] ?? '') }}</p>
-        <div class="th-modern-hero-actions">
-            <a href="{{ route('frontend.randevu') }}" class="th-modern-cta th-modern-cta-lg">Online randevu</a>
-            <a href="{{ route('frontend.hizmetler') }}" class="th-modern-ghost">Hizmetler</a>
+{{-- Hero --}}
+<section class="mp-hero">
+    <div class="mp-hero-bg" style="background-image:url('{{ $heroImg }}')"></div>
+    <div class="mp-hero-overlay"></div>
+    <div class="mp-hero-inner">
+        <p class="mp-hero-eyebrow">{{ $doktor['vitrin_badge'] ?? ($doktor['uzmanlik'] ?? 'Medikal Klinik') }}</p>
+        <h1>
+            @if(!empty($doktor['slider'][0]['baslik_vurgulu']))
+                {{ $heroTitle }} <em>{{ $doktor['slider'][0]['baslik_vurgulu'] }}</em>
+            @else
+                {{ $heroTitle }}
+            @endif
+        </h1>
+        @if($heroLead)
+            <p class="mp-hero-lead">{{ \Illuminate\Support\Str::limit(strip_tags($heroLead), 180) }}</p>
+        @endif
+        <div class="mp-hero-actions">
+            <a href="{{ route('frontend.randevu') }}" class="mp-btn mp-btn-primary mp-btn-lg">Randevu Al</a>
+            <a href="{{ route('frontend.hizmetler') }}" class="mp-btn mp-btn-white mp-btn-lg">Hizmetlerimiz</a>
         </div>
-        @if(!empty($doktor['istatistikler']))
-            <div class="th-modern-stats">
-                @foreach (array_slice($doktor['istatistikler'], 0, 3) as $st)
-                    <div>
-                        <strong>{{ $st['deger'] ?? '' }}{{ $st['suffix'] ?? '' }}</strong>
-                        <span>{{ $st['etiket'] ?? '' }}</span>
+    </div>
+</section>
+
+{{-- Feature strip --}}
+<div class="mp-features">
+    <div class="mp-feature">
+        <div class="mp-feature-label">İletişim</div>
+        <h3>Acil / Telefon</h3>
+        <p>
+            @if(!empty($doktor['telefon']))
+                Bize <strong>{{ $doktor['telefon'] }}</strong> numarasından ulaşabilirsiniz.
+            @else
+                Randevu veya sorularınız için iletişime geçin.
+            @endif
+        </p>
+        @if(!empty($doktor['telefon_raw']))
+            <a href="tel:{{ $doktor['telefon_raw'] }}">Hemen ara →</a>
+        @else
+            <a href="{{ route('frontend.iletisim') }}">İletişim →</a>
+        @endif
+    </div>
+    <div class="mp-feature">
+        <div class="mp-feature-label">Program</div>
+        <h3>Çalışma saatleri</h3>
+        <ul>
+            @forelse (collect($cs)->take(3) as $gun => $saat)
+                <li><span>{{ $gun }}</span><span>{{ $saat }}</span></li>
+            @empty
+                <li><span>Randevu ile</span><span>Açık</span></li>
+            @endforelse
+        </ul>
+        <a href="{{ route('frontend.randevu') }}" style="color:#fff;opacity:.95">Randevu planla →</a>
+    </div>
+    <div class="mp-feature">
+        <div class="mp-feature-label">Konum</div>
+        <h3>{{ $doktor['klinik_adi'] ?? 'Muayenehane' }}</h3>
+        <p>{{ $doktor['adres'] ?? (($doktor['ilce'] ?? '').' '.($doktor['il'] ?? '')) ?: 'Adres bilgisi yakında.' }}</p>
+        <a href="{{ route('frontend.iletisim') }}">Yol tarifi / harita →</a>
+    </div>
+</div>
+
+{{-- Why / features --}}
+<section class="mp-section">
+    <div class="mp-container">
+        <div class="mp-section-head">
+            <span class="mp-eyebrow">Neden biz?</span>
+            <h2>Sizin ve aileniz için her zaman hazırız</h2>
+            <p>{{ $doktor['slogan'] ?? 'Kişiye özel plan, şeffaf iletişim ve kolay online randevu.' }}</p>
+        </div>
+        <div class="mp-why">
+            <div class="mp-why-list">
+                @foreach ($ozellikler as $i => $oz)
+                    <div class="mp-why-item">
+                        <div class="mp-why-icon">{{ ['✚','💊','🩺'][$i % 3] }}</div>
+                        <div>
+                            <h4>{{ $oz['baslik'] ?? 'Özellik' }}</h4>
+                            <p>{{ $oz['aciklama'] ?? '' }}</p>
+                        </div>
                     </div>
                 @endforeach
             </div>
-        @endif
+            <div class="mp-doctor-card" style="box-shadow:none;border:0;background:transparent">
+                <div class="mp-about-photo">
+                    <img src="{{ $photo }}" alt="{{ $ad }}">
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 
-@if($hizmetler->isNotEmpty())
-<section class="th-modern-section">
-    <div class="container">
-        <div class="th-modern-section-head">
-            <h2>Hizmetler</h2>
-            <a href="{{ route('frontend.hizmetler') }}">Tümü →</a>
-        </div>
-        <div class="th-modern-cards">
-            @foreach ($hizmetler as $h)
-                <a href="{{ route('frontend.hizmet.detay', $h['slug'] ?? $h['id'] ?? '') }}" class="th-modern-card">
-                    <h3>{{ $h['baslik'] ?? $h['ad'] ?? 'Hizmet' }}</h3>
-                    <p>{{ \Illuminate\Support\Str::limit(strip_tags((string)($h['kisa'] ?? $h['aciklama'] ?? '')), 100) }}</p>
-                    <span>Detay</span>
-                </a>
-            @endforeach
-        </div>
+{{-- Stats --}}
+@if($stats->isNotEmpty())
+<section class="mp-stats">
+    <div class="mp-stats-grid">
+        @foreach ($stats as $st)
+            <div class="mp-stat">
+                <strong>{{ $st['deger'] ?? '' }}{{ $st['suffix'] ?? '' }}</strong>
+                <span>{{ $st['etiket'] ?? '' }}</span>
+            </div>
+        @endforeach
     </div>
 </section>
 @endif
 
-<section class="th-modern-section th-modern-about">
-    <div class="container th-modern-about-grid">
-        <div class="th-modern-about-photo">
-            <img src="{{ $photo }}" alt="">
+{{-- About --}}
+<section class="mp-section mp-section-alt">
+    <div class="mp-container">
+        <div class="mp-about-grid">
+            <div class="mp-about-photo">
+                <img src="{{ $photo }}" alt="{{ $ad }}">
+            </div>
+            <div>
+                <div class="mp-section-head" style="text-align:left;margin:0 0 20px;max-width:none">
+                    <span class="mp-eyebrow">Hakkımızda</span>
+                    <h2 style="text-align:left">{{ $doktor['bolum_basliklar']['hakkimda']['baslik'] ?? 'Kimiz ve nasıl çalışıyoruz?' }}</h2>
+                </div>
+                <p style="color:var(--muted);line-height:1.7;font-size:.95rem">
+                    {{ $doktor['kisa_bio'] ?? strip_tags((string)($doktor['bio'] ?? '')) }}
+                </p>
+                @php
+                    $checks = collect($doktor['bio_uzun'] ?? [])->take(4);
+                    if ($checks->isEmpty() && !empty($doktor['mezuniyet']) && is_array($doktor['mezuniyet'])) {
+                        $checks = collect($doktor['mezuniyet'])->take(4);
+                    }
+                @endphp
+                @if($checks->isNotEmpty())
+                    <ul class="mp-about-check">
+                        @foreach ($checks as $c)
+                            <li>{{ is_string($c) ? $c : (\Illuminate\Support\Str::limit(strip_tags((string)$c), 90)) }}</li>
+                        @endforeach
+                    </ul>
+                @endif
+                <div style="margin-top:22px;display:flex;flex-wrap:wrap;gap:10px">
+                    <a href="{{ route('frontend.hakkimda') }}" class="mp-btn mp-btn-primary">Devamını oku</a>
+                    <a href="{{ route('frontend.randevu') }}" class="mp-btn mp-btn-outline">Randevu al</a>
+                </div>
+            </div>
         </div>
+    </div>
+</section>
+
+{{-- Emergency band --}}
+@if(!empty($doktor['telefon']))
+<section class="mp-emergency">
+    <div class="mp-emergency-inner">
         <div>
-            <p class="th-modern-eyebrow">Hakkımda</p>
-            <h2>{{ $doktor['uzmanlik'] ?? 'Uzman yaklaşım' }}</h2>
-            <p>{{ $doktor['kisa_bio'] ?? '' }}</p>
-            <a href="{{ route('frontend.hakkimda') }}" class="th-modern-ghost">Devamını oku</a>
+            <h2>Acil destek mi lazım? Ara: {{ $doktor['telefon'] }}</h2>
+            <p>Randevu, bilgi veya yönlendirme için bize ulaşın. Online randevu her zaman açık.</p>
+        </div>
+        <a href="tel:{{ $doktor['telefon_raw'] ?? '' }}" class="mp-btn mp-btn-white mp-btn-lg">Hemen Ara</a>
+    </div>
+</section>
+@endif
+
+{{-- Services --}}
+@if($hizmetler->isNotEmpty())
+<section class="mp-section">
+    <div class="mp-container">
+        <div class="mp-section-head">
+            <span class="mp-eyebrow">Hizmetler</span>
+            <h2>{{ $doktor['hizmetler_baslik'] ?? 'Sağlığınız için sunduğumuz hizmetler' }}</h2>
+            <p>{{ $doktor['hizmetler_alt'] ?? 'Platformdaki aktif hizmetleriniz burada listelenir.' }}</p>
+        </div>
+        <div class="mp-svc-grid">
+            @foreach ($hizmetler as $h)
+                <a href="{{ route('frontend.hizmet.detay', $h['slug'] ?? $h['id'] ?? '') }}" class="mp-svc-card">
+                    <div class="mp-svc-icon">✚</div>
+                    <h3>{{ $h['baslik'] ?? $h['ad'] ?? 'Hizmet' }}</h3>
+                    <p>{{ \Illuminate\Support\Str::limit(strip_tags((string)($h['kisa'] ?? $h['aciklama'] ?? '')), 110) }}</p>
+                    <div class="mp-svc-meta">
+                        @if(!empty($h['sure']))
+                            <span class="mp-chip">{{ $h['sure'] }}</span>
+                        @endif
+                        @if(!empty($h['fiyat']))
+                            <span class="mp-chip">{{ $h['fiyat'] }}</span>
+                        @endif
+                    </div>
+                    <span class="mp-svc-link">Detay →</span>
+                </a>
+            @endforeach
+        </div>
+        <div style="text-align:center;margin-top:28px">
+            <a href="{{ route('frontend.hizmetler') }}" class="mp-btn mp-btn-outline">Tüm hizmetler</a>
         </div>
     </div>
 </section>
+@endif
 
-@if($bloglar->isNotEmpty())
-<section class="th-modern-section">
-    <div class="container">
-        <div class="th-modern-section-head">
-            <h2>Blog</h2>
-            <a href="{{ route('frontend.blog') }}">Tümü →</a>
+{{-- Pricing-style top services --}}
+@if($hizmetler->isNotEmpty())
+<section class="mp-section mp-section-alt">
+    <div class="mp-container">
+        <div class="mp-section-head">
+            <span class="mp-eyebrow">Paket / ücret</span>
+            <h2>Şeffaf ve anlaşılır hizmet bilgisi</h2>
+            <p>Süre ve ücret bilgisi hekim panelinden yönetilir.</p>
         </div>
-        <div class="th-modern-blog">
-            @foreach ($bloglar as $b)
-                <a href="{{ route('frontend.blog.detay', $b['slug'] ?? '') }}" class="th-modern-blog-item">
-                    <h3>{{ $b['baslik'] ?? '' }}</h3>
-                    <p>{{ \Illuminate\Support\Str::limit(strip_tags((string)($b['ozet'] ?? $b['icerik'] ?? '')), 90) }}</p>
-                </a>
+        <div class="mp-price-grid">
+            @foreach ($hizmetler->take(3) as $i => $h)
+                <div class="mp-price-card {{ $i === 1 ? 'is-featured' : '' }}">
+                    <h3>{{ $h['baslik'] ?? $h['ad'] ?? 'Hizmet' }}</h3>
+                    <div class="mp-price">{{ $h['fiyat'] ?? 'Bilgi için' }}</div>
+                    <p class="mp-price-sub">{{ !empty($h['sure']) ? $h['sure'].' · ' : '' }}seans / randevu</p>
+                    <ul>
+                        @forelse (collect($h['madde'] ?? [])->take(4) as $m)
+                            <li>{{ $m }}</li>
+                        @empty
+                            <li>{{ \Illuminate\Support\Str::limit(strip_tags((string)($h['aciklama'] ?? 'Kişiye özel değerlendirme')), 60) }}</li>
+                            <li>Online randevu</li>
+                            <li>Onay sonrası bilgilendirme</li>
+                        @endforelse
+                    </ul>
+                    <a href="{{ route('frontend.randevu') }}" class="mp-btn mp-btn-primary" style="width:100%">Randevu Al</a>
+                </div>
             @endforeach
         </div>
     </div>
 </section>
 @endif
 
-<section class="th-modern-cta-band">
-    <div class="container">
-        <h2>Randevunuzu planlayın</h2>
-        <p>Yüz yüze veya online görüşme — platform üzerinden.</p>
-        <a href="{{ route('frontend.randevu') }}" class="th-modern-cta th-modern-cta-lg">Randevu al</a>
+{{-- Doctor --}}
+<section class="mp-section">
+    <div class="mp-container">
+        <div class="mp-section-head">
+            <span class="mp-eyebrow">Hekim</span>
+            <h2>Uzman hekimle tanışın</h2>
+            <p>{{ $doktor['uzmanlik'] ?? 'Kişiye özel sağlık planı' }}</p>
+        </div>
+        <div class="mp-doctor-card">
+            <div class="mp-doctor-photo">
+                <img src="{{ $photo }}" alt="{{ $ad }}">
+            </div>
+            <div class="mp-doctor-body">
+                <div class="mp-eyebrow">{{ $doktor['uzmanlik'] ?? 'Uzman hekim' }}</div>
+                <h2>{{ $ad }}</h2>
+                <p>{{ $doktor['kisa_bio'] ?? '' }}</p>
+                @if(!empty($doktor['branslar']) && is_array($doktor['branslar']))
+                    <div class="mp-svc-meta" style="margin:14px 0">
+                        @foreach (array_slice($doktor['branslar'], 0, 5) as $b)
+                            <span class="mp-chip">{{ is_string($b) ? $b : ($b['ad'] ?? '') }}</span>
+                        @endforeach
+                    </div>
+                @endif
+                <a href="{{ route('frontend.randevu') }}" class="mp-btn mp-btn-primary">Randevu Al</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{{-- Testimonials --}}
+@if($yorumlar->isNotEmpty())
+<section class="mp-section mp-section-alt">
+    <div class="mp-container">
+        <div class="mp-section-head">
+            <span class="mp-eyebrow">Yorumlar</span>
+            <h2>Hastalarımız ne diyor?</h2>
+            <p>Onaylanmış değerlendirmeler platformdan senkron gelir.</p>
+        </div>
+        <div class="mp-testimonials">
+            @foreach ($yorumlar as $y)
+                <div class="mp-testi">
+                    <div class="mp-testi-stars">
+                        @for ($i = 0; $i < max(1, min(5, (int)($y['puan'] ?? 5))); $i++)★@endfor
+                    </div>
+                    <p>“{{ \Illuminate\Support\Str::limit(strip_tags((string)($y['metin'] ?? '')), 160) }}”</p>
+                    <strong>{{ $y['ad'] ?? 'Hasta' }}</strong>
+                    <small>{{ $y['hizmet'] ?? 'Değerlendirme' }}</small>
+                </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+@endif
+
+{{-- Blog --}}
+@if($bloglar->isNotEmpty())
+<section class="mp-section">
+    <div class="mp-container">
+        <div class="mp-section-head">
+            <span class="mp-eyebrow">Blog</span>
+            <h2>Güncel yazılar ve bilgilendirmeler</h2>
+            <p>Hekim panelinden yayınlanan içerikler.</p>
+        </div>
+        <div class="mp-blog-grid">
+            @foreach ($bloglar as $b)
+                <a href="{{ route('frontend.blog.detay', $b['slug'] ?? '') }}" class="mp-blog-card">
+                    <img src="{{ $b['image'] ?? 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=800&q=80' }}" alt="" loading="lazy">
+                    <div class="mp-blog-body">
+                        @if(!empty($b['tarih']))
+                            <div class="mp-blog-date">{{ $b['tarih'] }}</div>
+                        @endif
+                        <h3>{{ $b['baslik'] ?? '' }}</h3>
+                        <p>{{ \Illuminate\Support\Str::limit(strip_tags((string)($b['ozet'] ?? '')), 100) }}</p>
+                    </div>
+                </a>
+            @endforeach
+        </div>
+        <div style="text-align:center;margin-top:28px">
+            <a href="{{ route('frontend.blog') }}" class="mp-btn mp-btn-outline">Tüm yazılar</a>
+        </div>
+    </div>
+</section>
+@endif
+
+{{-- CTA --}}
+<section class="mp-cta-band">
+    <div class="mp-cta-card">
+        <span class="mp-eyebrow" style="color:var(--mp-blue);font-weight:600;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase">Randevu</span>
+        <h2>{{ $doktor['cta_baslik'] ?? 'Randevunuzu şimdi planlayın' }}</h2>
+        <p>{{ $doktor['cta_metin'] ?? 'Hizmet seçin, müsait saati belirleyin — kayıt zorunlu değil.' }}</p>
+        <a href="{{ route('frontend.randevu') }}" class="mp-btn mp-btn-primary mp-btn-lg">Randevu Al</a>
     </div>
 </section>
 @endsection

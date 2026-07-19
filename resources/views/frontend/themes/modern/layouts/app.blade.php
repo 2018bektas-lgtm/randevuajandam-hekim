@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    {{-- Ortak head (SEO/font/css); tema CSS body class ile --}}
     @include('frontend.layouts.partials.head')
 </head>
 @php
-    $bodyTema = 'modern';
     $nav = site_nav(is_array($doktor ?? null) ? $doktor : null);
 @endphp
 <body class="theme-modern layout-modern theme-pack-modern">

@@ -1,52 +1,34 @@
 @extends(theme_layout())
 
-@section('baslik', 'S.S.S. | '.($doktor['ad_soyad'] ?? 'Hekim'))
-@section('meta_aciklama', 'Randevu ve klinik hakkında sık sorulan sorular.')
+@section('baslik', 'SSS | '.($doktor['ad_soyad'] ?? 'Hekim'))
+@section('meta_aciklama', 'Sık sorulan sorular.')
 
 @section('icerik')
-<div class="th-modern-page">
-<section class="page-hero th-modern-page-hero">
-    <div class="container">
-        <div class="breadcrumb">
+<section class="mp-page-hero">
+    <div class="mp-container">
+        <div class="mp-breadcrumb">
             <a href="{{ route('frontend.anasayfa') }}">Ana Sayfa</a>
             <span>/</span>
-            <span>S.S.S.</span>
+            <span>SSS</span>
         </div>
-        <h1>Sıkça sorulan sorular</h1>
-        <p>{{ $doktor['unvan'] ?? '' }} {{ $doktor['ad_soyad'] ?? '' }} kliniği hakkında merak edilenler.</p>
+        <h1>Sık sorulan sorular</h1>
+        <p>Merak ettikleriniz için kısa yanıtlar.</p>
     </div>
 </section>
 
-<section class="section th-modern-section">
-    <div class="container" style="max-width:820px;margin-inline:auto">
-        <div class="faq">
-            @forelse (($doktor['sss'] ?? []) as $item)
-                <details {{ $loop->first ? 'open' : '' }}>
-                    <summary>{{ $item['soru'] }}</summary>
-                    <div class="prose" style="padding:.25rem 0 .5rem">
-                        {!! nl2br(e($item['cevap'] ?? '')) !!}
-                    </div>
-                </details>
-            @empty
-                <div class="card card-pad" style="text-align:center">
-                    <p class="text-muted" style="margin:0">Henüz SSS kaydı eklenmemiş.</p>
-                </div>
-            @endforelse
-        </div>
-
-        <div class="cta-band mt-3" style="margin-top:2.5rem">
-            <div>
-                <h2 class="section-title" style="color:#fff;margin:0">Hâlâ sorunuz mu var?</h2>
-                <p style="color:rgba(255,255,255,.8);margin:.75rem 0 0">Randevu veya muayene hakkında bize yazın / arayın.</p>
+<section class="mp-section mp-page">
+    <div class="mp-container" style="max-width:800px">
+        @forelse (($doktor['sss'] ?? []) as $i => $item)
+            <div class="mp-card" style="margin-bottom:12px">
+                <h3 style="margin:0 0 8px;font-size:1.05rem">{{ $item['soru'] ?? '' }}</h3>
+                <p style="margin:0;color:var(--muted);line-height:1.65">{{ $item['cevap'] ?? '' }}</p>
             </div>
-            <div class="hero-actions">
-                <a href="{{ route('frontend.iletisim') }}" class="btn btn-gold">İletişime Geç</a>
-                @if(!empty($doktor['telefon_raw']))
-                    <a href="tel:{{ $doktor['telefon_raw'] }}" class="btn btn-outline">{{ $doktor['telefon'] }}</a>
-                @endif
-            </div>
+        @empty
+            <p class="mp-book-empty">Henüz SSS eklenmemiş.</p>
+        @endforelse
+        <div style="text-align:center;margin-top:28px">
+            <a href="{{ route('frontend.randevu') }}" class="mp-btn mp-btn-primary">Randevu Al</a>
         </div>
     </div>
 </section>
-</div>
 @endsection

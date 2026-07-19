@@ -12,10 +12,9 @@
 @section('meta_aciklama', $egitimDesc)
 
 @section('icerik')
-<div class="th-modern-page">
-<section class="page-hero th-modern-page-hero">
-    <div class="container">
-        <div class="breadcrumb">
+<section class="mp-page-hero">
+    <div class="mp-container">
+        <div class="mp-breadcrumb">
             <a href="{{ route('frontend.anasayfa') }}">Ana Sayfa</a>
             <span>/</span>
             <a href="{{ route('frontend.egitimler') }}">Eğitimler</a>
@@ -27,35 +26,34 @@
     </div>
 </section>
 
-<section class="section th-modern-section">
-    <div class="container" style="display:grid;grid-template-columns:1.4fr 1fr;gap:2rem;align-items:start">
+<section class="mp-section mp-page">
+    <div class="mp-container" style="display:grid;grid-template-columns:1.4fr 1fr;gap:2rem;align-items:start">
         <div>
             @if(!empty($egitim['image']))
-                <img src="{{ $egitim['image'] }}" alt="" style="width:100%;border-radius:1.25rem;object-fit:cover;max-height:320px;margin-bottom:1.25rem">
+                <img src="{{ $egitim['image'] }}" alt="" style="width:100%;border-radius:8px;object-fit:cover;max-height:320px;margin-bottom:1.25rem">
             @endif
-            <div class="service-meta" style="margin-bottom:1rem">
-                <span class="chip">{{ $egitim['tip'] ?? '' }}</span>
+            <div class="mp-svc-meta" style="margin-bottom:1rem">
+                <span class="mp-chip">{{ $egitim['tip'] ?? '' }}</span>
                 @if(!empty($egitim['baslangic_label']))
-                    <span class="chip">{{ $egitim['baslangic_label'] }}</span>
+                    <span class="mp-chip">{{ $egitim['baslangic_label'] }}</span>
                 @endif
                 @if(!empty($egitim['fiyat_label']))
-                    <span class="chip chip-gold">{{ $egitim['fiyat_label'] }} <small>(ödeme siteden alınmaz)</small></span>
+                    <span class="mp-chip">{{ $egitim['fiyat_label'] }}</span>
                 @endif
             </div>
             @if(!empty($egitim['mekan']))
-                <p class="text-muted"><strong>Mekan:</strong> {{ $egitim['mekan'] }}</p>
+                <p style="color:var(--muted)"><strong>Mekan:</strong> {{ $egitim['mekan'] }}</p>
             @endif
             @if(!empty($egitim['icerik']))
-                <div class="card card-pad prose-content" style="margin-top:1rem">
-                    {{-- Sanitize at output (defense in depth) --}}
+                <div class="mp-card" style="margin-top:1rem">
                     {!! \App\Services\HtmlSanitizer::clean($egitim['icerik'] ?? '') !!}
                 </div>
             @endif
         </div>
 
-        <div class="card card-pad" style="position:sticky;top:1.5rem">
-            <h3 style="margin-top:0">Başvuru formu</h3>
-            <p class="text-muted" style="font-size:.85rem">Başvuru <strong>beklemede</strong> olarak düşer. Ücret hekim tarafından kendi kanalından alınır.</p>
+        <div class="mp-card" style="position:sticky;top:1.5rem">
+            <h3 style="margin-top:0;color:var(--mp-navy)">Başvuru formu</h3>
+            <p style="font-size:.85rem;color:var(--muted)">Başvuru <strong>beklemede</strong> olarak düşer. Ücret hekim tarafından kendi kanalından alınır.</p>
 
             <div id="egitimFormMsg" class="text-muted" style="font-size:.85rem;margin-bottom:.75rem;display:none"></div>
 
@@ -120,10 +118,10 @@
                     <span>Kişisel verilerimin eğitim başvurusu için işlenmesini kabul ediyorum.</span>
                 </label>
 
-                <button type="submit" class="btn btn-primary" style="width:100%">Başvur</button>
+                <button type="submit" class="mp-btn mp-btn-primary" style="width:100%">Başvur</button>
             </form>
             @else
-                <p class="text-muted">Bu eğitime şu an başvuru alınmıyor.</p>
+                <p style="color:var(--muted)">Bu eğitime şu an başvuru alınmıyor.</p>
             @endif
         </div>
     </div>
@@ -141,7 +139,6 @@
         msg.textContent = 'Gönderiliyor…';
         msg.style.color = '';
         const fd = new FormData(form);
-        // checkbox alanlar
         const payload = {
             egitim_id: parseInt(fd.get('egitim_id'), 10),
             ad: fd.get('ad'),
@@ -184,14 +181,13 @@
 </script>
 <style>
 @media (max-width: 900px) {
-    .section .container[style*="grid-template-columns"] { grid-template-columns: 1fr !important; }
+    .mp-page .mp-container[style*="grid-template-columns"] { grid-template-columns: 1fr !important; }
 }
-.stack-form label { display:block; font-size:.75rem; font-weight:700; margin-bottom:.25rem; text-transform:uppercase; letter-spacing:.04em; color:#64748b; }
+.stack-form label { display:block; font-size:.75rem; font-weight:700; margin-bottom:.25rem; text-transform:uppercase; letter-spacing:.04em; color:#757575; }
 .stack-form input, .stack-form textarea, .stack-form select {
-    width:100%; padding:.65rem .75rem; border:1px solid #e2e8f0; border-radius:.75rem; margin-bottom:.75rem; font-size:.9rem;
+    width:100%; padding:.65rem .75rem; border:1px solid #e6e6e6; border-radius:6px; margin-bottom:.75rem; font-size:.9rem; font-family:inherit;
 }
-.stack-form .grid-2 { display:grid; grid-template-columns:1fr 1fr; }
+.stack-form .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:.75rem; }
 </style>
 @endpush
-</div>
 @endsection

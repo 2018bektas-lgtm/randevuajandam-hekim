@@ -1,45 +1,39 @@
 @extends(theme_layout())
 
 @section('baslik', 'Blog | '.($doktor['ad_soyad'] ?? 'Hekim'))
-@section('meta_aciklama', ($doktor['uzmanlik'] ?? 'Sağlık').' hakkında bilgilendirici yazılar.')
+@section('meta_aciklama', 'Sağlık yazıları ve bilgilendirmeler.')
 
 @section('icerik')
-<div class="th-modern-page">
-<section class="page-hero th-modern-page-hero">
-    <div class="container">
-        <div class="breadcrumb">
+<section class="mp-page-hero">
+    <div class="mp-container">
+        <div class="mp-breadcrumb">
             <a href="{{ route('frontend.anasayfa') }}">Ana Sayfa</a>
             <span>/</span>
             <span>Blog</span>
         </div>
-        <h1>Sağlık blogu</h1>
-        <p>{{ $doktor['unvan'] ?? '' }} {{ $doktor['ad_soyad'] ?? '' }} — {{ $doktor['uzmanlik'] ?? '' }} alanında bilgilendirici yazılar.</p>
+        <h1>Blog & yazılar</h1>
+        <p>Güncel bilgilendirmeler ve sağlık içerikleri.</p>
     </div>
 </section>
 
-<section class="section th-modern-section">
-    <div class="container grid-2" style="gap:1.5rem">
-        @forelse (($doktor['bloglar'] ?? []) as $yazi)
-            <a href="{{ route('frontend.blog.detay', $yazi['slug']) }}" class="card blog-card" style="display:grid;grid-template-columns:1fr;overflow:hidden;text-decoration:none;color:inherit">
-                <img src="{{ $yazi['image'] }}" alt="{{ $yazi['baslik'] }}" loading="lazy" style="height:220px;width:100%;object-fit:cover">
-                <div class="card-pad">
-                    <div class="meta" style="display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin-bottom:.65rem;font-size:.82rem;color:#64748b">
-                        <span class="chip">{{ $yazi['kategori'] ?? 'Blog' }}</span>
-                        @if(!empty($yazi['tarih']))<span>{{ $yazi['tarih'] }}</span>@endif
-                        @if(!empty($yazi['okuma']))<span>{{ $yazi['okuma'] }}</span>@endif
+<section class="mp-section mp-page">
+    <div class="mp-container">
+        <div class="mp-blog-grid">
+            @forelse (($doktor['bloglar'] ?? []) as $b)
+                <a href="{{ route('frontend.blog.detay', $b['slug'] ?? '') }}" class="mp-blog-card">
+                    <img src="{{ $b['image'] ?? 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=800&q=80' }}" alt="" loading="lazy">
+                    <div class="mp-blog-body">
+                        @if(!empty($b['tarih']))
+                            <div class="mp-blog-date">{{ $b['tarih'] }}</div>
+                        @endif
+                        <h3>{{ $b['baslik'] ?? '' }}</h3>
+                        <p>{{ \Illuminate\Support\Str::limit(strip_tags((string)($b['ozet'] ?? '')), 120) }}</p>
                     </div>
-                    <h3 style="margin:0 0 .5rem">{{ $yazi['baslik'] }}</h3>
-                    <p class="text-muted" style="margin:0">{{ $yazi['ozet'] }}</p>
-                    <span class="link-more" style="display:inline-block;margin-top:1rem">Devamını oku →</span>
-                </div>
-            </a>
-        @empty
-            <div class="card card-pad" style="grid-column:1/-1;text-align:center">
-                <p class="text-muted" style="margin:0">Henüz yayınlanmış blog yazısı yok.</p>
-                <a href="{{ route('frontend.randevu') }}" class="btn btn-primary btn-sm" style="margin-top:1rem">Randevu Al</a>
-            </div>
-        @endforelse
+                </a>
+            @empty
+                <p class="mp-book-empty">Henüz blog yazısı yok.</p>
+            @endforelse
+        </div>
     </div>
 </section>
-</div>
 @endsection
