@@ -80,41 +80,61 @@ class SiteContentService
      */
     protected function fetchFromPlatform(): array
     {
+        $profile = [];
+        $content = [];
+        $services = [];
+
         // 1) Tek RTT bootstrap
         try {
             $boot = $this->api->publicGet('/bootstrap');
-            $data = $boot['data'] ?? [];
+            $data = is_array($boot['data'] ?? null) ? $boot['data'] : [];
             $profile = is_array($data['profile'] ?? null) ? $data['profile'] : [];
             $content = is_array($data['content'] ?? null) ? $data['content'] : [];
-            $services = is_array($data['services'] ?? null) ? $data['services'] : [];
-
-            if (! empty($profile) && (! empty($profile['id']) || ! empty($profile['ad_soyad']))) {
-                return $this->fromApi($profile, $content, $services, $content['egitimler'] ?? []);
-            }
+            $services = $this->normalizeServicesList($data['services'] ?? null);
         } catch (Throwable $e) {
-            // Eski API (bootstrap yok) → paralel 3 istek
             Log::debug('doktorsitesi bootstrap fallback: '.$e->getMessage());
         }
 
-        // 2) Paralel 3 istek (eskiden 4 sıralı)
-        $bundle = $this->api->publicGetMany([
-            'profile' => '/profile',
-            'content' => '/site-content',
-            'services' => '/services',
-        ]);
+        // 2) Eksik parçaları tamamla (bootstrap yok / services boş)
+        $needProfile = empty($profile) || (empty($profile['id']) && empty($profile['ad_soyad']));
+        $needContent = empty($content);
+        $needServices = $services === [];
 
-        $profile = $bundle['profile']['data'] ?? [];
-        $content = $bundle['content']['data'] ?? [];
-        $services = $bundle['services']['data'] ?? [];
+        if ($needProfile || $needContent || $needServices) {
+            $paths = [];
+            if ($needProfile) {
+                $paths['profile'] = '/profile';
+            }
+            if ($needContent) {
+                $paths['content'] = '/site-content';
+            }
+            if ($needServices) {
+                $paths['services'] = '/services';
+            }
+            try {
+                $bundle = $this->api->publicGetMany($paths);
+                if ($needProfile) {
+                    $profile = is_array($bundle['profile']['data'] ?? null) ? $bundle['profile']['data'] : $profile;
+                }
+                if ($needContent) {
+                    $content = is_array($bundle['content']['data'] ?? null) ? $bundle['content']['data'] : $content;
+                }
+                if ($needServices) {
+                    $services = $this->normalizeServicesList($bundle['services']['data'] ?? null);
+                }
+            } catch (Throwable $e) {
+                Log::debug('doktorsitesi parallel fetch: '.$e->getMessage());
+            }
+        }
 
-        if (! is_array($profile)) {
-            $profile = [];
-        }
-        if (! is_array($content)) {
-            $content = [];
-        }
-        if (! is_array($services)) {
-            $services = [];
+        // 3) Hâlâ services boşsa tek istek daha dene
+        if ($services === []) {
+            try {
+                $svcRes = $this->api->publicGet('/services');
+                $services = $this->normalizeServicesList($svcRes['data'] ?? null);
+            } catch (Throwable $e) {
+                Log::warning('doktorsitesi services fetch failed: '.$e->getMessage());
+            }
         }
 
         if (empty($profile) || (empty($profile['id']) && empty($profile['ad_soyad']))) {
@@ -123,10 +143,46 @@ class SiteContentService
 
         return $this->fromApi(
             $profile,
-            $content,
+            is_array($content) ? $content : [],
             $services,
             is_array($content['egitimler'] ?? null) ? $content['egitimler'] : []
         );
+    }
+
+    /**
+     * API services listesini diziye çevir (liste / data sarmalayıcı / stdClass).
+     *
+     * @return list<array<string, mixed>>
+     */
+    protected function normalizeServicesList(mixed $raw): array
+    {
+        if ($raw === null) {
+            return [];
+        }
+        if (is_object($raw)) {
+            $raw = (array) $raw;
+        }
+        if (! is_array($raw)) {
+            return [];
+        }
+        // { "data": [ ... ] } sarmalayıcısı
+        if (isset($raw['data']) && is_array($raw['data']) && array_is_list($raw['data'])) {
+            $raw = $raw['data'];
+        }
+        if ($raw === []) {
+            return [];
+        }
+        // Tek hizmet objesi
+        if (! array_is_list($raw) && (isset($raw['id']) || isset($raw['ad']) || isset($raw['baslik']))) {
+            $raw = [$raw];
+        }
+        if (! array_is_list($raw)) {
+            return [];
+        }
+
+        return array_values(array_map(function ($h) {
+            return is_array($h) ? $h : (array) $h;
+        }, $raw));
     }
 
     /**
@@ -253,6 +309,8 @@ class SiteContentService
                 Cache::forget('doktorsitesi.profile.v6.'.$hash);
                 Cache::forget('doktorsitesi.profile.v7.'.$hash);
                 Cache::forget('doktorsitesi.profile.v7.'.$hash.'.stale');
+                Cache::forget('doktorsitesi.profile.v8.'.$hash);
+                Cache::forget('doktorsitesi.profile.v8.'.$hash.'.stale');
             }
         } catch (Throwable) {
             // ignore
@@ -263,7 +321,7 @@ class SiteContentService
     {
         $key = (string) config('randevu_api.api_key', 'none');
 
-        return 'doktorsitesi.profile.v7.'.md5($key);
+        return 'doktorsitesi.profile.v8.'.md5($key);
     }
 
     protected function emptySkeleton(): array
@@ -411,23 +469,30 @@ class SiteContentService
             'https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=900&q=80',
             'https://images.unsplash.com/photo-1581594693702-fbdc51b2763b?auto=format&fit=crop&w=900&q=80',
         ];
+        $services = $this->normalizeServicesList($services);
         $out['hizmetler'] = collect($services)->values()->map(function ($h, $i) use ($fallbackImgs) {
             $h = is_array($h) ? $h : (array) $h;
-            $img = $h['resim'] ?? $h['image'] ?? null;
-            $baslik = (string) ($h['ad'] ?? $h['baslik'] ?? 'Hizmet');
+            $img = $h['resim'] ?? $h['image'] ?? $h['kapak'] ?? null;
+            $baslik = (string) ($h['ad'] ?? $h['baslik'] ?? $h['name'] ?? 'Hizmet');
             $slug = $h['slug'] ?? null;
             if (! filled($slug)) {
                 $slug = Str::slug($baslik) ?: ('hizmet-'.($h['id'] ?? $i));
             }
+            $aciklama = (string) ($h['aciklama'] ?? $h['description'] ?? $h['ozet'] ?? '');
 
             return [
                 'id' => $h['id'] ?? null,
                 'baslik' => $baslik,
-                'kisa' => Str::limit(strip_tags((string) ($h['aciklama'] ?? '')), 120),
-                'aciklama' => $h['aciklama'] ?? '',
-                'sure' => isset($h['sure']) ? ((int) $h['sure']).' dk' : null,
+                'ad' => $baslik,
+                'kisa' => Str::limit(strip_tags($aciklama), 120),
+                'aciklama' => $aciklama,
+                'sure' => isset($h['sure']) && $h['sure'] !== null && $h['sure'] !== ''
+                    ? (is_numeric($h['sure']) ? ((int) $h['sure']).' dk' : (string) $h['sure'])
+                    : null,
                 'fiyat' => isset($h['fiyat']) && $h['fiyat'] !== null && $h['fiyat'] !== ''
-                    ? number_format((float) $h['fiyat'], 0, ',', '.').' ₺'
+                    ? (is_numeric($h['fiyat'])
+                        ? number_format((float) $h['fiyat'], 0, ',', '.').' ₺'
+                        : (string) $h['fiyat'])
                     : null,
                 'slug' => $slug,
                 'image' => $img ? media_url($img) : $fallbackImgs[$i % count($fallbackImgs)],
