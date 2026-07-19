@@ -1352,11 +1352,25 @@ body.layout-modern .site-main {
 @media (min-width: 768px) {
   .mp-footer-grid { grid-template-columns: 1.4fr 1fr 1fr; }
 }
+@media (min-width: 1024px) {
+  .mp-footer-grid-4 { grid-template-columns: 1.15fr 0.85fr 1.15fr 1.15fr; }
+}
 .mp-footer-brand {
   color: #fff;
   font-size: 1.15rem;
   font-weight: 700;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
+}
+.mp-footer-klinik {
+  margin: 0 0 4px !important;
+  color: #8ec6ff;
+  font-size: 0.88rem !important;
+  font-weight: 600;
+}
+.mp-footer-uzmanlik {
+  margin: 0 0 14px !important;
+  font-size: 0.85rem !important;
+  opacity: 0.85;
 }
 .mp-footer p {
   margin: 0 0 14px;
@@ -1379,22 +1393,134 @@ body.layout-modern .site-main {
   font-size: 0.9rem;
 }
 .mp-footer-links a:hover { color: #fff; }
-.mp-footer-contact li {
+.mp-footer-social {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.mp-footer-social a {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  display: grid;
+  place-items: center;
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #fff;
+  text-decoration: none;
+  letter-spacing: 0.02em;
+}
+.mp-footer-social a:hover {
+  background: var(--mp-blue);
+  border-color: var(--mp-blue);
+}
+.mp-footer-contact {
   list-style: none;
-  margin-bottom: 8px;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+.mp-footer-contact li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
   font-size: 0.9rem;
 }
+.mp-fc-icon {
+  flex: 0 0 22px;
+  opacity: 0.9;
+  margin-top: 2px;
+}
+.mp-footer-contact small {
+  display: block;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.55;
+  margin-bottom: 2px;
+}
 .mp-footer-contact a {
-  color: rgba(255, 255, 255, 0.8);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+}
+.mp-footer-contact a:hover { color: #8ec6ff; }
+.mp-footer-contact span { color: rgba(255, 255, 255, 0.88); }
+.mp-fc-sub {
+  display: block !important;
+  font-size: 0.8rem !important;
+  opacity: 0.7;
+  margin-top: 2px;
+}
+.mp-fc-hours {
+  display: block;
+  font-size: 0.82rem;
+  opacity: 0.9;
+  margin-top: 2px;
+}
+.mp-fc-hours em {
+  font-style: normal;
+  opacity: 0.7;
+  margin-right: 6px;
+}
+.mp-footer-map {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #061022;
+}
+.mp-footer-map iframe {
+  width: 100%;
+  height: 180px;
+  border: 0;
+  display: block;
+}
+.mp-footer-map-cap {
+  margin: 8px 0 0 !important;
+  font-size: 0.8rem !important;
+  opacity: 0.75;
+  line-height: 1.45 !important;
+}
+.mp-footer-map-empty {
+  margin: 0 0 8px !important;
+  font-size: 0.88rem !important;
+  line-height: 1.5 !important;
+}
+.mp-footer-map-link {
+  color: #8ec6ff;
+  font-size: 0.85rem;
+  font-weight: 600;
   text-decoration: none;
 }
 .mp-footer-bar {
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   padding: 16px;
-  text-align: center;
   font-size: 0.8rem;
   color: rgba(255, 255, 255, 0.55);
 }
+.mp-footer-bar-inner {
+  max-width: 1140px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  justify-content: space-between;
+  align-items: center;
+}
+.mp-footer-bar-contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.mp-footer-bar-contact a {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+}
+.mp-footer-bar-contact a:hover { color: #fff; }
 
 /* WhatsApp float inherits site styles if any */
 body.layout-modern .btn-primary {

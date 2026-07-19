@@ -74,17 +74,40 @@
         <div>
             <h4>İletişim</h4>
             <ul class="footer-list">
-                <li>{{ $doktor['adres'] ?? '' }}</li>
-                <li><a href="tel:{{ $doktor['telefon_raw'] ?? '' }}">{{ $doktor['telefon'] ?? '' }}</a></li>
-                <li><a href="mailto:{{ $doktor['e_posta'] ?? '' }}">{{ $doktor['e_posta'] ?? '' }}</a></li>
+                @if(!empty($doktor['adres']))
+                    <li>📍 {{ $doktor['adres'] }}</li>
+                @endif
+                @if(!empty($doktor['telefon']))
+                    <li>☎ <a href="tel:{{ $doktor['telefon_raw'] ?? '' }}">{{ $doktor['telefon'] }}</a></li>
+                @endif
+                @if(($doktor['whatsapp_goster'] ?? true) && !empty($doktor['whatsapp']))
+                    <li>💬 <a href="https://wa.me/{{ $doktor['whatsapp'] }}" target="_blank" rel="noopener">WhatsApp</a></li>
+                @endif
+                @if(!empty($doktor['e_posta']))
+                    <li>✉ <a href="mailto:{{ $doktor['e_posta'] }}">{{ $doktor['e_posta'] }}</a></li>
+                @endif
                 <li><a class="btn btn-gold btn-sm" href="{{ route('frontend.randevu') }}" style="margin-top:.5rem;display:inline-flex">Randevu Al</a></li>
             </ul>
+            @if(!empty($doktor['maps_embed']))
+                <div class="footer-map" style="margin-top:1rem;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.12)">
+                    <iframe src="{{ $doktor['maps_embed'] }}" title="Harita" loading="lazy"
+                            style="width:100%;height:160px;border:0;display:block" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+            @endif
         </div>
     </div>
 
     <div class="container footer-bottom">
         <span>&copy; {{ date('Y') }} {{ $doktor['klinik_adi'] ?? $doktor['ad_soyad'] ?? '' }}. Tüm hakları saklıdır.</span>
-        <span>Powered by Randevu Ajandam</span>
+        <span>
+            @if(!empty($doktor['telefon']))
+                <a href="tel:{{ $doktor['telefon_raw'] ?? '' }}">{{ $doktor['telefon'] }}</a>
+            @endif
+            @if(!empty($doktor['telefon']) && !empty($doktor['e_posta'])) · @endif
+            @if(!empty($doktor['e_posta']))
+                <a href="mailto:{{ $doktor['e_posta'] }}">{{ $doktor['e_posta'] }}</a>
+            @endif
+        </span>
     </div>
 </footer>
 

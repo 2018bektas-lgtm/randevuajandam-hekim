@@ -20,7 +20,9 @@
                 </a>
             @endif
             @if(!empty($doktor['adres']))
-                <span style="opacity:.8;display:none" class="mp-topbar-addr">📍 {{ \Illuminate\Support\Str::limit($doktor['adres'], 42) }}</span>
+                <span class="mp-topbar-addr" style="opacity:.88">📍 {{ \Illuminate\Support\Str::limit($doktor['adres'], 48) }}</span>
+            @elseif(!empty($doktor['il']))
+                <span class="mp-topbar-addr" style="opacity:.88">📍 {{ trim(($doktor['ilce'] ?? '').' / '.($doktor['il'] ?? ''), ' /') }}</span>
             @endif
         </div>
         <div class="mp-topbar-social">
