@@ -91,10 +91,15 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family={{ $googleFonts }}&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
-<link rel="stylesheet" href="{{ asset('css/site.css') }}?v=2">
-<link rel="stylesheet" href="{{ asset('css/themes/'.$temaCssId.'.css') }}?v=6">
+<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+@if(!empty(config('randevu_api.media_base')))
+<link rel="preconnect" href="{{ parse_url(config('randevu_api.media_base'), PHP_URL_SCHEME).'://'.parse_url(config('randevu_api.media_base'), PHP_URL_HOST) }}" crossorigin>
+@endif
+<link href="https://fonts.googleapis.com/css2?family={{ $googleFonts }}&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family={{ $googleFonts }}&display=swap" rel="stylesheet"></noscript>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="{{ asset('css/site.css') }}?v=3">
+<link rel="stylesheet" href="{{ asset('css/themes/'.$temaCssId.'.css') }}?v=7">
 <style>
 :root {
   --brand-50: {{ $palette['50'] }};

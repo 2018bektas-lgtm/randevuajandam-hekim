@@ -29,4 +29,16 @@ return [
     | Dosyalar site/public (SHARED_PUBLIC_PATH) üzerinden servis edilir.
     */
     'media_base' => rtrim(env('RANDEVU_MEDIA_BASE', 'http://127.0.0.1:8001/media'), '/'),
+
+    /*
+    | Public site content cache (saniye).
+    | Önceden 20s idi — her istekte 3–4 HTTP turu siteyi yavaşlatıyordu.
+    */
+    'content_cache_ttl' => (int) env('RANDEVU_CONTENT_CACHE_TTL', 300),
+
+    /*
+    | Public API HTTP timeout (saniye). Panel mutasyonları ayrı timeout kullanır.
+    */
+    'public_timeout' => (int) env('RANDEVU_PUBLIC_TIMEOUT', 8),
+    'public_connect_timeout' => (int) env('RANDEVU_PUBLIC_CONNECT_TIMEOUT', 3),
 ];

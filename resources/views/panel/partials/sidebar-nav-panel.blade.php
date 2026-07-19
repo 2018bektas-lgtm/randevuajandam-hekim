@@ -66,6 +66,7 @@
             'items' => [
                 ['href' => route('panel.profil'), 'match' => 'panel.profil', 'label' => 'Profil'],
                 ['href' => route('panel.sifre'), 'match' => 'panel.sifre*', 'label' => 'Sifre'],
+                ['href' => route('panel.two-factor'), 'match' => 'panel.two-factor', 'label' => '2FA Guvenlik'],
                 ['href' => route('panel.api-entegrasyon'), 'match' => 'panel.api-entegrasyon*', 'label' => 'API Entegrasyon'],
             ],
         ],

@@ -106,7 +106,7 @@
                 </div>
             </div>
             <div id="evOnlineJoin" class="hidden rounded-xl border border-sky-100 bg-sky-50 p-3 space-y-2">
-                <p class="text-[11px] text-sky-900 font-semibold">📹 Online görüşme — platform üzerinden (Zoom yok)</p>
+                <p class="text-[11px] text-sky-900 font-semibold">📹 Online görüşme</p>
                 <a id="evJoinLink" href="#" target="_blank" rel="noopener"
                    class="inline-flex px-3 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold">Görüşmeye Katıl →</a>
             </div>
@@ -337,9 +337,13 @@
         const joinBox = document.getElementById('evOnlineJoin');
         const joinLink = document.getElementById('evJoinLink');
         if (joinBox && joinLink) {
-            if (gorusmeTipi === 'online' && props.platform_join_url && props.durum === 'onaylandi') {
+            const rid = props.randevu_id || (ev.id && String(ev.id).replace(/^randevu_/, ''));
+            const localJoin = rid ? @json(url('/yonetim/gorusme')).replace(/\/?$/, '/') + rid : null;
+            const hekimJoin = props.hekim_join_url || localJoin;
+            if (gorusmeTipi === 'online' && hekimJoin && props.durum === 'onaylandi') {
                 joinBox.classList.remove('hidden');
-                joinLink.href = props.platform_join_url;
+                joinLink.href = localJoin || hekimJoin;
+                joinLink.removeAttribute('target');
             } else {
                 joinBox.classList.add('hidden');
             }

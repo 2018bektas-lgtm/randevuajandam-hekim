@@ -139,7 +139,9 @@ class SiteSettingsService
      */
     public function frontendBundle(): array
     {
-        return Cache::remember('doktorsitesi.site_settings.v2', 60, function () {
+        $ttl = max(60, (int) config('randevu_api.content_cache_ttl', 300));
+
+        return Cache::remember('doktorsitesi.site_settings.v2', $ttl, function () {
             return [
                 'genel' => [
                     'site_baslik_ek' => $this->option('site_baslik_ek', ''),

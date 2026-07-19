@@ -80,7 +80,7 @@ class PlatformApiClient
         return Session::get('doctor_api_user');
     }
 
-    public function http(bool $withBearer = false): PendingRequest
+    public function http(bool $withBearer = false, ?int $timeout = null, ?int $connectTimeout = null): PendingRequest
     {
         $headers = [
             'X-Api-Key' => $this->apiKey(),
@@ -92,8 +92,12 @@ class PlatformApiClient
             $headers['X-Api-Secret'] = $secret;
         }
 
+        $timeout = $timeout ?? 25;
+        $connectTimeout = $connectTimeout ?? min(5, $timeout);
+
         $req = Http::acceptJson()
-            ->timeout(25)
+            ->timeout($timeout)
+            ->connectTimeout($connectTimeout)
             ->withHeaders($headers);
 
         if ($withBearer && $this->token()) {
@@ -101,6 +105,18 @@ class PlatformApiClient
         }
 
         return $req;
+    }
+
+    /**
+     * Public GET with short timeouts (doctor-site pages).
+     */
+    public function publicHttp(): PendingRequest
+    {
+        return $this->http(
+            false,
+            (int) config('randevu_api.public_timeout', 8),
+            (int) config('randevu_api.public_connect_timeout', 3)
+        );
     }
 
     public function login(string $ePosta, string $sifre): array
@@ -112,6 +128,23 @@ class PlatformApiClient
         $res = $this->http()->post($this->doctorBase().'/auth/login', [
             'e_posta' => $ePosta,
             'sifre' => $sifre,
+        ]);
+
+        return $this->decode($res);
+    }
+
+    /**
+     * Complete login after 2FA challenge (no bearer yet).
+     */
+    public function verifyTwoFactor(string $challengeToken, string $code): array
+    {
+        if (! $this->isConfigured()) {
+            throw new RuntimeException('API anahtarı yapılandırılmamış.', 0);
+        }
+
+        $res = $this->http()->post($this->doctorBase().'/auth/two-factor', [
+            'challenge_token' => $challengeToken,
+            'code' => $code,
         ]);
 
         return $this->decode($res);
@@ -226,7 +259,7 @@ class PlatformApiClient
         if (! $this->isConfigured()) {
             throw new RuntimeException('API anahtarı yapılandırılmamış.', 0);
         }
-        $res = $this->http()->get($this->publicBase().$path, $query);
+        $res = $this->publicHttp()->get($this->publicBase().$path, $query);
 
         return $this->decode($res);
     }
@@ -236,9 +269,61 @@ class PlatformApiClient
         if (! $this->isConfigured()) {
             throw new RuntimeException('API anahtarı yapılandırılmamış.', 0);
         }
-        $res = $this->http()->post($this->publicBase().$path, $data);
+        $res = $this->publicHttp()->post($this->publicBase().$path, $data);
 
         return $this->decode($res);
+    }
+
+    /**
+     * Parallel public GETs. Keys preserved; missing/failed → empty array body.
+     *
+     * @param  array<string, string>  $paths  name => path (e.g. 'profile' => '/profile')
+     * @return array<string, array>
+     */
+    public function publicGetMany(array $paths): array
+    {
+        if (! $this->isConfigured()) {
+            throw new RuntimeException('API anahtarı yapılandırılmamış.', 0);
+        }
+
+        $base = $this->publicBase();
+        $timeout = (int) config('randevu_api.public_timeout', 8);
+        $connect = (int) config('randevu_api.public_connect_timeout', 3);
+        $headers = [
+            'X-Api-Key' => $this->apiKey(),
+            'Accept' => 'application/json',
+        ];
+        $secret = $this->apiSecret();
+        if ($secret !== '') {
+            $headers['X-Api-Secret'] = $secret;
+        }
+
+        $responses = Http::pool(function ($pool) use ($paths, $base, $timeout, $connect, $headers) {
+            $reqs = [];
+            foreach ($paths as $name => $path) {
+                $reqs[$name] = $pool->as($name)
+                    ->acceptJson()
+                    ->timeout($timeout)
+                    ->connectTimeout($connect)
+                    ->withHeaders($headers)
+                    ->get($base.$path);
+            }
+
+            return $reqs;
+        });
+
+        $out = [];
+        foreach ($paths as $name => $path) {
+            $res = $responses[$name] ?? null;
+            if (! $res || $res instanceof \Throwable || ! method_exists($res, 'successful') || ! $res->successful()) {
+                $out[$name] = [];
+                continue;
+            }
+            $json = $res->json();
+            $out[$name] = is_array($json) ? $json : [];
+        }
+
+        return $out;
     }
 
     /**

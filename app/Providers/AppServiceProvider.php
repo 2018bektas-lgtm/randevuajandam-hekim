@@ -13,7 +13,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Aynı istekte controller + view composer tek API turu kullansın
+        $this->app->singleton(SiteContentService::class);
     }
 
     /**
@@ -29,7 +30,8 @@ class AppServiceProvider extends ServiceProvider
         }
 
         // Frontend layout + sayfalar: canlı API (varsa) veya demo config
-        View::composer('frontend.*', function ($view) {
+        // SiteContentService istek içinde memoize eder — çift API çağrısı olmaz.
+        View::composer(['frontend.*', 'frontend.themes.*'], function ($view) {
             if (! $view->offsetExists('doktor')) {
                 try {
                     $view->with('doktor', app(SiteContentService::class)->doktor());
@@ -38,11 +40,13 @@ class AppServiceProvider extends ServiceProvider
                 }
             }
 
-            try {
-                $doktor = $view->offsetExists('doktor') ? $view->offsetGet('doktor') : [];
-                $view->with('nav', function_exists('site_nav') ? site_nav(is_array($doktor) ? $doktor : []) : []);
-            } catch (\Throwable) {
-                $view->with('nav', []);
+            if (! $view->offsetExists('nav')) {
+                try {
+                    $doktor = $view->offsetExists('doktor') ? $view->offsetGet('doktor') : [];
+                    $view->with('nav', function_exists('site_nav') ? site_nav(is_array($doktor) ? $doktor : []) : []);
+                } catch (\Throwable) {
+                    $view->with('nav', []);
+                }
             }
         });
 

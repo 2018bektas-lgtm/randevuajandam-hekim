@@ -14,43 +14,52 @@ use Throwable;
  */
 class SiteContentService
 {
+    /** @var array<string, mixed>|null Request-level memo (controller + view composer). */
+    protected ?array $memoDoktor = null;
+
     public function __construct(protected PlatformApiClient $api) {}
 
     public function doktor(): array
     {
+        if ($this->memoDoktor !== null) {
+            return $this->memoDoktor;
+        }
+
         if (! $this->api->isConfigured()) {
-            return $this->applyLocalSettings(array_merge($this->emptySkeleton(), config('doktor', []), [
+            return $this->memoDoktor = $this->applyLocalSettings(array_merge($this->emptySkeleton(), config('doktor', []), [
                 'api_synced' => false,
                 'api_error' => 'API anahtarı yapılandırılmamış (.env RANDEVU_API_KEY / SECRET).',
             ]));
         }
 
+        $ttl = max(30, (int) config('randevu_api.content_cache_ttl', 300));
+        $cacheKey = $this->cacheKey();
+        $staleKey = $cacheKey.'.stale';
+
         try {
-            $data = Cache::remember($this->cacheKey(), 20, function () {
-                $profile = $this->api->publicGet('/profile')['data'] ?? [];
-                $content = $this->api->publicGet('/site-content')['data'] ?? [];
-                $services = $this->api->publicGet('/services')['data'] ?? [];
-                $educations = $this->api->publicGet('/educations')['data'] ?? [];
+            $data = Cache::remember($cacheKey, $ttl, function () use ($staleKey, $ttl) {
+                $payload = $this->fetchFromPlatform();
+                // Stale kopya: API düşerse son iyi yanıtı servis et
+                Cache::put($staleKey, $payload, $ttl * 6);
 
-                if (empty($profile) || (empty($profile['id']) && empty($profile['ad_soyad']))) {
-                    throw new \RuntimeException('API profil boş döndü.');
-                }
-
-                return $this->fromApi(
-                    $profile,
-                    $content,
-                    is_array($services) ? $services : [],
-                    is_array($educations) ? $educations : []
-                );
+                return $payload;
             });
 
             // Local SQLite site ayarları (slider, menü, bölümler...) — API'den bağımsız
-            return $this->applyLocalSettings($data);
+            return $this->memoDoktor = $this->applyLocalSettings($data);
         } catch (Throwable $e) {
             Log::warning('doktorsitesi API profile failed: '.$e->getMessage());
 
+            $stale = Cache::get($staleKey);
+            if (is_array($stale) && ! empty($stale['ad_soyad'])) {
+                $stale['api_stale'] = true;
+                $stale['api_error'] = $e->getMessage();
+
+                return $this->memoDoktor = $this->applyLocalSettings($stale);
+            }
+
             // Canlı sitede demo dermatoloji göstermeyelim — hata iskeleti
-            return $this->applyLocalSettings(array_merge($this->emptySkeleton(), [
+            return $this->memoDoktor = $this->applyLocalSettings(array_merge($this->emptySkeleton(), [
                 'api_synced' => false,
                 'api_error' => $e->getMessage(),
                 'ad_soyad' => 'Hekim',
@@ -61,6 +70,63 @@ class SiteContentService
                 'slogan' => 'Bağlantı bekleniyor',
             ]));
         }
+    }
+
+    /**
+     * Prefer single /bootstrap; fallback parallel profile+content+services.
+     * (educations zaten site-content içinde — 4. istek kaldırıldı)
+     *
+     * @return array<string, mixed>
+     */
+    protected function fetchFromPlatform(): array
+    {
+        // 1) Tek RTT bootstrap
+        try {
+            $boot = $this->api->publicGet('/bootstrap');
+            $data = $boot['data'] ?? [];
+            $profile = is_array($data['profile'] ?? null) ? $data['profile'] : [];
+            $content = is_array($data['content'] ?? null) ? $data['content'] : [];
+            $services = is_array($data['services'] ?? null) ? $data['services'] : [];
+
+            if (! empty($profile) && (! empty($profile['id']) || ! empty($profile['ad_soyad']))) {
+                return $this->fromApi($profile, $content, $services, $content['egitimler'] ?? []);
+            }
+        } catch (Throwable $e) {
+            // Eski API (bootstrap yok) → paralel 3 istek
+            Log::debug('doktorsitesi bootstrap fallback: '.$e->getMessage());
+        }
+
+        // 2) Paralel 3 istek (eskiden 4 sıralı)
+        $bundle = $this->api->publicGetMany([
+            'profile' => '/profile',
+            'content' => '/site-content',
+            'services' => '/services',
+        ]);
+
+        $profile = $bundle['profile']['data'] ?? [];
+        $content = $bundle['content']['data'] ?? [];
+        $services = $bundle['services']['data'] ?? [];
+
+        if (! is_array($profile)) {
+            $profile = [];
+        }
+        if (! is_array($content)) {
+            $content = [];
+        }
+        if (! is_array($services)) {
+            $services = [];
+        }
+
+        if (empty($profile) || (empty($profile['id']) && empty($profile['ad_soyad']))) {
+            throw new \RuntimeException('API profil boş döndü.');
+        }
+
+        return $this->fromApi(
+            $profile,
+            $content,
+            $services,
+            is_array($content['egitimler'] ?? null) ? $content['egitimler'] : []
+        );
     }
 
     /**
@@ -160,6 +226,7 @@ class SiteContentService
 
     public function forgetCache(): void
     {
+        $this->memoDoktor = null;
         Cache::forget('doktorsitesi.profile.v2');
         Cache::forget('doktorsitesi.profile.v3');
         Cache::forget('doktorsitesi.profile.v4');
@@ -167,8 +234,12 @@ class SiteContentService
         try {
             $key = (string) config('randevu_api.api_key', '');
             if ($key !== '') {
-                Cache::forget('doktorsitesi.profile.v4.'.md5($key));
-                Cache::forget('doktorsitesi.profile.v5.'.md5($key));
+                $hash = md5($key);
+                Cache::forget('doktorsitesi.profile.v4.'.$hash);
+                Cache::forget('doktorsitesi.profile.v5.'.$hash);
+                Cache::forget('doktorsitesi.profile.v6.'.$hash);
+                Cache::forget('doktorsitesi.profile.v7.'.$hash);
+                Cache::forget('doktorsitesi.profile.v7.'.$hash.'.stale');
             }
         } catch (Throwable) {
             // ignore
@@ -179,7 +250,7 @@ class SiteContentService
     {
         $key = (string) config('randevu_api.api_key', 'none');
 
-        return 'doktorsitesi.profile.v6.'.md5($key);
+        return 'doktorsitesi.profile.v7.'.md5($key);
     }
 
     protected function emptySkeleton(): array
