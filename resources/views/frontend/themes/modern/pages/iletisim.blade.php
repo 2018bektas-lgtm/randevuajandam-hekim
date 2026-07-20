@@ -1,4 +1,4 @@
-@extends(theme_layout())
+﻿@extends(theme_layout())
 
 @php
     $iletisim = $doktor['iletisim_sayfa'] ?? [];
@@ -177,6 +177,14 @@
                                 <div>
                                     <label for="mp-eposta">E-posta</label>
                                     <input type="email" id="mp-eposta" name="e_posta" maxlength="255" autocomplete="email" placeholder="opsiyonel@mail.com">
+                                </div>
+                                <div class="full" id="otp-block" style="display:none">
+                                    <label for="otp_kod">SMS doğrulama kodu</label>
+                                    <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center">
+                                        <input type="text" name="otp_kod" id="otp_kod" maxlength="6" placeholder="6 haneli kod" inputmode="numeric" autocomplete="one-time-code" style="flex:1;min-width:140px">
+                                        <button type="button" class="mp-btn mp-btn-outline" id="otp-send-btn">Kod Gönder</button>
+                                    </div>
+                                    <p style="margin:.35rem 0 0;font-size:.78rem;color:var(--muted)">Platform SMS doğrulaması zorunluysa buraya girin.</p>
                                 </div>
                                 <div class="full">
                                     <label for="mp-not">Not</label>
@@ -557,6 +565,7 @@
             gorusme_tipi: gorusmeTipi,
             kvkk_onay: 1,
             website_url: document.getElementById('website_url')?.value || '',
+            otp_kod: document.getElementById('otp_kod')?.value?.trim() || null,
         };
 
         const submitBtn = document.getElementById('mp-btn-submit');
@@ -589,7 +598,20 @@
 
     ensureServices();
     setStep(1);
-})();
+
+    document.getElementById('otp-send-btn')?.addEventListener('click', async () => {
+        const telefon = document.getElementById('mp-telefon')?.value?.trim() || document.getElementById('telefon')?.value?.trim();
+        if (!telefon) { showAlert('Önce telefon girin.'); return; }
+        try {
+            hideAlert();
+            const res = await apiPost('/otp/send', { telefon });
+            showAlert(res.message || 'Doğrulama kodu gönderildi.', true);
+        } catch (e) {
+            showAlert(e.message);
+        }
+    });
+    const otpBlock = document.getElementById('otp-block');
+    if (otpBlock) otpBlock.style.display = 'block';})();
 </script>
 @endpush
 @endif

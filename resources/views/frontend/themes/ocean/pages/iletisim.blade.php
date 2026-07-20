@@ -1,4 +1,4 @@
-@extends(theme_layout())
+﻿@extends(theme_layout())
 
 @php
     $iletisim = $doktor['iletisim_sayfa'] ?? [];
@@ -111,6 +111,14 @@
                         <label>E-posta</label>
                         <input type="email" name="e_posta" id="e_posta" maxlength="255" placeholder="opsiyonel@mail.com" autocomplete="email">
                     </div>
+                    <div class="field full" id="otp-block" style="display:none">
+                        <label>SMS doğrulama kodu</label>
+                        <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center">
+                            <input type="text" name="otp_kod" id="otp_kod" maxlength="6" placeholder="6 haneli kod" style="flex:1;min-width:140px" inputmode="numeric" autocomplete="one-time-code">
+                            <button type="button" class="btn btn-dark-outline btn-sm" id="otp-send-btn">Kod Gönder</button>
+                        </div>
+                        <p class="text-muted" style="margin:.35rem 0 0;font-size:.78rem">Platform SMS doğrulaması zorunluysa buraya girin.</p>
+                    </div>
                     <div class="field full">
                         <label>Not</label>
                         <textarea name="not" id="not" rows="3" maxlength="1000" placeholder="Kısaca belirtmek istediğiniz bir şey var mı?"></textarea>
@@ -190,4 +198,8 @@
     </div>
 </section>
 </div>
+
+@if($formGoster)
+@include('frontend.partials.guest-booking-assets')
+@endif
 @endsection
