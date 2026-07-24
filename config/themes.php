@@ -5,76 +5,31 @@
  *
  * Her tema klasörü (layout anahtarı = klasör adı):
  *   resources/views/frontend/themes/{pack}/
- *     layouts/app.blade.php              ← zorunlu iskelet
- *     layouts/partials/header.blade.php
- *     layouts/partials/footer.blade.php
- *     layouts/partials/head|script      ← opsiyonel (yoksa ortak)
- *     pages/anasayfa.blade.php          ← opsiyonel (yoksa frontend/pages/*)
+ *     layouts/app.blade.php
+ *     layouts/partials/head|header|footer|script.blade.php
+ *     pages/anasayfa.blade.php  (ve diğer sayfalar)
  *
- * public/css/themes/{id}.css            ← renk + layout CSS
+ * public/css/themes/{id}.css    ← renk + layout CSS
+ * public/vendor/hipno/          ← tema asset'leri
  *
  * PHP: theme_layout() | theme_view('pages.x') | theme_pack_id()
  */
 return [
-    'default' => 'klasik',
+    'default' => 'tema-1',
 
     'premium_unlocked' => (bool) env('THEMES_PREMIUM_UNLOCKED', true),
 
     'catalog' => [
-        'klasik' => [
-            'ad' => 'Klasik Klinik',
-            'aciklama' => 'Tam layout: zarif serif hero, klasik menü, teal klinik dili.',
-            'renk' => '#0d9488',
-            'font_sans' => 'Inter',
-            'font_display' => 'Cormorant Garamond',
-            'google_fonts' => 'Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700;800',
-            'preview' => ['#0d9488', '#f7f5f1', '#0b1220'],
-            'premium' => false,
-            'layout' => 'classic', // varsayılan blade paketi
-        ],
-        'modern' => [
-            'ad' => 'MediPlus Modern',
-            'aciklama' => 'MediPlus tarzı: mavi klinik, topbar + hero slider, hizmet kartları, randevu wizard.',
-            'renk' => '#1A76D1',
-            'font_sans' => 'Poppins',
-            'font_display' => 'Poppins',
-            'google_fonts' => 'Poppins:wght@400;500;600;700;800',
-            'preview' => ['#1A76D1', '#ffffff', '#0B1C39'],
-            'premium' => false,
-            'layout' => 'modern',
-        ],
-        'minimal' => [
-            'ad' => 'Minimal',
-            'aciklama' => 'Tam layout: topbar yok, ortalanmış marka, bol boşluk, sade grid.',
-            'renk' => '#334155',
-            'font_sans' => 'Inter',
-            'font_display' => 'Inter',
-            'google_fonts' => 'Inter:wght@400;500;600;700;800',
-            'preview' => ['#334155', '#ffffff', '#e2e8f0'],
-            'premium' => false,
-            'layout' => 'minimal',
-        ],
-        'sicak' => [
-            'ad' => 'Sıcak Premium',
-            'aciklama' => 'Tam layout: bakır vurgu, yuvarlak kartlar, sıcak tipografi.',
-            'renk' => '#C96A2B',
-            'font_sans' => 'Outfit',
-            'font_display' => 'Fraunces',
-            'google_fonts' => 'Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Outfit:wght@400;500;600;700',
-            'preview' => ['#C96A2B', '#FFF7ED', '#1c1917'],
-            'premium' => true,
-            'layout' => 'sicak',
-        ],
-        'ocean' => [
-            'ad' => 'Ocean Blue',
-            'aciklama' => 'Tam layout: sol marka şeridi, klinik mavi, editöryal grid.',
-            'renk' => '#0369a1',
-            'font_sans' => 'Source Sans 3',
-            'font_display' => 'Libre Baskerville',
-            'google_fonts' => 'Libre+Baskerville:wght@400;700&family=Source+Sans+3:wght@400;500;600;700',
-            'preview' => ['#0369a1', '#f0f9ff', '#0c4a6e'],
-            'premium' => true,
-            'layout' => 'ocean',
+        'tema-1' => [
+            'ad'          => 'Hipno',
+            'aciklama'    => 'Psikoloji ve danışmanlık temasından uyarlanmış premium tasarım. Koyu zemin, altın vurgu, serif başlıklar.',
+            'renk'        => '#9B9A84',
+            'font_sans'   => 'Sora',
+            'font_display' => 'Marcellus',
+            'google_fonts' => 'Marcellus&family=Sora:wght@100..800',
+            'preview'     => ['#262626', '#9B9A84', '#F9F9F9'],
+            'premium'     => false,
+            'layout'      => 'tema-1',
         ],
     ],
 ];

@@ -35,7 +35,11 @@ class AuthController extends Controller
             }
         }
 
-        return view('panel.auth.giris', [
+        $themeId  = config('themes.default', 'tema-1');
+        $themeView = 'frontend.themes.'.$themeId.'.auth.giris';
+        $viewName  = view()->exists($themeView) ? $themeView : 'panel.auth.giris';
+
+        return view($viewName, [
             'apiConfigured' => $this->apiConfig->isConfigured(),
             'apiLive' => $apiLive,
             'apiError' => $apiError,

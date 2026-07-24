@@ -208,10 +208,6 @@ if (! function_exists('theme_layout')) {
         if (view()->exists($name)) {
             return $name;
         }
-        if (view()->exists('frontend.themes.klasik.layouts.app')) {
-            return 'frontend.themes.klasik.layouts.app';
-        }
-
         return 'frontend.layouts.app';
     }
 }
