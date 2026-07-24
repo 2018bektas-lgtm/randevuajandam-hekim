@@ -106,7 +106,6 @@ class AuthController extends Controller
                     $this->api->setToken($token);
                     $this->api->setUser($d);
                     $apiOk = true;
-                    $this->syncLocalUser($email, $sifre, $doktor);
                 }
             } catch (RuntimeException $e) {
                 $apiError = $e->getMessage();
@@ -118,7 +117,11 @@ class AuthController extends Controller
         }
 
         if (! $apiOk) {
-            $user = User::query()->whereRaw('LOWER(email) = ?', [$email])->first();
+            $localAdminEmail = strtolower(trim($this->localAdminEmail()));
+            $user = ($localAdminEmail && $email === $localAdminEmail)
+                ? User::query()->whereRaw('LOWER(email) = ?', [$email])->first()
+                : null;
+
             if (! $user || ! Hash::check($sifre, $user->password)) {
                 if ($keyBroken || $this->isApiKeyError((string) $apiError)) {
                     return back()->withInput()->with(
