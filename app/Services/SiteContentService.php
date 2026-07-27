@@ -474,15 +474,9 @@ class SiteContentService
         $out['slogan'] = ($out['uzmanlik'] !== '' ? $out['uzmanlik'] : 'Sağlık')
             .' alanında güvenilir, kişiye özel hekimlik';
 
-        // Hizmetler (ana sunucu)
-        $fallbackImgs = [
-            'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=900&q=80',
-            'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?auto=format&fit=crop&w=900&q=80',
-            'https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=900&q=80',
-            'https://images.unsplash.com/photo-1581594693702-fbdc51b2763b?auto=format&fit=crop&w=900&q=80',
-        ];
+        // Hizmetler (ana sunucu) — sahte stok görsel yok; panelde resim yoksa null
         $services = $this->normalizeServicesList($services);
-        $out['hizmetler'] = collect($services)->values()->map(function ($h, $i) use ($fallbackImgs) {
+        $out['hizmetler'] = collect($services)->values()->map(function ($h, $i) {
             $h = is_array($h) ? $h : (array) $h;
             $img = $h['resim'] ?? $h['image'] ?? $h['kapak'] ?? null;
             $baslik = decode_text($h['ad'] ?? $h['baslik'] ?? $h['name'] ?? 'Hizmet');
@@ -491,6 +485,7 @@ class SiteContentService
                 $slug = Str::slug($baslik) ?: ('hizmet-'.($h['id'] ?? $i));
             }
             $aciklama = decode_text($h['aciklama'] ?? $h['description'] ?? $h['ozet'] ?? '');
+            $imgUrl = filled($img) ? media_url((string) $img) : null;
 
             return [
                 'id' => $h['id'] ?? null,
@@ -507,7 +502,7 @@ class SiteContentService
                         : decode_text($h['fiyat']))
                     : null,
                 'slug' => $slug,
-                'image' => $img ? media_url($img) : $fallbackImgs[$i % count($fallbackImgs)],
+                'image' => $imgUrl,
                 'madde' => $this->extractBullets($aciklama),
             ];
         })->values()->all();
@@ -533,9 +528,7 @@ class SiteContentService
                     'tarih' => $b['tarih'] ?? '',
                     'okuma' => max(3, (int) ceil(max(1, str_word_count($plain)) / 180)).' dk',
                     'kategori' => 'Blog',
-                    'image' => ! empty($b['resim'])
-                        ? media_url($b['resim'])
-                        : 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=1000&q=80',
+                    'image' => ! empty($b['resim']) ? media_url($b['resim']) : null,
                     // Detay şablonları {!! $icerik !!} bekliyor — HTML string
                     'icerik' => $icerikHtml !== '' ? $icerikHtml : nl2br(e($plain)),
                     'icerik_html' => $icerikHtml,
@@ -569,7 +562,7 @@ class SiteContentService
                     'meta_baslik' => decode_text($e['meta_baslik'] ?? ''),
                     'meta_aciklama' => decode_text($e['meta_aciklama'] ?? ''),
                     'meta_anahtar_kelimeler' => decode_text($e['meta_anahtar_kelimeler'] ?? ''),
-                    'image' => $kapak ? media_url($kapak) : 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1000&q=80',
+                    'image' => filled($kapak) ? media_url((string) $kapak) : null,
                 ];
             })->filter(fn ($e) => $e['baslik'] !== '')->values()->all();
         }

@@ -62,17 +62,22 @@
     </div>
 </section>
 
-<section class="mp-section mp-page" id="randevu" style="padding-top:10px">
+{{-- Delogis randevu (make-appointment + contact-details uyumlu) --}}
+<section class="contact-details dg-randevu" id="randevu">
     <div class="container">
-        <div class="section-title text-center" style="margin-bottom:24px">
+        <div class="section-title text-center">
             <span class="section-title__tagline">Online randevu</span>
             <h2 class="section-title__title">{{ $pageBaslik }}</h2>
-            <p>{{ $pageAlt }}</p>
+            @if($pageAlt !== '')
+                <p class="dg-randevu__lead">{{ $pageAlt }}</p>
+            @endif
         </div>
-        <div class="mp-book">
+        <div class="row gutter-y-30">
             @if($formGoster)
-            <div class="mp-book-shell">
-                <div class="mp-book-head">
+            <div class="col-xl-8 col-lg-7">
+            <div class="mp-book dg-book">
+            <div class="mp-book-shell dg-book__shell">
+                <div class="mp-book-head dg-book__head">
                     <div>
                         <h2>Randevu al</h2>
                         <p id="mp-step-caption">1 / 3 · Hizmet seçin</p>
@@ -84,7 +89,7 @@
                     </div>
                 </div>
 
-                <div class="mp-book-body">
+                <div class="mp-book-body dg-book__body">
                     <div id="mp-book-alert" class="mp-book-alert" hidden></div>
                     <div id="mp-book-success" class="mp-book-success" hidden></div>
 
@@ -111,9 +116,9 @@
                                     @forelse ($hizmetler as $h)
                                         @php
                                             $hid = $h['id'] ?? null;
-                                            $ad = $h['baslik'] ?? $h['ad'] ?? 'Hizmet';
+                                            $ad = decode_text($h['baslik'] ?? $h['ad'] ?? 'Hizmet');
                                             $sure = $h['sure'] ?? '';
-                                            $desc = \Illuminate\Support\Str::limit(strip_tags((string)($h['kisa'] ?? $h['aciklama'] ?? '')), 48);
+                                            $desc = plain_text($h['kisa'] ?? $h['aciklama'] ?? '', 48);
                                             $img = $h['image'] ?? $h['resim'] ?? null;
                                             $search = mb_strtolower($ad.' '.$desc);
                                         @endphp
@@ -121,11 +126,11 @@
                                                 data-id="{{ $hid }}"
                                                 data-ad="{{ $ad }}"
                                                 data-search="{{ e($search) }}">
-                                            <span class="mp-book-svc-media">
+                                            <span class="mp-book-svc-media {{ $img ? '' : 'is-empty' }}">
                                                 @if($img)
                                                     <img src="{{ $img }}" alt="" loading="lazy">
                                                 @else
-                                                    ✚
+                                                    <span class="icon-form" aria-hidden="true"></span>
                                                 @endif
                                             </span>
                                             <span>
@@ -240,55 +245,61 @@
                             <p id="mp-err-3" class="mp-book-err" hidden>Zorunlu alanları doldurun.</p>
                         </div>
 
-                        <div class="mp-book-nav" id="mp-book-nav">
-                            <button type="button" class="mp-btn mp-btn-outline" id="mp-btn-prev" hidden>Geri</button>
-                            <button type="button" class="mp-btn mp-btn-primary" id="mp-btn-next" style="margin-left:auto">Devam</button>
-                            <button type="submit" class="mp-btn mp-btn-primary" id="mp-btn-submit" hidden style="margin-left:auto">Randevu Talebini Gönder</button>
+                        <div class="mp-book-nav dg-book__nav" id="mp-book-nav">
+                            <button type="button" class="thm-btn thm-btn--two mp-btn mp-btn-outline" id="mp-btn-prev" hidden>Geri</button>
+                            <button type="button" class="thm-btn mp-btn mp-btn-primary" id="mp-btn-next" style="margin-left:auto">Devam</button>
+                            <button type="submit" class="thm-btn mp-btn mp-btn-primary" id="mp-btn-submit" hidden style="margin-left:auto">Randevu Talebini Gönder</button>
                         </div>
                     </form>
                 </div>
             </div>
+            </div>
+            </div>
             @else
-            <div class="mp-card">
-                <h2>Online randevu kapalı</h2>
-                <p style="color:var(--muted)">Telefon veya e-posta ile iletişime geçebilirsiniz.</p>
-                <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:16px">
-                    @if(!empty($doktor['telefon_raw']))
-                        <a href="tel:{{ $doktor['telefon_raw'] }}" class="mp-btn mp-btn-primary">{{ $doktor['telefon'] }}</a>
-                    @endif
-                    @if(!empty($doktor['e_posta']))
-                        <a href="mailto:{{ $doktor['e_posta'] }}" class="mp-btn mp-btn-outline">E-posta</a>
-                    @endif
+            <div class="col-xl-8 col-lg-7">
+                <div class="dg-book__shell dg-book__shell--closed">
+                    <h2>Online randevu kapalı</h2>
+                    <p>Telefon veya e-posta ile iletişime geçebilirsiniz.</p>
+                    <div class="dg-book__closed-actions">
+                        @if(!empty($doktor['telefon_raw']))
+                            <a href="tel:{{ $doktor['telefon_raw'] }}" class="thm-btn">{{ $doktor['telefon'] }}</a>
+                        @endif
+                        @if(!empty($doktor['e_posta']))
+                            <a href="mailto:{{ $doktor['e_posta'] }}" class="thm-btn thm-btn--two">E-posta</a>
+                        @endif
+                    </div>
                 </div>
             </div>
             @endif
 
-            <div style="display:grid;gap:16px">
-                <div class="mp-card">
-                    <h3 style="margin:0 0 12px">İletişim</h3>
-                    <ul class="mp-side-list">
-                        <li><span>Telefon</span><span>{{ $doktor['telefon'] ?? '—' }}</span></li>
-                        <li><span>E-posta</span><span>{{ $doktor['e_posta'] ?? '—' }}</span></li>
-                        <li><span>Adres</span><span>{{ $doktor['adres'] ?? '—' }}</span></li>
-                    </ul>
+            <div class="col-xl-4 col-lg-5">
+                <div class="dg-book__aside">
+                    <div class="dg-book__aside-card">
+                        <h3 class="dg-book__aside-title">İletişim</h3>
+                        <ul class="list-unstyled dg-book__aside-list">
+                            <li><span>Telefon</span><strong>{{ $doktor['telefon'] ?? '—' }}</strong></li>
+                            <li><span>E-posta</span><strong>{{ $doktor['e_posta'] ?? '—' }}</strong></li>
+                            <li><span>Adres</span><strong>{{ $doktor['adres'] ?? '—' }}</strong></li>
+                        </ul>
+                    </div>
+                    @if($saatlerGoster)
+                    <div class="dg-book__aside-card">
+                        <h3 class="dg-book__aside-title">Çalışma saatleri</h3>
+                        <ul class="list-unstyled dg-book__aside-list">
+                            @forelse (($doktor['calisma_saatleri'] ?? []) as $gun => $saat)
+                                <li><span>{{ $gun }}</span><strong>{{ $saat }}</strong></li>
+                            @empty
+                                <li><span>Randevu ile</span><strong>Planlanır</strong></li>
+                            @endforelse
+                        </ul>
+                    </div>
+                    @endif
+                    @if($haritaGoster && !empty($doktor['maps_embed']))
+                    <div class="dg-book__aside-card dg-book__aside-card--map">
+                        <iframe class="dg-book__map" src="{{ $doktor['maps_embed'] }}" loading="lazy" title="Harita"></iframe>
+                    </div>
+                    @endif
                 </div>
-                @if($saatlerGoster)
-                <div class="mp-card">
-                    <h3 style="margin:0 0 12px">Çalışma saatleri</h3>
-                    <ul class="mp-side-list">
-                        @forelse (($doktor['calisma_saatleri'] ?? []) as $gun => $saat)
-                            <li><span>{{ $gun }}</span><span>{{ $saat }}</span></li>
-                        @empty
-                            <li><span>Randevu ile</span><span>Planlanır</span></li>
-                        @endforelse
-                    </ul>
-                </div>
-                @endif
-                @if($haritaGoster && !empty($doktor['maps_embed']))
-                <div class="mp-card" style="padding:8px">
-                    <iframe class="mp-map" src="{{ $doktor['maps_embed'] }}" loading="lazy" title="Harita"></iframe>
-                </div>
-                @endif
             </div>
         </div>
     </div>
