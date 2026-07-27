@@ -448,10 +448,10 @@ class SiteContentService
             }
         }
 
-        // Çalışma saatleri
-        if (! empty($profile['calisma_saatleri']) && is_array($profile['calisma_saatleri'])) {
-            $out['calisma_saatleri'] = $profile['calisma_saatleri'];
-        }
+        // Çalışma saatleri (API: gün adı => metin VEYA liste [{gun, mesai_baslangic, ...}])
+        $calisma = $this->normalizeCalismaSaatleri($profile['calisma_saatleri'] ?? null);
+        $out['calisma_saatleri'] = $calisma;
+        $out['calisma_saatleri_ozet'] = $this->calismaSaatleriOzet($calisma);
 
         // Sosyal
         if (! empty($profile['sosyal']) && is_array($profile['sosyal'])) {
@@ -610,6 +610,142 @@ class SiteContentService
         ];
 
         return $out;
+    }
+
+    /**
+     * API çalışma saatlerini footer/UI için normalize et.
+     * Destek: ["Pazartesi"=>"09:00 – 17:00"] veya [{gun:1, mesai_baslangic, mesai_bitis, aktif_mi}]
+     *
+     * @return array<string, string>  gün adı => "09:00 – 17:00" | "Kapalı"
+     */
+    protected function normalizeCalismaSaatleri(mixed $raw): array
+    {
+        if ($raw === null) {
+            return [];
+        }
+        if (is_object($raw)) {
+            $raw = (array) $raw;
+        }
+        if (! is_array($raw) || $raw === []) {
+            return [];
+        }
+
+        $gunAdlari = [
+            1 => 'Pazartesi', 2 => 'Salı', 3 => 'Çarşamba', 4 => 'Perşembe',
+            5 => 'Cuma', 6 => 'Cumartesi', 7 => 'Pazar', 0 => 'Pazar',
+        ];
+        $out = [];
+
+        // Associative: gün adı => string|array
+        if (! array_is_list($raw)) {
+            foreach ($raw as $gun => $saat) {
+                $gunLabel = decode_text((string) $gun);
+                if (is_numeric($gun) && isset($gunAdlari[(int) $gun])) {
+                    $gunLabel = $gunAdlari[(int) $gun];
+                }
+                if (is_string($saat) || is_numeric($saat)) {
+                    $val = decode_text(trim((string) $saat));
+                    if ($val !== '') {
+                        $out[$gunLabel] = $val;
+                    }
+                    continue;
+                }
+                if (is_array($saat) || is_object($saat)) {
+                    $row = (array) $saat;
+                    $aktif = (bool) ($row['aktif_mi'] ?? $row['aktif'] ?? true);
+                    if (! $aktif) {
+                        $out[$gunLabel] = 'Kapalı';
+                        continue;
+                    }
+                    $bas = substr((string) ($row['mesai_baslangic'] ?? $row['baslangic'] ?? $row['start'] ?? ''), 0, 5);
+                    $bit = substr((string) ($row['mesai_bitis'] ?? $row['bitis'] ?? $row['end'] ?? ''), 0, 5);
+                    if ($bas !== '' && $bit !== '') {
+                        $out[$gunLabel] = $bas.' – '.$bit;
+                    }
+                }
+            }
+
+            return $out;
+        }
+
+        // List of rows
+        foreach ($raw as $row) {
+            if (is_object($row)) {
+                $row = (array) $row;
+            }
+            if (! is_array($row)) {
+                continue;
+            }
+            $gunKey = $row['gun'] ?? $row['gun_no'] ?? $row['day'] ?? null;
+            $gunLabel = null;
+            if (is_numeric($gunKey) && isset($gunAdlari[(int) $gunKey])) {
+                $gunLabel = $gunAdlari[(int) $gunKey];
+            } elseif (! empty($row['gun_adi'])) {
+                $gunLabel = decode_text((string) $row['gun_adi']);
+            } elseif (! empty($row['ad'])) {
+                $gunLabel = decode_text((string) $row['ad']);
+            }
+            if (! $gunLabel) {
+                continue;
+            }
+            $aktif = array_key_exists('aktif_mi', $row)
+                ? (bool) $row['aktif_mi']
+                : (array_key_exists('aktif', $row) ? (bool) $row['aktif'] : true);
+            if (! $aktif) {
+                $out[$gunLabel] = 'Kapalı';
+                continue;
+            }
+            $bas = substr((string) ($row['mesai_baslangic'] ?? $row['baslangic'] ?? $row['start'] ?? ''), 0, 5);
+            $bit = substr((string) ($row['mesai_bitis'] ?? $row['bitis'] ?? $row['end'] ?? ''), 0, 5);
+            if ($bas !== '' && $bit !== '') {
+                $out[$gunLabel] = $bas.' – '.$bit;
+            }
+        }
+
+        return $out;
+    }
+
+    /**
+     * Footer üst şerit için özet: "Pazartesi – Cuma 09:00 – 17:00"
+     *
+     * @param  array<string, string>  $map
+     */
+    protected function calismaSaatleriOzet(array $map): string
+    {
+        if ($map === []) {
+            return 'Randevu ile';
+        }
+
+        $open = [];
+        foreach ($map as $gun => $saat) {
+            $saat = trim((string) $saat);
+            if ($saat === '' || mb_strtolower($saat) === 'kapalı' || $saat === '-') {
+                continue;
+            }
+            $open[$gun] = $saat;
+        }
+
+        if ($open === []) {
+            return 'Randevu ile';
+        }
+
+        $unique = array_values(array_unique(array_values($open)));
+        $days = array_keys($open);
+
+        // Aynı saat tüm açık günlerde → "Pazartesi – Cuma 09:00 – 17:00"
+        if (count($unique) === 1 && count($days) >= 2) {
+            return $days[0].' – '.$days[count($days) - 1].' '.$unique[0];
+        }
+
+        $parts = [];
+        foreach ($open as $gun => $saat) {
+            $parts[] = $gun.': '.$saat;
+            if (count($parts) >= 3) {
+                break;
+            }
+        }
+
+        return implode(' · ', $parts);
     }
 
     /**

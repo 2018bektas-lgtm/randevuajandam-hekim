@@ -15,31 +15,46 @@
         ->take(7)
         ->values();
 
-    // Çalışma saatleri metni
-    $cs = $doktor['calisma_saatleri'] ?? [];
-    $csText = 'Randevu ile';
-    if (is_array($cs) && $cs !== []) {
-        $parts = [];
+    // Çalışma saatleri — API'den normalize (calisma_saatleri_ozet tercih)
+    $cs = is_array($doktor['calisma_saatleri'] ?? null) ? $doktor['calisma_saatleri'] : [];
+    $csText = trim((string) ($doktor['calisma_saatleri_ozet'] ?? ''));
+    if ($csText === '' && $cs !== []) {
+        $open = [];
         foreach ($cs as $gun => $saat) {
             if (is_array($saat)) {
-                $saat = implode(' - ', array_filter($saat));
+                $aktif = (bool) ($saat['aktif_mi'] ?? $saat['aktif'] ?? true);
+                if (! $aktif) {
+                    continue;
+                }
+                $bas = substr((string) ($saat['mesai_baslangic'] ?? $saat['baslangic'] ?? ''), 0, 5);
+                $bit = substr((string) ($saat['mesai_bitis'] ?? $saat['bitis'] ?? ''), 0, 5);
+                $saat = ($bas !== '' && $bit !== '') ? ($bas.' – '.$bit) : '';
             }
-            $saat = trim((string) $saat);
-            if ($saat === '' || $saat === '-') {
+            $saat = trim(decode_text((string) $saat));
+            if ($saat === '' || mb_strtolower($saat) === 'kapalı' || $saat === '-') {
                 continue;
             }
-            if (is_string($gun) && ! is_numeric($gun)) {
-                $parts[] = decode_text($gun).': '.decode_text($saat);
+            $open[decode_text((string) $gun)] = $saat;
+        }
+        if ($open !== []) {
+            $uniq = array_values(array_unique(array_values($open)));
+            $days = array_keys($open);
+            if (count($uniq) === 1 && count($days) >= 2) {
+                $csText = $days[0].' – '.$days[count($days) - 1].' '.$uniq[0];
             } else {
-                $parts[] = decode_text($saat);
-            }
-            if (count($parts) >= 2) {
-                break;
+                $parts = [];
+                foreach ($open as $g => $s) {
+                    $parts[] = $g.': '.$s;
+                    if (count($parts) >= 3) {
+                        break;
+                    }
+                }
+                $csText = implode(' · ', $parts);
             }
         }
-        if ($parts !== []) {
-            $csText = implode(' · ', $parts);
-        }
+    }
+    if ($csText === '') {
+        $csText = 'Randevu ile';
     }
 @endphp
 {{-- index3 site-footer birebir yapı --}}
