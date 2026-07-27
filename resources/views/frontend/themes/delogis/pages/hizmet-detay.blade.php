@@ -2,24 +2,30 @@
 
 @php
     /**
-     * Delogis services-details (anxiety-grief.html vb.)
-     * Sol sidebar: hizmet listesi + CTA
-     * Sağ: görsel, içerik, süreç, randevu bandı
+     * Blog-details ile aynı tasarım: blog-details layout + sidebar
      * Fiyat gösterilmez.
      */
     $h = $hizmet ?? [];
     $hAd = $h['baslik'] ?? $h['ad'] ?? 'Hizmet';
     $hDesc = $h['aciklama'] ?? $h['kisa'] ?? $h['icerik'] ?? '';
     $img = $h['image'] ?? $h['resim'] ?? $h['kapak'] ?? null;
-    $curSlug = $h['slug'] ?? \Illuminate\Support\Str::slug($hAd);
     $sure = $h['sure'] ?? $h['duration'] ?? null;
+    $curSlug = $h['slug'] ?? \Illuminate\Support\Str::slug($hAd);
 
     $tumHizmetler = collect($doktor['hizmetler'] ?? [])
         ->filter(fn ($x) => is_array($x) && (filled($x['baslik'] ?? null) || filled($x['ad'] ?? null)))
         ->values();
 
-    $telefon = $doktor['telefon'] ?? $doktor['iletisim']['telefon'] ?? null;
-    $telHref = $telefon ? ('tel:'.preg_replace('/\s+/', '', (string) $telefon)) : null;
+    $digerHizmetler = $tumHizmetler
+        ->filter(function ($x) use ($curSlug, $h) {
+            $s = $x['slug'] ?? \Illuminate\Support\Str::slug($x['baslik'] ?? $x['ad'] ?? '');
+
+            return $s !== $curSlug && (string) ($x['id'] ?? '') !== (string) ($h['id'] ?? '');
+        })
+        ->take(4)
+        ->values();
+
+    $author = trim(($doktor['unvan'] ?? '').' '.($doktor['ad_soyad'] ?? 'Hekim'));
 @endphp
 
 @section('baslik', $hAd.' | '.($doktor['ad_soyad'] ?? 'Hekim'))
@@ -28,124 +34,116 @@
 @section('icerik')
 @include('frontend.themes.delogis.partials.page-header', ['title' => $hAd, 'crumb' => 'Hizmetler'])
 
-{{-- services-details (anxiety-grief.html düzeni: sidebar sol, içerik sağ) --}}
-<section class="services-details">
+{{-- blog-details.html düzeni --}}
+<section class="blog-details services-as-blog-details">
     <div class="container">
         <div class="row">
-            <div class="col-xl-4 col-lg-5">
-                <div class="services-details__sidebar">
-                    <div class="services-details__services-list">
-                        <ul class="services-details__services list-unstyled">
-                            @forelse ($tumHizmetler as $item)
-                                @php
-                                    $iAd = $item['baslik'] ?? $item['ad'] ?? 'Hizmet';
-                                    $iSlug = $item['slug'] ?? \Illuminate\Support\Str::slug($iAd);
-                                    $iHref = route('frontend.hizmet.detay', $iSlug ?: ($item['id'] ?? ''));
-                                    $isActive = ($iSlug === $curSlug) || ((string) ($item['id'] ?? '') === (string) ($h['id'] ?? ''));
-                                @endphp
-                                <li class="{{ $isActive ? 'active' : '' }}">
-                                    <a href="{{ $iHref }}">{{ $iAd }}</a>
-                                </li>
-                            @empty
-                                <li class="active"><a href="{{ route('frontend.hizmetler') }}">Hizmetler</a></li>
-                            @endforelse
-                        </ul>
-                    </div>
-
-                    <div class="banner-one">
-                        <div class="banner-one__bg" aria-hidden="true"></div>
-                        <h3 class="banner-one__title">
-                            Benzer bir
-                            <br> durum mu yaşıyorsunuz?
-                            <br> Bize ulaşın
-                        </h3>
-                        <div class="banner-one__btn-box">
-                            <a href="{{ route('frontend.iletisim') }}" class="banner-one__btn thm-btn">İletişim</a>
+            <div class="col-xl-8 col-lg-7">
+                <div class="blog-details__left">
+                    @if($img)
+                        <div class="blog-details__img">
+                            <img src="{{ $img }}" alt="{{ $hAd }}">
+                            @if(filled($sure))
+                                <div class="blog-details__date">
+                                    <p>
+                                        @php
+                                            $sureStr = (string) $sure;
+                                            $num = preg_match('/(\d+)/', $sureStr, $m) ? $m[1] : $sureStr;
+                                            $unit = stripos($sureStr, 'saat') !== false ? 'Saat' : (preg_match('/\d/', $sureStr) ? 'Dk' : '');
+                                        @endphp
+                                        {{ $num }}@if($unit)<br>{{ $unit }}@endif
+                                    </p>
+                                </div>
+                            @endif
                         </div>
-                    </div>
+                    @endif
 
-                    <div class="services-details__get-started" style="margin-top:24px">
-                        <h3 class="services-details__get-started-title">Randevu alın</h3>
-                        <p class="services-details__get-started-text">Online randevu ile size uygun saati seçin.</p>
-                        <a href="{{ route('frontend.randevu') }}" class="thm-btn">Randevu Al</a>
+                    <div class="blog-details__content">
+                        <ul class="blog-details__meta list-unstyled">
+                            @if($author !== '')
+                                <li>
+                                    <span><i class="fas fa-user-circle"></i>{{ $author }}</span>
+                                </li>
+                            @endif
+                            @if(filled($sure))
+                                <li>
+                                    <span><i class="fas fa-clock"></i>{{ $sure }}</span>
+                                </li>
+                            @endif
+                        </ul>
+
+                        <h3 class="blog-details__title">{{ $hAd }}</h3>
+
+                        <div class="blog-details__text-1 dg-prose">
+                            {!! $hDesc !!}
+                        </div>
+
+                        <div class="blog-details__bottom">
+                            <p class="blog-details__tags">
+                                <span>Hizmet</span>
+                                <a href="{{ route('frontend.hizmetler') }}">Tüm hizmetler</a>
+                                <a href="{{ route('frontend.randevu') }}">Randevu Al</a>
+                            </p>
+                            @php $sosyal = array_filter($doktor['sosyal'] ?? [], fn ($u) => filled($u)); @endphp
+                            @if(count($sosyal))
+                                <div class="blog-details__social-list">
+                                    @foreach ($sosyal as $key => $url)
+                                        @php
+                                            $icon = match (strtolower((string) $key)) {
+                                                'twitter', 'x' => 'fab fa-twitter',
+                                                'facebook' => 'fab fa-facebook',
+                                                'instagram' => 'fab fa-instagram',
+                                                'linkedin' => 'fab fa-linkedin-in',
+                                                default => 'fas fa-link',
+                                            };
+                                        @endphp
+                                        <a href="{{ $url }}" target="_blank" rel="noopener"><i class="{{ $icon }}"></i></a>
+                                    @endforeach
+                                </div>
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-xl-8 col-lg-7">
-                <div class="services-details__right">
-                    @if($img)
-                        <div class="services-details__img">
-                            <img src="{{ $img }}" alt="{{ $hAd }}">
+            <div class="col-xl-4 col-lg-5">
+                <div class="sidebar">
+                    @if($digerHizmetler->isNotEmpty())
+                        <div class="sidebar__single sidebar__post">
+                            <h3 class="sidebar__title">Diğer hizmetler</h3>
+                            <ul class="sidebar__post-list list-unstyled">
+                                @foreach ($digerHizmetler as $p)
+                                    @php
+                                        $pTitle = $p['baslik'] ?? $p['ad'] ?? 'Hizmet';
+                                        $pSlug = $p['slug'] ?? \Illuminate\Support\Str::slug($pTitle);
+                                        $pImg = $p['image'] ?? $p['resim'] ?? $p['kapak'] ?? null;
+                                        $pHref = route('frontend.hizmet.detay', $pSlug ?: ($p['id'] ?? ''));
+                                    @endphp
+                                    <li>
+                                        @if($pImg)
+                                            <div class="sidebar__post-image">
+                                                <img src="{{ $pImg }}" alt="{{ $pTitle }}">
+                                            </div>
+                                        @endif
+                                        <div class="sidebar__post-content">
+                                            <h3>
+                                                <a href="{{ $pHref }}">{{ \Illuminate\Support\Str::limit($pTitle, 60) }}</a>
+                                            </h3>
+                                        </div>
+                                    </li>
+                                @endforeach
+                            </ul>
                         </div>
                     @endif
 
-                    <h3 class="services-details__title-1">{{ $hAd }}</h3>
-
-                    <div class="services-details__text-1 dg-prose">
-                        {!! $hDesc !!}
-                    </div>
-
-                    @if(filled($sure))
-                        <ul class="list-unstyled services-details__points" style="margin-top:20px">
-                            <li>
-                                <div class="icon"><i class="fa fa-clock"></i></div>
-                                <div class="text"><p>Süre: {{ $sure }}</p></div>
-                            </li>
+                    <div class="sidebar__single sidebar__category">
+                        <h3 class="sidebar__title">Bağlantılar</h3>
+                        <ul class="sidebar__category-list list-unstyled">
+                            <li><a href="{{ route('frontend.hizmetler') }}">Tüm hizmetler</a></li>
+                            <li><a href="{{ route('frontend.randevu') }}">Randevu Al</a></li>
+                            <li><a href="{{ route('frontend.blog') }}">Blog</a></li>
+                            <li><a href="{{ route('frontend.iletisim') }}">İletişim</a></li>
                         </ul>
-                    @endif
-
-                    <h3 class="services-details__title-3">Süreç nasıl işler?</h3>
-                    <ul class="services-details__process list-unstyled">
-                        <li>
-                            <div class="icon">
-                                <span class="icon-form"></span>
-                                <div class="services-details__process-count"></div>
-                            </div>
-                            <h3>Randevu alın</h3>
-                            <p>Size uygun gün ve saati<br>online seçin.</p>
-                        </li>
-                        <li>
-                            <div class="icon">
-                                <span class="icon-psychologist-2"></span>
-                                <div class="services-details__process-count"></div>
-                            </div>
-                            <h3>Görüşme</h3>
-                            <p>Planlanan saatte<br>görüşmenizi gerçekleştirin.</p>
-                        </li>
-                        <li>
-                            <div class="icon">
-                                <span class="icon-self-improvement"></span>
-                                <div class="services-details__process-count"></div>
-                            </div>
-                            <h3>Takip</h3>
-                            <p>Gerekiyorsa sonraki<br>adımları birlikte planlayın.</p>
-                        </li>
-                    </ul>
-
-                    <div class="services-details__book">
-                        <div class="services-details__book-top">
-                            <div class="icon">
-                                <span class="icon-phone-call"></span>
-                            </div>
-                            <div class="content">
-                                <p>Sorunuz mu var?</p>
-                                @if($telHref)
-                                    <h4><a href="{{ $telHref }}">{{ $telefon }}</a></h4>
-                                @else
-                                    <h4><a href="{{ route('frontend.iletisim') }}">İletişime geçin</a></h4>
-                                @endif
-                            </div>
-                        </div>
-                        <div class="services-details__book-title-and-btn">
-                            <h3 class="services-details__book-title">
-                                Randevunuzu
-                                <br> şimdi alın
-                            </h3>
-                            <div class="services-details__book-btn-box">
-                                <a href="{{ route('frontend.randevu') }}" class="services-details__book-btn thm-btn">Randevu Al</a>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>

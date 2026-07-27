@@ -6,28 +6,17 @@
 @section('icerik')
 @php
     /**
-     * Delogis services.html
-     * section.services-page + .services-two__single kartlar
+     * Blog-6 ile aynı tasarım: section.blog-one + blog-four__single kartlar
      */
     $hizmetler = collect($doktor['hizmetler'] ?? [])
         ->filter(fn ($h) => is_array($h) && (filled($h['baslik'] ?? null) || filled($h['ad'] ?? null) || filled($h['id'] ?? null)))
         ->values();
-    $icons = [
-        'icon-heart',
-        'icon-self-confidence',
-        'icon-family',
-        'icon-account',
-        'icon-mental-health',
-        'icon-psychology',
-        'icon-psychologist-2',
-        'icon-self-improvement',
-    ];
 @endphp
 
 @include('frontend.themes.delogis.partials.page-header', ['title' => 'Hizmetler', 'crumb' => 'Hizmetler'])
 
-{{-- services.html --}}
-<section class="services-page">
+{{-- blog-6 kart stili --}}
+<section class="blog-one services-as-blog">
     <div class="container">
         @if($hizmetler->isEmpty())
             <div class="text-center" style="padding:48px 0">
@@ -35,49 +24,54 @@
                 <a href="{{ route('frontend.randevu') }}" class="thm-btn" style="margin-top:16px">Randevu Al</a>
             </div>
         @else
-            <div class="row">
+            <div class="row gutter-y-30">
                 @foreach ($hizmetler as $idx => $h)
                     @php
                         $hAd = $h['baslik'] ?? $h['ad'] ?? 'Hizmet';
                         $hSlug = $h['slug'] ?? \Illuminate\Support\Str::slug($hAd);
-                        $hDesc = \Illuminate\Support\Str::limit(strip_tags((string) ($h['kisa'] ?? $h['aciklama'] ?? '')), 140);
                         $href = route('frontend.hizmet.detay', $hSlug ?: ($h['id'] ?? ''));
                         $img = $h['image'] ?? $h['resim'] ?? $h['kapak'] ?? null;
-                        $icon = $icons[$idx % count($icons)];
+                        $sure = $h['sure'] ?? $h['duration'] ?? null;
+                        // Blog tarih rozeti yerine süre / sıra
+                        $badgeTop = '—';
+                        $badgeBottom = 'Hiz';
+                        if (filled($sure)) {
+                            $sureStr = (string) $sure;
+                            if (preg_match('/(\d+)/', $sureStr, $m)) {
+                                $badgeTop = $m[1];
+                                $badgeBottom = stripos($sureStr, 'saat') !== false ? 'Saat' : 'Dk';
+                            } else {
+                                $badgeTop = \Illuminate\Support\Str::limit($sureStr, 3, '');
+                                $badgeBottom = '';
+                            }
+                        } else {
+                            $badgeTop = str_pad((string) ($idx + 1), 2, '0', STR_PAD_LEFT);
+                            $badgeBottom = 'Hiz';
+                        }
                     @endphp
-                    {{-- Services Two Single Start --}}
-                    <div class="col-xl-4 col-lg-4 col-md-6 wow fadeInUp dg-card-col" data-wow-delay="{{ ($idx % 3 + 1) * 100 }}ms">
-                        <div class="services-two__single dg-card">
-                            <div class="services-two__img-box dg-card__media">
-                                <div class="services-two__img dg-card__img {{ $img ? '' : 'dg-card__img--empty' }}">
-                                    @if($img)
-                                        <img src="{{ $img }}" alt="{{ $hAd }}">
-                                    @else
-                                        <span class="{{ $icon }}" aria-hidden="true"></span>
-                                    @endif
-                                </div>
-                                <div class="services-two__icon">
-                                    <span class="{{ $icon }}"></span>
-                                </div>
+                    <div class="col-lg-4 col-md-6 wow fadeInUp dg-card-col" data-wow-delay="{{ ($idx % 3) * 100 }}ms">
+                        <div class="blog-four__single dg-card">
+                            <div class="blog-four__single__image dg-card__media">
+                                @if($img)
+                                    <img src="{{ $img }}" alt="{{ $hAd }}">
+                                @else
+                                    <div class="dg-card__img--empty" aria-hidden="true"></div>
+                                @endif
+                                <a href="{{ $href }}" class="blog-four__single__image__link" aria-label="{{ $hAd }}"></a>
                             </div>
-                            <div class="services-two__content dg-card__body">
-                                <div class="services-two__title-box">
-                                    <h3 class="services-two__title">
-                                        <a href="{{ $href }}">{{ $hAd }}</a>
-                                    </h3>
-                                    <p class="services-two__text">
-                                        {{ $hDesc !== '' ? $hDesc : 'Detay ve randevu için tıklayın.' }}
-                                    </p>
+                            <div class="blog-four__single__content dg-card__body">
+                                <div class="blog-four__single__date">
+                                    <span>{{ $badgeTop }}</span>{{ $badgeBottom }}
                                 </div>
-                                <div class="services-two__btn-box">
-                                    <a href="{{ $href }}">
-                                        <span class="icon-right-arrow"></span> İncele
-                                    </a>
-                                </div>
+                                <h3 class="blog-four__single__title">
+                                    <a href="{{ $href }}">{{ $hAd }}</a>
+                                </h3>
                             </div>
+                            <a class="blog-four__single__rm" href="{{ $href }}">
+                                İncele<span class="delogis-icons-two-right-arrow"></span>
+                            </a>
                         </div>
                     </div>
-                    {{-- Services Two Single End --}}
                 @endforeach
             </div>
             <div class="text-center" style="margin-top:36px">

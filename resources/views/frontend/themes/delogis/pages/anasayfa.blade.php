@@ -201,37 +201,48 @@
 </section>
 @endif
 
-{{-- 4) Services three --}}
+{{-- 4) Hizmetler — blog-6 (blog-four__single) ile aynı kart tasarımı --}}
 @if($show('hizmetler') && $hizmetler->isNotEmpty())
-<section class="services-three" id="hizmetler">
-    <div class="services-three__bg-box">
-        <div class="services-three__bg"></div>
-    </div>
+<section class="blog-one services-as-blog" id="hizmetler">
     <div class="container">
         <div class="section-title text-center">
             <span class="section-title__tagline">Hizmetler</span>
             <h2 class="section-title__title">{{ filled($doktor['hizmetler_baslik'] ?? null) ? $doktor['hizmetler_baslik'] : 'Sunduğumuz hizmetler' }}</h2>
         </div>
-        <div class="row">
+        <div class="row gutter-y-30">
             @foreach ($hizmetler as $idx => $h)
                 @php
                     $hAd = $h['baslik'] ?? $h['ad'] ?? 'Hizmet';
                     $hSlug = $h['slug'] ?? \Illuminate\Support\Str::slug($hAd);
-                    $hDesc = \Illuminate\Support\Str::limit(strip_tags((string)($h['kisa'] ?? $h['aciklama'] ?? '')), 100);
                     $href = route('frontend.hizmet.detay', $hSlug ?: ($h['id'] ?? ''));
+                    $hImg = $h['image'] ?? $h['resim'] ?? $h['kapak'] ?? null;
+                    $sure = $h['sure'] ?? $h['duration'] ?? null;
+                    $badgeTop = str_pad((string) ($idx + 1), 2, '0', STR_PAD_LEFT);
+                    $badgeBottom = 'Hiz';
+                    if (filled($sure) && preg_match('/(\d+)/', (string) $sure, $m)) {
+                        $badgeTop = $m[1];
+                        $badgeBottom = stripos((string) $sure, 'saat') !== false ? 'Saat' : 'Dk';
+                    }
                 @endphp
-                <div class="col-xl-4 col-lg-4 col-md-6 wow fadeInUp dg-card-col" data-wow-delay="{{ ($idx % 3 + 1) * 100 }}ms">
-                    <div class="services-three__single dg-card">
-                        <div class="services-three__icon">
-                            <span class="{{ $icons[$idx % count($icons)] }}"></span>
+                <div class="col-lg-4 col-md-6 wow fadeInUp dg-card-col" data-wow-delay="{{ ($idx % 3) * 100 }}ms">
+                    <div class="blog-four__single dg-card">
+                        <div class="blog-four__single__image dg-card__media">
+                            @if($hImg)
+                                <img src="{{ $hImg }}" alt="{{ $hAd }}">
+                            @else
+                                <div class="dg-card__img--empty" aria-hidden="true"></div>
+                            @endif
+                            <a href="{{ $href }}" class="blog-four__single__image__link" aria-label="{{ $hAd }}"></a>
                         </div>
-                        <div class="dg-card__body">
-                            <h3 class="services-three__title"><a href="{{ $href }}">{{ $hAd }}</a></h3>
-                            <p class="services-three__text">{{ $hDesc !== '' ? $hDesc : 'Detay için tıklayın.' }}</p>
-                            <div class="services-three__btn-box">
-                                <a href="{{ $href }}"><span class="icon-right-arrow"></span> İncele</a>
-                            </div>
+                        <div class="blog-four__single__content dg-card__body">
+                            <div class="blog-four__single__date"><span>{{ $badgeTop }}</span>{{ $badgeBottom }}</div>
+                            <h3 class="blog-four__single__title">
+                                <a href="{{ $href }}">{{ $hAd }}</a>
+                            </h3>
                         </div>
+                        <a class="blog-four__single__rm" href="{{ $href }}">
+                            İncele<span class="delogis-icons-two-right-arrow"></span>
+                        </a>
                     </div>
                 </div>
             @endforeach
