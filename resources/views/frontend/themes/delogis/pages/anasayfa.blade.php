@@ -31,7 +31,7 @@
     $bolum = $doktor['anasayfa_bolumler'] ?? [];
     $show = fn (string $key) => (bool) ($bolum[$key] ?? true);
     $icons = ['icon-heart', 'icon-self-confidence', 'icon-family', 'icon-account', 'icon-mental-health', 'icon-psychology'];
-    $kisaBio = \Illuminate\Support\Str::limit(strip_tags((string) ($doktor['kisa_bio'] ?? $doktor['bio'] ?? $doktor['biyografi'] ?? $doktor['slogan'] ?? '')), 280);
+    $kisaBio = plain_text($doktor['kisa_bio'] ?? $doktor['bio'] ?? $doktor['biyografi'] ?? $doktor['slogan'] ?? '', 280);
     $mezuniyet = collect($doktor['mezuniyet'] ?? [])->filter()->take(8)->values();
 @endphp
 
@@ -105,7 +105,7 @@
                 @php
                     $hAd = $h['baslik'] ?? $h['ad'] ?? 'Hizmet';
                     $hSlug = $h['slug'] ?? \Illuminate\Support\Str::slug($hAd);
-                    $hDesc = \Illuminate\Support\Str::limit(strip_tags((string)($h['kisa'] ?? $h['aciklama'] ?? '')), 90);
+                    $hDesc = plain_text($h['kisa'] ?? $h['aciklama'] ?? '', 90);
                     $hImg = $h['image'] ?? $h['resim'] ?? null;
                     $href = route('frontend.hizmet.detay', $hSlug ?: ($h['id'] ?? ''));
                 @endphp
@@ -163,7 +163,7 @@
                                 @foreach ($mezuniyet->take(4) as $m)
                                     <li>
                                         <div class="icon"><span class="fa fa-check"></span></div>
-                                        <div class="text"><p>{{ is_string($m) ? $m : \Illuminate\Support\Str::limit(strip_tags((string)$m), 80) }}</p></div>
+                                        <div class="text"><p>{{ plain_text(is_string($m) ? $m : (string) $m, 80) }}</p></div>
                                     </li>
                                 @endforeach
                             </ul>
@@ -172,7 +172,7 @@
                                     @foreach ($mezuniyet->slice(4) as $m)
                                         <li>
                                             <div class="icon"><span class="fa fa-check"></span></div>
-                                            <div class="text"><p>{{ is_string($m) ? $m : \Illuminate\Support\Str::limit(strip_tags((string)$m), 80) }}</p></div>
+                                            <div class="text"><p>{{ plain_text(is_string($m) ? $m : (string) $m, 80) }}</p></div>
                                         </li>
                                     @endforeach
                                 </ul>

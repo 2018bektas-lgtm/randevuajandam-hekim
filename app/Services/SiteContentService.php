@@ -376,15 +376,15 @@ class SiteContentService
         $out['api_synced'] = true;
         $out['id'] = $profile['id'] ?? null;
 
-        $out['ad_soyad'] = (string) ($profile['ad_soyad'] ?? '');
-        $out['unvan'] = (string) ($profile['unvan'] ?? '');
-        $out['uzmanlik'] = (string) ($profile['uzmanlik_alani'] ?? '');
-        $out['telefon'] = (string) ($profile['telefon'] ?? '');
-        $out['e_posta'] = (string) ($profile['e_posta'] ?? '');
-        $out['adres'] = (string) ($profile['adres'] ?? '');
-        $out['klinik_adi'] = (string) ($profile['klinik_adi'] ?? '');
-        $out['il'] = (string) ($profile['il'] ?? '');
-        $out['ilce'] = (string) ($profile['ilce'] ?? '');
+        $out['ad_soyad'] = decode_text($profile['ad_soyad'] ?? '');
+        $out['unvan'] = decode_text($profile['unvan'] ?? '');
+        $out['uzmanlik'] = decode_text($profile['uzmanlik_alani'] ?? '');
+        $out['telefon'] = decode_text($profile['telefon'] ?? '');
+        $out['e_posta'] = decode_text($profile['e_posta'] ?? '');
+        $out['adres'] = decode_text($profile['adres'] ?? '');
+        $out['klinik_adi'] = decode_text($profile['klinik_adi'] ?? '');
+        $out['il'] = decode_text($profile['il'] ?? '');
+        $out['ilce'] = decode_text($profile['ilce'] ?? '');
         $out['online_gorusme'] = (bool) ($profile['online_gorusme'] ?? false);
         $out['randevuya_acik_mi'] = (bool) ($profile['randevuya_acik_mi'] ?? true);
 
@@ -394,8 +394,8 @@ class SiteContentService
 
         // Bio
         if (filled($profile['biyografi'] ?? null)) {
-            $bioHtml = (string) $profile['biyografi'];
-            $bioText = trim(strip_tags($bioHtml));
+            $bioHtml = decode_text($profile['biyografi']);
+            $bioText = plain_text($bioHtml);
             $out['bio'] = $bioText;
             $out['bio_html'] = $bioHtml;
             $out['kisa_bio'] = Str::limit($bioText, 220);
@@ -485,30 +485,30 @@ class SiteContentService
         $out['hizmetler'] = collect($services)->values()->map(function ($h, $i) use ($fallbackImgs) {
             $h = is_array($h) ? $h : (array) $h;
             $img = $h['resim'] ?? $h['image'] ?? $h['kapak'] ?? null;
-            $baslik = (string) ($h['ad'] ?? $h['baslik'] ?? $h['name'] ?? 'Hizmet');
+            $baslik = decode_text($h['ad'] ?? $h['baslik'] ?? $h['name'] ?? 'Hizmet');
             $slug = $h['slug'] ?? null;
             if (! filled($slug)) {
                 $slug = Str::slug($baslik) ?: ('hizmet-'.($h['id'] ?? $i));
             }
-            $aciklama = (string) ($h['aciklama'] ?? $h['description'] ?? $h['ozet'] ?? '');
+            $aciklama = decode_text($h['aciklama'] ?? $h['description'] ?? $h['ozet'] ?? '');
 
             return [
                 'id' => $h['id'] ?? null,
                 'baslik' => $baslik,
                 'ad' => $baslik,
-                'kisa' => Str::limit(strip_tags($aciklama), 120),
+                'kisa' => plain_text($aciklama, 120),
                 'aciklama' => $aciklama,
                 'sure' => isset($h['sure']) && $h['sure'] !== null && $h['sure'] !== ''
-                    ? (is_numeric($h['sure']) ? ((int) $h['sure']).' dk' : (string) $h['sure'])
+                    ? (is_numeric($h['sure']) ? ((int) $h['sure']).' dk' : decode_text($h['sure']))
                     : null,
                 'fiyat' => isset($h['fiyat']) && $h['fiyat'] !== null && $h['fiyat'] !== ''
                     ? (is_numeric($h['fiyat'])
                         ? number_format((float) $h['fiyat'], 0, ',', '.').' ₺'
-                        : (string) $h['fiyat'])
+                        : decode_text($h['fiyat']))
                     : null,
                 'slug' => $slug,
                 'image' => $img ? media_url($img) : $fallbackImgs[$i % count($fallbackImgs)],
-                'madde' => $this->extractBullets((string) ($h['aciklama'] ?? '')),
+                'madde' => $this->extractBullets($aciklama),
             ];
         })->values()->all();
 
@@ -516,21 +516,29 @@ class SiteContentService
         if (! empty($content['bloglar']) && is_array($content['bloglar'])) {
             $out['bloglar'] = collect($content['bloglar'])->map(function ($b) {
                 $b = is_array($b) ? $b : (array) $b;
-                $icerik = $b['icerik'] ?? '';
-                $plain = strip_tags((string) $icerik);
+                $icerikHtml = decode_text($b['icerik'] ?? '');
+                $plain = plain_text($icerikHtml);
+                $ozet = decode_text($b['ozet'] ?? '');
+                if ($ozet === '') {
+                    $ozet = Str::limit($plain, 160);
+                } else {
+                    $ozet = plain_text($ozet, 160);
+                }
+                $baslik = decode_text($b['baslik'] ?? '');
 
                 return [
                     'slug' => $b['slug'] ?? ('yazi-'.($b['id'] ?? uniqid())),
-                    'baslik' => $b['baslik'] ?? '',
-                    'ozet' => $b['ozet'] ?? Str::limit($plain, 160),
+                    'baslik' => $baslik,
+                    'ozet' => $ozet,
                     'tarih' => $b['tarih'] ?? '',
                     'okuma' => max(3, (int) ceil(max(1, str_word_count($plain)) / 180)).' dk',
                     'kategori' => 'Blog',
                     'image' => ! empty($b['resim'])
                         ? media_url($b['resim'])
                         : 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=1000&q=80',
-                    'icerik' => array_values(array_filter(array_map('trim', preg_split('/\n\s*\n/', $plain) ?: [$plain]))),
-                    'icerik_html' => $icerik,
+                    // Detay şablonları {!! $icerik !!} bekliyor — HTML string
+                    'icerik' => $icerikHtml !== '' ? $icerikHtml : nl2br(e($plain)),
+                    'icerik_html' => $icerikHtml,
                 ];
             })->values()->all();
         }
@@ -547,20 +555,20 @@ class SiteContentService
                 return [
                     'id' => $e['id'] ?? null,
                     'slug' => $e['slug'] ?? ('egitim-'.($e['id'] ?? uniqid())),
-                    'baslik' => $e['baslik'] ?? '',
-                    'ozet' => $e['ozet'] ?? '',
-                    'icerik' => $e['icerik'] ?? '',
+                    'baslik' => decode_text($e['baslik'] ?? ''),
+                    'ozet' => plain_text($e['ozet'] ?? '', 200),
+                    'icerik' => decode_text($e['icerik'] ?? ''),
                     'tip' => $e['tip'] ?? 'online',
-                    'baslangic_label' => $e['baslangic_label'] ?? '',
-                    'mekan' => $e['mekan'] ?? '',
+                    'baslangic_label' => decode_text($e['baslangic_label'] ?? ''),
+                    'mekan' => decode_text($e['mekan'] ?? ''),
                     'fiyat' => $e['fiyat'] ?? null,
-                    'fiyat_label' => $e['fiyat_label'] ?? null,
-                    'odeme_notu' => $e['odeme_notu'] ?? null,
+                    'fiyat_label' => decode_text($e['fiyat_label'] ?? ''),
+                    'odeme_notu' => decode_text($e['odeme_notu'] ?? ''),
                     'basvuru_acik' => (bool) ($e['basvuru_acik'] ?? true),
                     'form_alanlari' => $e['form_alanlari'] ?? [],
-                    'meta_baslik' => $e['meta_baslik'] ?? null,
-                    'meta_aciklama' => $e['meta_aciklama'] ?? null,
-                    'meta_anahtar_kelimeler' => $e['meta_anahtar_kelimeler'] ?? null,
+                    'meta_baslik' => decode_text($e['meta_baslik'] ?? ''),
+                    'meta_aciklama' => decode_text($e['meta_aciklama'] ?? ''),
+                    'meta_anahtar_kelimeler' => decode_text($e['meta_anahtar_kelimeler'] ?? ''),
                     'image' => $kapak ? media_url($kapak) : 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1000&q=80',
                 ];
             })->filter(fn ($e) => $e['baslik'] !== '')->values()->all();
@@ -569,15 +577,15 @@ class SiteContentService
         // FAQ
         if (! empty($content['faqs']) && is_array($content['faqs'])) {
             $out['sss'] = collect($content['faqs'])->map(fn ($f) => [
-                'soru' => is_array($f) ? ($f['soru'] ?? '') : ($f->soru ?? ''),
-                'cevap' => is_array($f) ? ($f['cevap'] ?? '') : ($f->cevap ?? ''),
+                'soru' => decode_text(is_array($f) ? ($f['soru'] ?? '') : ($f->soru ?? '')),
+                'cevap' => decode_text(is_array($f) ? ($f['cevap'] ?? '') : ($f->cevap ?? '')),
             ])->filter(fn ($f) => $f['soru'] !== '')->values()->all();
         }
 
         // Galeri
         if (! empty($content['galeri']) && is_array($content['galeri'])) {
             $out['galeri'] = collect($content['galeri'])->map(fn ($g) => [
-                'baslik' => is_array($g) ? ($g['baslik'] ?? 'Galeri') : 'Galeri',
+                'baslik' => decode_text(is_array($g) ? ($g['baslik'] ?? 'Galeri') : 'Galeri'),
                 'etiket' => 'Klinik',
                 'image' => is_array($g) ? media_url($g['image'] ?? null) : null,
             ])->filter(fn ($g) => ! empty($g['image']))->values()->all();
@@ -586,8 +594,8 @@ class SiteContentService
         // Yorumlar
         if (! empty($content['yorumlar']) && is_array($content['yorumlar'])) {
             $out['yorumlar'] = collect($content['yorumlar'])->map(fn ($y) => [
-                'ad' => is_array($y) ? ($y['ad'] ?? 'Hasta') : 'Hasta',
-                'metin' => is_array($y) ? ($y['metin'] ?? '') : '',
+                'ad' => decode_text(is_array($y) ? ($y['ad'] ?? 'Hasta') : 'Hasta'),
+                'metin' => decode_text(is_array($y) ? ($y['metin'] ?? '') : ''),
                 'puan' => is_array($y) ? (int) ($y['puan'] ?? 5) : 5,
                 'hizmet' => 'Değerlendirme',
             ])->filter(fn ($y) => $y['metin'] !== '')->values()->all();
@@ -613,7 +621,7 @@ class SiteContentService
 
     protected function extractBullets(string $text): array
     {
-        $text = strip_tags($text);
+        $text = plain_text($text);
         if ($text === '') {
             return [];
         }

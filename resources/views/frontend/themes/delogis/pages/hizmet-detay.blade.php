@@ -6,10 +6,10 @@
      * Fiyat gösterilmez.
      */
     $h = $hizmet ?? [];
-    $hAd = $h['baslik'] ?? $h['ad'] ?? 'Hizmet';
-    $hDesc = $h['aciklama'] ?? $h['kisa'] ?? $h['icerik'] ?? '';
+    $hAd = decode_text($h['baslik'] ?? $h['ad'] ?? 'Hizmet');
+    $hDesc = decode_text($h['aciklama'] ?? $h['kisa'] ?? $h['icerik'] ?? '');
     $img = $h['image'] ?? $h['resim'] ?? $h['kapak'] ?? null;
-    $sure = $h['sure'] ?? $h['duration'] ?? null;
+    $sure = decode_text($h['sure'] ?? $h['duration'] ?? null);
     $curSlug = $h['slug'] ?? \Illuminate\Support\Str::slug($hAd);
 
     $tumHizmetler = collect($doktor['hizmetler'] ?? [])

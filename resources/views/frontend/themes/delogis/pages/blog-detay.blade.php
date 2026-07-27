@@ -6,10 +6,13 @@
      * section.blog-details + sidebar (Latest Posts + Categories)
      */
     $y = $yazi ?? $blog ?? [];
-    $title = $y['baslik'] ?? $y['title'] ?? 'Yazı';
-    $icerik = $y['icerik'] ?? $y['content'] ?? $y['ozet'] ?? '';
+    $title = decode_text($y['baslik'] ?? $y['title'] ?? 'Yazı');
+    $rawIcerik = $y['icerik_html'] ?? $y['icerik'] ?? $y['content'] ?? $y['ozet'] ?? '';
+    $icerik = is_array($rawIcerik)
+        ? implode('', array_map(fn ($p) => '<p>'.e(decode_text($p)).'</p>', $rawIcerik))
+        : decode_text($rawIcerik);
     $img = $y['image'] ?? $y['kapak'] ?? $y['resim'] ?? null;
-    $author = $y['yazar'] ?? trim(($doktor['unvan'] ?? '').' '.($doktor['ad_soyad'] ?? 'Hekim'));
+    $author = decode_text($y['yazar'] ?? trim(($doktor['unvan'] ?? '').' '.($doktor['ad_soyad'] ?? 'Hekim')));
     $rawDate = $y['tarih'] ?? $y['created_at'] ?? $y['yayin_tarihi'] ?? null;
     $day = '—';
     $mon = '';
