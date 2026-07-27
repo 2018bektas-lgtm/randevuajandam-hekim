@@ -13,7 +13,7 @@
     $logo = $doktor['logo'] ?? null;
     $sosyal = array_filter($doktor['sosyal'] ?? [], fn ($u) => filled($u));
 @endphp
-<body class="custom-cursor theme-delogis layout-delogis theme-pack-delogis">
+<body class="custom-cursor theme-delogis layout-delogis theme-pack-delogis {{ request()->routeIs('frontend.anasayfa') ? 'dg-home' : 'dg-inner' }}">
     @include('frontend.layouts.partials.tracking-body')
 
     <div class="custom-cursor__cursor"></div>

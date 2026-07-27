@@ -84,16 +84,20 @@ body.theme-pack-delogis .mp-btn-primary {
 .gallery-page__img { position: relative; }
 
 /* ------------------------------------------------------------------
-   Page header — foto YOK, header yapısı bozulmaz
-   Orijinal .page-header / .page-header-bg yüksekliği korunur
+   Page header — solid (foto yok) + iç sayfa header düzeltmesi
+   index3 main-header-three absolute; iç sayfada relative olmalı
 ------------------------------------------------------------------- */
 .page-header.page-header--solid {
   position: relative;
   overflow: hidden;
+  background-color: #1a1414;
+  z-index: 1;
 }
 .page-header.page-header--solid .page-header-bg--solid {
+  /* Tema .page-header-bg opacity:0.4 — solid için kapat */
+  opacity: 1 !important;
+  z-index: 0 !important;
   background-image: none !important;
-  /* Sıcak kahve → koyu (index3 --delogis-base / --delogis-black) */
   background-color: #1a1414;
   background-image:
     radial-gradient(ellipse 80% 120% at 10% 20%, rgba(151, 97, 71, 0.45) 0%, transparent 55%),
@@ -102,19 +106,66 @@ body.theme-pack-delogis .mp-btn-primary {
   background-size: cover;
   background-position: center;
 }
-/* Hafif doku (görsel dosya yok) */
 .page-header.page-header--solid .page-header-bg--solid::before {
   content: "";
   position: absolute;
   inset: 0;
-  background:
-    linear-gradient(180deg, rgba(26, 20, 20, 0.15) 0%, rgba(26, 20, 20, 0.35) 100%);
+  background: linear-gradient(180deg, rgba(26, 20, 20, 0.1) 0%, rgba(26, 20, 20, 0.25) 100%);
   pointer-events: none;
   z-index: 1;
 }
 .page-header.page-header--solid .container {
   position: relative;
   z-index: 2;
+}
+.page-header.page-header--solid .page-header__inner {
+  /* Header artık relative — absolute header için 166px fazla kalmasın */
+  padding: 90px 0 80px;
+}
+.page-header.page-header--solid .page-header__inner h2 {
+  color: #fff;
+}
+.page-header.page-header--solid .thm-breadcrumb,
+.page-header.page-header--solid .thm-breadcrumb li,
+.page-header.page-header--solid .thm-breadcrumb li a {
+  color: #fff;
+}
+
+/* İç sayfalar: main-header-three absolute değil — menü page-header üstüne binmesin */
+body.theme-delogis.dg-inner .main-header-three {
+  position: relative !important;
+  left: auto;
+  top: auto;
+  right: auto;
+  width: 100%;
+  background: #fff !important;
+  box-shadow: 0 4px 24px rgba(26, 20, 20, 0.06);
+  z-index: 100;
+}
+body.theme-delogis.dg-inner .main-menu-three__wrapper-inner {
+  background: #fff;
+}
+body.theme-delogis.dg-inner .main-menu-three__logo span {
+  color: var(--delogis-black, #1a1414) !important;
+}
+body.theme-delogis.dg-inner .main-menu__list > li > a {
+  color: var(--delogis-black, #1a1414);
+}
+body.theme-delogis.dg-inner .main-menu__list > li.current > a,
+body.theme-delogis.dg-inner .main-menu__list > li:hover > a {
+  color: var(--delogis-base, #976147);
+}
+body.theme-delogis.dg-inner .stricky-header {
+  background: #fff;
+}
+body.theme-delogis.dg-inner .stricky-header .main-menu__list > li > a {
+  color: var(--delogis-black, #1a1414);
+}
+
+/* Anasayfa: absolute header (index3) korunur */
+body.theme-delogis.dg-home .main-header-three {
+  position: absolute;
+  background: transparent;
 }
 /* Anasayfa services-three dekoratif bg de sadeleştir */
 .services-three__bg {
