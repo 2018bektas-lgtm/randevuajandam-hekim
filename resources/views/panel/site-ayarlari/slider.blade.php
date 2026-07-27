@@ -43,6 +43,9 @@
             <div>
                 <h3>Hero slaytları</h3>
                 <p class="sa-hint">Sürükleyerek sıralayın. Düzenle ile tüm alanları yönetin (görsel, butonlar, float kart, istatistik).</p>
+                <p class="sa-hint" style="margin-top:.35rem;color:#B45309">
+                    Eklediğiniz veriler seçili temaya göre sitede farklı görünebilir.
+                </p>
             </div>
             <div class="sp-head-actions">
                 <span class="sa-badge">{{ $slides->count() }} slayt</span>
@@ -125,11 +128,18 @@
             <button type="button" class="sp-close" onclick="closeSlideModal()" aria-label="Kapat">×</button>
         </div>
 
-        <form method="POST" id="slideForm" enctype="multipart/form-data">
+        <form method="POST" id="slideForm" enctype="multipart/form-data" class="sp-modal-form">
             @csrf
             <div id="slideMethodField"></div>
 
             <div class="sp-modal-body">
+                <div class="sp-theme-note" role="note">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+                    <p>
+                        <strong>Not:</strong> Eklediğiniz veriler (görsel, başlık, metinler) seçili temaya göre sitede farklı görünebilir.
+                        Görseli temanın slider düzenine uygun (tercihen şeffaf arka planlı PNG) hazırlamanız önerilir.
+                    </p>
+                </div>
                 <div class="sp-form-grid">
                     {{-- Sol sütun --}}
                     <div class="sp-col">
@@ -361,20 +371,32 @@
 .sp-empty h4 { margin:0 0 .35rem; font-size:.95rem; color:#111827; font-family:Outfit,Inter,sans-serif; }
 .sp-empty p { margin:0 0 1rem; font-size:.8rem; color:#6B7280; }
 
-/* Modal */
+/* Modal — kaydırma: form flex + body overflow */
 .sp-modal {
     position:fixed; inset:0; z-index:80; display:none; align-items:center; justify-content:center;
     padding:1rem; background:rgba(15,18,25,.48); backdrop-filter:blur(4px);
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
 }
 .sp-modal.is-open { display:flex; }
 .sp-modal-box {
-    width:min(920px, 100%); max-height:92vh; display:flex; flex-direction:column;
+    width:min(920px, 100%); max-height:min(92vh, 900px); display:flex; flex-direction:column;
     background:#fff; border-radius:1.15rem; border:1px solid #E8EAED;
     box-shadow:0 24px 64px rgba(0,0,0,.18); overflow:hidden;
+    margin:auto;
+    min-height:0;
+}
+.sp-modal-form {
+    display:flex;
+    flex-direction:column;
+    flex:1 1 auto;
+    min-height:0;
+    overflow:hidden;
 }
 .sp-modal-head {
     display:flex; justify-content:space-between; align-items:flex-start; gap:1rem;
     padding:1.1rem 1.25rem; border-bottom:1px solid #F0F1F3; background:#FAFBFC;
+    flex-shrink:0;
 }
 .sp-modal-head h3 {
     margin:.1rem 0 0; font-size:1.05rem; font-weight:700;
@@ -385,11 +407,29 @@
     background:#fff; font-size:1.25rem; line-height:1; color:#6B7280; cursor:pointer;
 }
 .sp-close:hover { background:#F9FAFB; color:#111; }
-.sp-modal-body { flex:1; overflow-y:auto; padding:1.15rem 1.25rem; }
+.sp-modal-body {
+    flex:1 1 auto;
+    min-height:0;
+    overflow-y:auto !important;
+    overflow-x:hidden;
+    padding:1.15rem 1.25rem;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior:contain;
+}
 .sp-modal-foot {
     display:flex; justify-content:flex-end; gap:.55rem;
     padding:.9rem 1.25rem; border-top:1px solid #F0F1F3; background:#FAFBFC;
+    flex-shrink:0;
 }
+.sp-theme-note {
+    display:flex; gap:.65rem; align-items:flex-start;
+    margin:0 0 1rem; padding:.75rem .9rem;
+    border-radius:.75rem; border:1px solid #FDE68A;
+    background:#FFFBEB; color:#92400E;
+}
+.sp-theme-note svg { flex-shrink:0; margin-top:.15rem; color:#D97706; }
+.sp-theme-note p { margin:0; font-size:.8rem; line-height:1.5; }
+.sp-theme-note strong { font-weight:700; }
 .sp-form-grid { display:grid; gap:1rem; }
 @media (min-width:800px) {
     .sp-form-grid { grid-template-columns: 1.15fr .95fr; align-items:start; }
