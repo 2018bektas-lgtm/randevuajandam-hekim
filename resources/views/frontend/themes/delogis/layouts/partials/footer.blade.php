@@ -200,6 +200,9 @@
                             © {{ date('Y') }}
                             <a href="{{ route('frontend.anasayfa') }}">{{ $adSoyad }}</a>
                             · Tüm hakları saklıdır.
+                            ·
+                            <a href="https://randevuajandam.com" target="_blank" rel="noopener">Randevu Ajandam</a>
+                            ile hazırlanmıştır.
                         </p>
                     </div>
                 </div>
