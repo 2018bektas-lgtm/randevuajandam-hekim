@@ -1,35 +1,45 @@
 @extends(theme_layout())
 
 @section('baslik', 'Galeri | '.($doktor['ad_soyad'] ?? 'Hekim'))
-@section('meta_aciklama', 'Klinik ve muayenehane görselleri.')
+@section('meta_aciklama', 'Klinik ve çalışma galerisi')
 
 @section('icerik')
-<section class="mp-page-hero">
-    <div class="mp-container">
-        <div class="mp-breadcrumb">
-            <a href="{{ route('frontend.anasayfa') }}">Ana Sayfa</a>
-            <span>/</span>
-            <span>Galeri</span>
-        </div>
-        <h1>Galeri</h1>
-        <p>Klinik ve muayene ortamından kareler.</p>
-    </div>
-</section>
+@php
+    $galeri = collect($doktor['galeri'] ?? [])->filter(fn ($g) => is_array($g) || is_string($g))->values();
+@endphp
 
-<section class="mp-section mp-page">
-    <div class="mp-container">
-        <div class="mp-svc-grid">
-            @forelse (($doktor['galeri'] ?? []) as $g)
-                <div class="mp-card" style="padding:0;overflow:hidden">
-                    <img src="{{ $g['image'] ?? '' }}" alt="{{ $g['baslik'] ?? 'Galeri' }}" style="width:100%;height:220px;object-fit:cover;display:block" loading="lazy">
-                    @if(!empty($g['baslik']))
-                        <div style="padding:12px 14px;font-weight:600;color:var(--mp-navy)">{{ $g['baslik'] }}</div>
-                    @endif
-                </div>
-            @empty
-                <p class="mp-book-empty">Galeri henüz boş.</p>
-            @endforelse
-        </div>
+@include('frontend.themes.delogis.partials.page-header', ['title' => 'Galeri', 'crumb' => 'Galeri'])
+
+<section class="gallery-page">
+    <div class="container">
+        @if($galeri->isEmpty())
+            <div class="text-center" style="padding:48px 0">
+                <p>Henüz galeri görseli eklenmemiş.</p>
+            </div>
+        @else
+            <div class="row">
+                @foreach ($galeri as $idx => $g)
+                    @php
+                        $src = is_string($g) ? $g : ($g['url'] ?? $g['image'] ?? $g['resim'] ?? $g['path'] ?? '');
+                        $alt = is_array($g) ? ($g['baslik'] ?? $g['alt'] ?? 'Galeri') : 'Galeri';
+                        if ($src === '') continue;
+                    @endphp
+                    <div class="col-xl-4 col-lg-6 col-md-6 wow fadeInUp" data-wow-delay="{{ ($idx % 3 + 1) * 100 }}ms">
+                        <div class="gallery-page__single">
+                            <div class="gallery-page__img">
+                                <img src="{{ $src }}" alt="{{ $alt }}" style="width:100%;height:260px;object-fit:cover;border-radius:12px">
+                                <div class="gallery-page__icon">
+                                    <a class="img-popup" href="{{ $src }}"><span class="icon-plus-1"></span></a>
+                                </div>
+                            </div>
+                            @if($alt && $alt !== 'Galeri')
+                                <h4 style="margin-top:12px;font-size:1rem">{{ $alt }}</h4>
+                            @endif
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @endif
     </div>
 </section>
 @endsection

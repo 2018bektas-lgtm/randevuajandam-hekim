@@ -1,49 +1,56 @@
 @extends(theme_layout())
 
-@section('baslik', ($yazi['baslik'] ?? 'Yazı').' | Blog')
-@section('meta_aciklama', $yazi['ozet'] ?? '')
+@php
+    $y = $yazi ?? $blog ?? [];
+    $title = $y['baslik'] ?? $y['title'] ?? 'Yazı';
+    $icerik = $y['icerik'] ?? $y['content'] ?? $y['ozet'] ?? '';
+@endphp
+
+@section('baslik', $title.' | Blog')
+@section('meta_aciklama', \Illuminate\Support\Str::limit(strip_tags((string)$icerik), 160))
 
 @section('icerik')
-<section class="mp-page-hero">
-    <div class="mp-container">
-        <div class="mp-breadcrumb">
-            <a href="{{ route('frontend.anasayfa') }}">Ana Sayfa</a>
-            <span>/</span>
-            <a href="{{ route('frontend.blog') }}">Blog</a>
-            <span>/</span>
-            <span>{{ $yazi['kategori'] ?? 'Yazı' }}</span>
-        </div>
-        <h1 style="max-width:46rem">{{ $yazi['baslik'] ?? '' }}</h1>
-        <p>
-            @if(!empty($yazi['tarih'])){{ $yazi['tarih'] }} · @endif
-            @if(!empty($yazi['okuma'])){{ $yazi['okuma'] }} okuma · @endif
-            {{ trim(($doktor['unvan'] ?? '').' '.($doktor['ad_soyad'] ?? '')) }}
-        </p>
-    </div>
-</section>
+@php
+    $dg = rtrim((string) request()->getBasePath(), '/').'/themes/delogis';
+    $img = $y['image'] ?? $y['kapak'] ?? $y['resim'] ?? null;
+@endphp
 
-<section class="mp-section mp-page">
-    <div class="mp-container" style="max-width:820px">
-        @if(!empty($yazi['image']))
-            <div class="mp-about-photo" style="margin-bottom:24px">
-                <img src="{{ $yazi['image'] }}" alt="{{ $yazi['baslik'] ?? '' }}" style="max-height:380px">
+@include('frontend.themes.delogis.partials.page-header', ['title' => $title, 'crumb' => 'Blog'])
+
+<section class="blog-details">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-8 col-lg-7">
+                <div class="blog-details__left">
+                    @if($img)
+                        <div class="blog-details__img">
+                            <img src="{{ $img }}" alt="{{ $title }}">
+                        </div>
+                    @endif
+                    <div class="blog-details__content">
+                        <h3 class="blog-details__title">{{ $title }}</h3>
+                        <div class="blog-details__text-1 dg-prose">
+                            {!! $icerik !!}
+                        </div>
+                    </div>
+                    <div style="margin-top:28px">
+                        <a href="{{ route('frontend.blog') }}" class="thm-btn thm-btn--two">← Tüm yazılar</a>
+                    </div>
+                </div>
             </div>
-        @endif
-        <article class="mp-card">
-            @if(!empty($yazi['ozet']))
-                <p style="font-size:1.05rem;color:var(--mp-navy);font-weight:500;line-height:1.6">{{ $yazi['ozet'] }}</p>
-            @endif
-            @if(!empty($yazi['icerik_html']))
-                <div class="blog-html" style="color:var(--muted);line-height:1.75">{!! $yazi['icerik_html'] !!}</div>
-            @elseif(!empty($yazi['icerik']) && is_array($yazi['icerik']))
-                @foreach ($yazi['icerik'] as $p)
-                    <p style="color:var(--muted);line-height:1.75">{{ $p }}</p>
-                @endforeach
-            @endif
-        </article>
-        <div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap">
-            <a href="{{ route('frontend.blog') }}" class="mp-btn mp-btn-outline">← Blog</a>
-            <a href="{{ route('frontend.randevu') }}" class="mp-btn mp-btn-primary">Randevu Al</a>
+            <div class="col-xl-4 col-lg-5">
+                <div class="sidebar">
+                    <div class="sidebar__single sidebar__category">
+                        <h3 class="sidebar__title">Bağlantılar</h3>
+                        <ul class="sidebar__category-list list-unstyled">
+                            <li><a href="{{ route('frontend.blog') }}">Blog</a></li>
+                            <li><a href="{{ route('frontend.hizmetler') }}">Hizmetler</a></li>
+                            <li><a href="{{ route('frontend.randevu') }}">Randevu Al</a></li>
+                            <li><a href="{{ route('frontend.iletisim') }}">İletişim</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </section>

@@ -1,8 +1,86 @@
-/* Delogis tema override — panel vurgu rengi + küçük uyum */
+/* Delogis tema override — panel vurgu rengi + iç sayfa uyumu */
 :root {
   --delogis-base: var(--brand-500, #B9905D);
   --delogis-base-rgb: 185, 144, 93;
 }
+
+/* HTML içerik (bio, blog) */
+.dg-prose {
+  color: var(--delogis-gray, #8A969E);
+  line-height: 1.8;
+  font-size: 16px;
+}
+.dg-prose h2,
+.dg-prose h3 {
+  color: var(--delogis-black, #293B46);
+  font-family: var(--delogis-font-two, Castoro, serif);
+  margin: 1.25em 0 0.5em;
+}
+.dg-prose p { margin: 0 0 1em; }
+.dg-prose ul { padding-left: 1.25rem; margin: 0 0 1em; }
+.dg-prose li { margin-bottom: 0.35em; }
+.dg-prose a { color: var(--delogis-base, #B9905D); }
+
+/* İletişim kartları (eksik sınıf yedek) */
+.contact-page__single {
+  background: #fff;
+  border: 1px solid var(--delogis-bdr-color, #EBE2D8);
+  border-radius: 16px;
+  padding: 28px 22px;
+  text-align: center;
+  margin-bottom: 24px;
+  height: 100%;
+}
+.contact-page__icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  background: var(--delogis-extra, #F6F2ED);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--delogis-base, #B9905D);
+  font-size: 22px;
+}
+.contact-page__title {
+  font-family: var(--delogis-font-two, Castoro, serif);
+  font-size: 1.25rem;
+  margin-bottom: 8px;
+  color: var(--delogis-black, #293B46);
+}
+.contact-page__text,
+.contact-page__text a {
+  color: var(--delogis-gray, #8A969E);
+  text-decoration: none;
+}
+.contact-page__text a:hover {
+  color: var(--delogis-base, #B9905D);
+}
+
+/* Randevu sihirbazı Delogis içinde */
+body.theme-delogis .mp-book-shell,
+body.theme-pack-delogis .mp-book-shell {
+  background: #fff;
+  border: 1px solid var(--delogis-bdr-color, #EBE2D8);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 12px 40px rgba(41, 59, 70, 0.06);
+}
+body.theme-delogis .mp-book-head {
+  background: linear-gradient(135deg, #384E5C 0%, #293B46 100%);
+  color: #fff;
+}
+body.theme-delogis .mp-btn-primary,
+body.theme-pack-delogis .mp-btn-primary {
+  background: var(--delogis-base, #B9905D) !important;
+  border-color: var(--delogis-base, #B9905D) !important;
+}
+
+/* Galeri hover */
+.gallery-page__single { margin-bottom: 28px; }
+.gallery-page__img { position: relative; }
+
 
 .thm-btn,
 .main-menu-three__call-number a,

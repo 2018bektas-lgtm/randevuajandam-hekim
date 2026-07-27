@@ -2,7 +2,7 @@
     if (! isset($nav) || ! is_array($nav)) {
         $nav = function_exists('site_nav') ? site_nav(isset($doktor) && is_array($doktor) ? $doktor : null) : [];
     }
-    $dg = rtrim(asset('themes/delogis'), '/');
+    $dg = rtrim((string) request()->getBasePath(), '/').'/themes/delogis';
     $logo = $doktor['logo'] ?? null;
     $adSoyad = trim(($doktor['unvan'] ?? '').' '.($doktor['ad_soyad'] ?? 'Hekim'));
     $tel = $doktor['telefon'] ?? null;

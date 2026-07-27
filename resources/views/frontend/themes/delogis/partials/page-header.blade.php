@@ -1,5 +1,5 @@
 @php
-    $dg = rtrim(asset('themes/delogis'), '/');
+    $dg = rtrim((string) request()->getBasePath(), '/').'/themes/delogis';
     $title = $title ?? 'Sayfa';
     $crumb = $crumb ?? $title;
 @endphp

@@ -15,20 +15,60 @@
 @section('meta_aciklama', $pageAlt)
 
 @section('icerik')
-<section class="mp-page-hero">
-    <div class="mp-container">
-        <div class="mp-breadcrumb">
-            <a href="{{ route('frontend.anasayfa') }}">Ana Sayfa</a>
-            <span>/</span>
-            <span>Randevu</span>
+@php
+    $tel = $doktor['telefon'] ?? null;
+    $telRaw = $doktor['telefon_raw'] ?? preg_replace('/\D+/', '', (string) $tel);
+    $eposta = $doktor['e_posta'] ?? null;
+    $adres = $doktor['adres'] ?? trim(($doktor['ilce'] ?? '').' '.($doktor['il'] ?? ''));
+    $cs = $doktor['calisma_saatleri'] ?? [];
+@endphp
+
+@include('frontend.themes.delogis.partials.page-header', [
+    'title' => $pageBaslik,
+    'crumb' => request()->routeIs('frontend.randevu') ? 'Randevu' : 'İletişim',
+])
+
+<section class="contact-page" style="padding-bottom:20px">
+    <div class="container">
+        <div class="row">
+            @if($tel)
+            <div class="col-xl-4 col-lg-4">
+                <div class="contact-page__single">
+                    <div class="contact-page__icon"><span class="icon-phone-call"></span></div>
+                    <h3 class="contact-page__title">Telefon</h3>
+                    <p class="contact-page__text"><a href="tel:{{ $telRaw }}">{{ $tel }}</a></p>
+                </div>
+            </div>
+            @endif
+            @if($eposta)
+            <div class="col-xl-4 col-lg-4">
+                <div class="contact-page__single">
+                    <div class="contact-page__icon"><span class="fas fa-envelope"></span></div>
+                    <h3 class="contact-page__title">E-posta</h3>
+                    <p class="contact-page__text"><a href="mailto:{{ $eposta }}">{{ $eposta }}</a></p>
+                </div>
+            </div>
+            @endif
+            @if($adres)
+            <div class="col-xl-4 col-lg-4">
+                <div class="contact-page__single">
+                    <div class="contact-page__icon"><span class="fas fa-map-marker-alt"></span></div>
+                    <h3 class="contact-page__title">Adres</h3>
+                    <p class="contact-page__text">{{ $adres }}</p>
+                </div>
+            </div>
+            @endif
         </div>
-        <h1>{{ $pageBaslik }}</h1>
-        <p>{{ $pageAlt }}</p>
     </div>
 </section>
 
-<section class="mp-section mp-page" id="randevu">
-    <div class="mp-container">
+<section class="mp-section mp-page" id="randevu" style="padding-top:10px">
+    <div class="container">
+        <div class="section-title text-center" style="margin-bottom:24px">
+            <span class="section-title__tagline">Online randevu</span>
+            <h2 class="section-title__title">{{ $pageBaslik }}</h2>
+            <p>{{ $pageAlt }}</p>
+        </div>
         <div class="mp-book">
             @if($formGoster)
             <div class="mp-book-shell">

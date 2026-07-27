@@ -1,33 +1,52 @@
 @extends(theme_layout())
 
-@section('baslik', 'SSS | '.($doktor['ad_soyad'] ?? 'Hekim'))
-@section('meta_aciklama', 'Sık sorulan sorular.')
+@section('baslik', 'Sıkça Sorulan Sorular | '.($doktor['ad_soyad'] ?? 'Hekim'))
+@section('meta_aciklama', 'Sıkça sorulan sorular')
 
 @section('icerik')
-<section class="mp-page-hero">
-    <div class="mp-container">
-        <div class="mp-breadcrumb">
-            <a href="{{ route('frontend.anasayfa') }}">Ana Sayfa</a>
-            <span>/</span>
-            <span>SSS</span>
-        </div>
-        <h1>Sık sorulan sorular</h1>
-        <p>Merak ettikleriniz için kısa yanıtlar.</p>
-    </div>
-</section>
+@php
+    $sss = collect($doktor['sss'] ?? $doktor['faqs'] ?? [])->values();
+@endphp
 
-<section class="mp-section mp-page">
-    <div class="mp-container" style="max-width:800px">
-        @forelse (($doktor['sss'] ?? []) as $i => $item)
-            <div class="mp-card" style="margin-bottom:12px">
-                <h3 style="margin:0 0 8px;font-size:1.05rem">{{ $item['soru'] ?? '' }}</h3>
-                <p style="margin:0;color:var(--muted);line-height:1.65">{{ $item['cevap'] ?? '' }}</p>
+@include('frontend.themes.delogis.partials.page-header', ['title' => 'S.S.S.', 'crumb' => 'S.S.S.'])
+
+<section class="faq-page">
+    <div class="container">
+        <div class="section-title text-center">
+            <span class="section-title__tagline">Yardım</span>
+            <h2 class="section-title__title">Sıkça sorulan sorular</h2>
+        </div>
+
+        @if($sss->isEmpty())
+            <div class="text-center" style="padding:40px 0">
+                <p>Henüz SSS eklenmemiş.</p>
+                <a href="{{ route('frontend.iletisim') }}" class="thm-btn" style="margin-top:12px">İletişime geçin</a>
             </div>
-        @empty
-            <p class="mp-book-empty">Henüz SSS eklenmemiş.</p>
-        @endforelse
-        <div style="text-align:center;margin-top:28px">
-            <a href="{{ route('frontend.randevu') }}" class="mp-btn mp-btn-primary">Randevu Al</a>
+        @else
+            <div class="faq-page__single">
+                <div class="accrodion-grp" data-grp-name="faq-one-accrodion">
+                    @foreach ($sss as $i => $item)
+                        @php
+                            $q = $item['soru'] ?? $item['question'] ?? $item['baslik'] ?? 'Soru';
+                            $a = $item['cevap'] ?? $item['answer'] ?? $item['icerik'] ?? '';
+                        @endphp
+                        <div class="accrodion {{ $i === 0 ? 'active' : '' }}">
+                            <div class="accrodion-title">
+                                <h4>{{ $q }}</h4>
+                            </div>
+                            <div class="accrodion-content">
+                                <div class="inner">
+                                    <p>{!! nl2br(e(strip_tags((string)$a))) !!}</p>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
+
+        <div class="text-center" style="margin-top:40px">
+            <a href="{{ route('frontend.randevu') }}" class="thm-btn">Randevu Al</a>
         </div>
     </div>
 </section>
