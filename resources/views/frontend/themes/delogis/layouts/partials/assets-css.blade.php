@@ -4,7 +4,8 @@
 @endphp
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&family=Castoro:ital@0;1&display=swap" rel="stylesheet">
+{{-- Lexend + Castoro: Latin Extended (Türkçe ğüşıöç) destekler; alagambe/reey desteklemez --}}
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&family=Castoro:ital@0;1&display=swap&subset=latin,latin-ext" rel="stylesheet">
 <link rel="stylesheet" href="{{ $dg }}/vendors/bootstrap/css/bootstrap.min.css">
 <link rel="stylesheet" href="{{ $dg }}/vendors/animate/animate.min.css">
 <link rel="stylesheet" href="{{ $dg }}/vendors/animate/custom-animate.css">

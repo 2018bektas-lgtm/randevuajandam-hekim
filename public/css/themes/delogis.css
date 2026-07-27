@@ -1095,6 +1095,68 @@ body.theme-delogis .faq-search-box__inner {
 }
 
 /* ------------------------------------------------------------------
+   Türkçe karakter güvenli fontlar
+   alagamberegular / reey → ğüşıöç desteklemez; Lexend + Castoro kullan
+------------------------------------------------------------------- */
+body.theme-delogis {
+  --delogis-font: "Lexend", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --delogis-font-two: "Castoro", "Times New Roman", Georgia, serif;
+  /* script font yerine Castoro (başlık) */
+  --delogis-font-three: "Castoro", "Times New Roman", Georgia, serif;
+}
+body.theme-delogis,
+body.theme-delogis body,
+body.theme-delogis p,
+body.theme-delogis a,
+body.theme-delogis li,
+body.theme-delogis span,
+body.theme-delogis input,
+body.theme-delogis textarea,
+body.theme-delogis button {
+  font-family: var(--delogis-font);
+}
+body.theme-delogis h1,
+body.theme-delogis h2,
+body.theme-delogis h3,
+body.theme-delogis h4,
+body.theme-delogis h5,
+body.theme-delogis h6,
+body.theme-delogis .section-title__title {
+  font-family: var(--delogis-font-two);
+}
+/* Slider: ad soyad + uzmanlık — script font KALDIR */
+body.theme-delogis .main-slider-three__founder-name,
+body.theme-delogis .main-slider-three__title,
+body.theme-delogis .main-slider-three__title span,
+body.theme-delogis .main-slider-three__sub-title,
+body.theme-delogis .main-slider-three__founder-sub-title {
+  font-family: var(--delogis-font-two) !important;
+  font-feature-settings: "kern" 1, "liga" 1;
+  -webkit-font-smoothing: antialiased;
+}
+body.theme-delogis .main-slider-three__founder-name {
+  font-size: 28px !important;
+  line-height: 1.25 !important;
+  font-weight: 500 !important;
+  color: var(--delogis-black, #1a1414);
+}
+body.theme-delogis .main-slider-three__founder-sub-title {
+  font-family: var(--delogis-font) !important;
+  font-size: 14px !important;
+  line-height: 1.4 !important;
+  color: var(--delogis-gray, #736b6b);
+}
+body.theme-delogis .main-slider-three__title {
+  font-weight: 400 !important;
+}
+/* Diğer alagambe kullanan yerler de Türkçe bozmasın */
+body.theme-delogis [style*="alagamberegular"],
+body.theme-delogis .reey-font,
+body.theme-delogis .alagambe {
+  font-family: var(--delogis-font-two) !important;
+}
+
+/* ------------------------------------------------------------------
    Randevu (mp-book) — Delogis temaya uyum
 ------------------------------------------------------------------- */
 body.theme-delogis {

@@ -82,8 +82,8 @@
                         <div class="main-slider-three__btn-founder-box">
                             <a href="{{ $ctaUrl }}" class="main-slider-two__btn-one thm-btn">{{ $cta }}</a>
                             <div class="main-slider-three__founder-box">
-                                <h4 class="main-slider-three__founder-name">{{ $ad }}</h4>
-                                <p class="main-slider-three__founder-sub-title">{{ $doktor['uzmanlik'] ?? '' }}</p>
+                                <h4 class="main-slider-three__founder-name">{{ decode_text($ad) }}</h4>
+                                <p class="main-slider-three__founder-sub-title">{{ decode_text($doktor['uzmanlik'] ?? '') }}</p>
                             </div>
                         </div>
                     </div>
