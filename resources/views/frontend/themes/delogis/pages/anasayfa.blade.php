@@ -49,13 +49,14 @@
                 $cta = $slide['cta'] ?? 'Randevu Al';
                 $ctaUrl = $slide['cta_url'] ?? route('frontend.randevu');
                 if ($ctaUrl === '/randevu') { $ctaUrl = route('frontend.randevu'); }
-                // Panelden yüklenen görsel önce gelir (local storage); yoksa tema arkaplanı
+                // Panel görseli local storage'dan; bg olarak kullan (API değil)
                 $bg = $slide['bg'] ?? $slide['image'] ?? ($dg.'/images/backgrounds/main-slider-three-bg.jpg');
                 $sideImg = $slide['thumb'] ?? null;
-                // thumb yoksa ve bg zaten slide image ise sağdaki figürü tekrar basma (çift görüntü)
-                if (! $sideImg && ! empty($slide['image']) && ($bg === $slide['image'])) {
+                // thumb = image ise (panelde tek görsel) sağda tekrar gösterme
+                if ($sideImg && $sideImg === $bg) {
                     $sideImg = null;
-                } elseif (! $sideImg && ! empty($slide['image']) && $bg !== $slide['image']) {
+                }
+                if (! $sideImg && ! empty($slide['image']) && $slide['image'] !== $bg) {
                     $sideImg = $slide['image'];
                 }
             @endphp
