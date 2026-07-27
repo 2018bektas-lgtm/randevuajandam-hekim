@@ -109,7 +109,7 @@
                     $hImg = $h['image'] ?? $h['resim'] ?? null;
                     $href = route('frontend.hizmet.detay', $hSlug ?: ($h['id'] ?? ''));
                 @endphp
-                <div class="col-xl-4 col-lg-4 wow fadeInUp" data-wow-delay="{{ ($idx + 1) * 100 }}ms">
+                <div class="col-xl-4 col-lg-4 wow fadeInUp dg-card-col" data-wow-delay="{{ ($idx + 1) * 100 }}ms">
                     <div class="feature-two__single">
                         <div class="feature-two__img-box">
                             @if($hImg)
@@ -117,8 +117,8 @@
                                     <img src="{{ $hImg }}" alt="{{ $hAd }}">
                                 </div>
                             @else
-                                <div class="feature-two__img feature-two__img--placeholder" style="min-height:260px;background:var(--delogis-extra,#F6F2ED);display:flex;align-items:center;justify-content:center">
-                                    <span class="{{ $icons[$idx % count($icons)] }}" style="font-size:48px;color:var(--delogis-base,#B9905D)"></span>
+                                <div class="feature-two__img dg-card__img--empty">
+                                    <span class="{{ $icons[$idx % count($icons)] }}"></span>
                                 </div>
                             @endif
                             <div class="feature-two__title-box">
@@ -220,15 +220,17 @@
                     $hDesc = \Illuminate\Support\Str::limit(strip_tags((string)($h['kisa'] ?? $h['aciklama'] ?? '')), 100);
                     $href = route('frontend.hizmet.detay', $hSlug ?: ($h['id'] ?? ''));
                 @endphp
-                <div class="col-xl-4 col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="{{ ($idx % 3 + 1) * 100 }}ms">
-                    <div class="services-three__single">
+                <div class="col-xl-4 col-lg-4 col-md-6 wow fadeInUp dg-card-col" data-wow-delay="{{ ($idx % 3 + 1) * 100 }}ms">
+                    <div class="services-three__single dg-card">
                         <div class="services-three__icon">
                             <span class="{{ $icons[$idx % count($icons)] }}"></span>
                         </div>
-                        <h3 class="services-three__title"><a href="{{ $href }}">{{ $hAd }}</a></h3>
-                        <p class="services-three__text">{{ $hDesc !== '' ? $hDesc : 'Detay için tıklayın.' }}</p>
-                        <div class="services-three__btn-box">
-                            <a href="{{ $href }}"><span class="icon-right-arrow"></span> İncele</a>
+                        <div class="dg-card__body">
+                            <h3 class="services-three__title"><a href="{{ $href }}">{{ $hAd }}</a></h3>
+                            <p class="services-three__text">{{ $hDesc !== '' ? $hDesc : 'Detay için tıklayın.' }}</p>
+                            <div class="services-three__btn-box">
+                                <a href="{{ $href }}"><span class="icon-right-arrow"></span> İncele</a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -306,15 +308,17 @@
                     $bImg = $b['image'] ?? $b['kapak'] ?? $b['resim'] ?? null;
                     $href = route('frontend.blog.detay', $bSlug);
                 @endphp
-                <div class="col-xl-4 col-lg-4 wow fadeInUp">
-                    <div class="blog-two__single">
-                        @if($bImg)
-                            <div class="blog-two__img">
+                <div class="col-xl-4 col-lg-4 wow fadeInUp dg-card-col">
+                    <div class="blog-two__single dg-card">
+                        <div class="blog-two__img dg-card__img">
+                            @if($bImg)
                                 <img src="{{ $bImg }}" alt="{{ $bTitle }}">
-                                <a href="{{ $href }}"><span class="blog-two__plus"></span></a>
-                            </div>
-                        @endif
-                        <div class="blog-two__content">
+                            @else
+                                <div class="dg-card__img--empty"></div>
+                            @endif
+                            <a href="{{ $href }}"><span class="blog-two__plus"></span></a>
+                        </div>
+                        <div class="blog-two__content dg-card__body">
                             <h3 class="blog-two__title"><a href="{{ $href }}">{{ $bTitle }}</a></h3>
                             <p class="blog-two__text">{{ \Illuminate\Support\Str::limit(strip_tags((string)($b['ozet'] ?? $b['icerik'] ?? '')), 100) }}</p>
                         </div>

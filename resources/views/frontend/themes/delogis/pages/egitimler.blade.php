@@ -28,19 +28,21 @@
                         $href = route('frontend.egitim.detay', $slug);
                         $img = $e['image'] ?? null;
                     @endphp
-                    <div class="col-xl-4 col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="{{ ($idx % 3 + 1) * 100 }}ms">
-                        <div class="services-three__single">
-                            @if($img)
-                                <div style="margin-bottom:16px;border-radius:12px;overflow:hidden">
-                                    <img src="{{ $img }}" alt="{{ $ad }}" style="width:100%;height:160px;object-fit:cover">
+                    <div class="col-xl-4 col-lg-4 col-md-6 wow fadeInUp dg-card-col" data-wow-delay="{{ ($idx % 3 + 1) * 100 }}ms">
+                        <div class="services-three__single dg-card">
+                            <div class="dg-card__media dg-card__img">
+                                @if($img)
+                                    <img src="{{ $img }}" alt="{{ $ad }}">
+                                @else
+                                    <div class="dg-card__img--empty"><span class="icon-help"></span></div>
+                                @endif
+                            </div>
+                            <div class="dg-card__body">
+                                <h3 class="services-three__title"><a href="{{ $href }}">{{ $ad }}</a></h3>
+                                <p class="services-three__text">{{ \Illuminate\Support\Str::limit(strip_tags((string)($e['ozet'] ?? '')), 120) }}</p>
+                                <div class="services-three__btn-box">
+                                    <a href="{{ $href }}">Detay <span class="icon-right-arrow"></span></a>
                                 </div>
-                            @else
-                                <div class="services-three__icon"><span class="icon-help"></span></div>
-                            @endif
-                            <h3 class="services-three__title"><a href="{{ $href }}">{{ $ad }}</a></h3>
-                            <p class="services-three__text">{{ \Illuminate\Support\Str::limit(strip_tags((string)($e['ozet'] ?? '')), 120) }}</p>
-                            <div class="services-three__btn-box">
-                                <a href="{{ $href }}">Detay <span class="icon-right-arrow"></span></a>
                             </div>
                         </div>
                     </div>

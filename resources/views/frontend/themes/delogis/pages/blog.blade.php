@@ -28,21 +28,23 @@
                         $href = route('frontend.blog.detay', $bSlug);
                         $tarih = $b['tarih'] ?? $b['created_at'] ?? null;
                     @endphp
-                    <div class="col-xl-4 col-lg-4 col-md-6 wow fadeInUp">
-                        <div class="blog-two__single">
-                            @if($bImg)
-                                <div class="blog-two__img">
+                    <div class="col-xl-4 col-lg-4 col-md-6 wow fadeInUp dg-card-col">
+                        <div class="blog-two__single dg-card">
+                            <div class="blog-two__img dg-card__media dg-card__img">
+                                @if($bImg)
                                     <img src="{{ $bImg }}" alt="{{ $bTitle }}">
-                                    <a href="{{ $href }}"><span class="blog-two__plus"></span></a>
-                                </div>
-                            @endif
-                            <div class="blog-two__content">
+                                @else
+                                    <div class="dg-card__img--empty"></div>
+                                @endif
+                                <a href="{{ $href }}"><span class="blog-two__plus"></span></a>
+                            </div>
+                            <div class="blog-two__content dg-card__body">
                                 @if($tarih)
                                     <p class="blog-two__date" style="font-size:12px;opacity:.7;margin-bottom:8px">{{ \Illuminate\Support\Str::limit((string)$tarih, 32) }}</p>
                                 @endif
                                 <h3 class="blog-two__title"><a href="{{ $href }}">{{ $bTitle }}</a></h3>
                                 <p class="blog-two__text">{{ $bOzet }}</p>
-                                <a href="{{ $href }}" class="blog-two__read-more" style="font-weight:600;color:var(--delogis-base,#B9905D)">Devamını oku →</a>
+                                <a href="{{ $href }}" class="blog-two__read-more" style="font-weight:600;color:var(--delogis-base,#976147)">Devamını oku →</a>
                             </div>
                         </div>
                     </div>

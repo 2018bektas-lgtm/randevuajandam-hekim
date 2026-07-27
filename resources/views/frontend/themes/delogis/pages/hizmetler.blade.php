@@ -32,23 +32,23 @@
                         $href = route('frontend.hizmet.detay', $hSlug ?: ($h['id'] ?? ''));
                         $img = $h['image'] ?? $h['resim'] ?? null;
                     @endphp
-                    <div class="col-xl-4 col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="{{ ($idx % 3 + 1) * 100 }}ms">
-                        <div class="services-two__single">
-                            <div class="services-two__img-box">
+                    <div class="col-xl-4 col-lg-4 col-md-6 wow fadeInUp dg-card-col" data-wow-delay="{{ ($idx % 3 + 1) * 100 }}ms">
+                        <div class="services-two__single dg-card">
+                            <div class="services-two__img-box dg-card__media">
                                 @if($img)
-                                    <div class="services-two__img">
+                                    <div class="services-two__img dg-card__img">
                                         <img src="{{ $img }}" alt="{{ $hAd }}">
                                     </div>
                                 @else
-                                    <div class="services-two__img" style="min-height:220px;background:var(--delogis-extra,#F6F2ED);display:flex;align-items:center;justify-content:center">
-                                        <span class="{{ $icons[$idx % count($icons)] }}" style="font-size:42px;color:var(--delogis-base,#B9905D)"></span>
+                                    <div class="services-two__img dg-card__img dg-card__img--empty">
+                                        <span class="{{ $icons[$idx % count($icons)] }}"></span>
                                     </div>
                                 @endif
                                 <div class="services-two__icon">
                                     <span class="{{ $icons[$idx % count($icons)] }}"></span>
                                 </div>
                             </div>
-                            <div class="services-two__content">
+                            <div class="services-two__content dg-card__body">
                                 <div class="services-two__title-box">
                                     <h3 class="services-two__title"><a href="{{ $href }}">{{ $hAd }}</a></h3>
                                     <p class="services-two__text">{{ $hDesc !== '' ? $hDesc : 'Detay ve randevu için tıklayın.' }}</p>

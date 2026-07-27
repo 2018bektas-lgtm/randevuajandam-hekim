@@ -31,14 +31,9 @@
                     <div class="services-details__text-1 dg-prose">
                         {!! $hDesc !!}
                     </div>
-                    @if(!empty($h['sure']) || !empty($h['fiyat']))
+                    @if(!empty($h['sure']))
                         <ul class="list-unstyled services-details__points" style="margin-top:20px">
-                            @if(!empty($h['sure']))
-                                <li><div class="icon"><i class="fa fa-clock"></i></div><div class="text"><p>Süre: {{ $h['sure'] }}</p></div></li>
-                            @endif
-                            @if(!empty($h['fiyat']))
-                                <li><div class="icon"><i class="fa fa-tag"></i></div><div class="text"><p>Ücret: {{ $h['fiyat'] }}</p></div></li>
-                            @endif
+                            <li><div class="icon"><i class="fa fa-clock"></i></div><div class="text"><p>Süre: {{ $h['sure'] }}</p></div></li>
                         </ul>
                     @endif
                 </div>

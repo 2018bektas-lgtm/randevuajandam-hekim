@@ -23,14 +23,9 @@
                 @endif
                 <h3 class="services-details__title-1">{{ $ad }}</h3>
                 <div class="dg-prose">{!! $icerik !!}</div>
-                @if(!empty($e['baslangic_label']) || !empty($e['fiyat_label']))
+                @if(!empty($e['baslangic_label']))
                     <ul class="list-unstyled about-four__points" style="margin-top:20px">
-                        @if(!empty($e['baslangic_label']))
-                            <li><div class="icon"><i class="fa fa-calendar"></i></div><div class="text"><p>{{ $e['baslangic_label'] }}</p></div></li>
-                        @endif
-                        @if(!empty($e['fiyat_label']))
-                            <li><div class="icon"><i class="fa fa-tag"></i></div><div class="text"><p>{{ $e['fiyat_label'] }}</p></div></li>
-                        @endif
+                        <li><div class="icon"><i class="fa fa-calendar"></i></div><div class="text"><p>{{ $e['baslangic_label'] }}</p></div></li>
                     </ul>
                 @endif
             </div>
