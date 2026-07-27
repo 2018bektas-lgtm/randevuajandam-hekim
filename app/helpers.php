@@ -162,20 +162,38 @@ if (! function_exists('resolve_site_theme')) {
 
 if (! function_exists('current_theme_id')) {
     /**
-     * Aktif tema id — $doktor context veya ayarlardan.
+     * Aktif tema id — $doktor context, view share veya panel site_options.
+     * Not: @extends(theme_layout()) doktor gelmeden çalışabildiği için
+     * site_options.tema_id mutlaka okunmalı; aksi halde default (tema-1) kalır.
      */
     function current_theme_id(?array $doktor = null): string
     {
         if (is_array($doktor)) {
             $id = $doktor['tema_id'] ?? ($doktor['tema']['id'] ?? null);
-
-            return resolve_site_theme(is_string($id) ? $id : null)['id'];
+            if (is_string($id) && $id !== '') {
+                return resolve_site_theme($id)['id'];
+            }
         }
 
         try {
             $fromView = view()->shared('doktor');
             if (is_array($fromView)) {
-                return current_theme_id($fromView);
+                $id = $fromView['tema_id'] ?? ($fromView['tema']['id'] ?? null);
+                if (is_string($id) && $id !== '') {
+                    return resolve_site_theme($id)['id'];
+                }
+            }
+        } catch (\Throwable) {
+            //
+        }
+
+        // Panelden seçilen tema (DB)
+        try {
+            if (class_exists(\App\Services\SiteSettingsService::class)) {
+                $opt = app(\App\Services\SiteSettingsService::class)->option('tema_id');
+                if (is_string($opt) && $opt !== '') {
+                    return resolve_site_theme($opt)['id'];
+                }
             }
         } catch (\Throwable) {
             //

@@ -1,5 +1,6 @@
 @php
-    $dg = rtrim(asset('themes/delogis'), '/');
+    // Kök-relative: APP_URL/asset() hatalarında bile aynı host'tan yüklensin
+    $dg = rtrim((string) request()->getBasePath(), '/').'/themes/delogis';
 @endphp
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

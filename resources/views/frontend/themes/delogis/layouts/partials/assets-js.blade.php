@@ -1,5 +1,5 @@
 @php
-    $dg = rtrim(asset('themes/delogis'), '/');
+    $dg = rtrim((string) request()->getBasePath(), '/').'/themes/delogis';
 @endphp
 <script src="{{ $dg }}/vendors/jquery/jquery-3.6.0.min.js"></script>
 <script src="{{ $dg }}/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>
