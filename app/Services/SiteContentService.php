@@ -243,7 +243,7 @@ class SiteContentService
                 ->all();
         }
 
-        // Slider: YALNIZCA panelde eklenen slaytlar (otomatik/sahte slider YOK)
+        // Slider: YALNIZCA panel + hekim sitesi local DB/storage (API media değil)
         $panelSlides = [];
         if (! empty($slider['slides']) && is_array($slider['slides'])) {
             $panelSlides = array_values(array_filter(
@@ -254,11 +254,11 @@ class SiteContentService
         if ($panelSlides !== []) {
             $out['slider'] = array_map(function ($s) {
                 $s = is_array($s) ? $s : (array) $s;
-                if (! empty($s['image'])) {
-                    $s['image'] = media_url($s['image']) ?: $s['image'];
-                }
-                if (! empty($s['thumb'])) {
-                    $s['thumb'] = media_url($s['thumb']) ?: $s['thumb'];
+                // site/slider/... dosyaları bu uygulamanın public/storage altında
+                foreach (['image', 'thumb', 'bg'] as $key) {
+                    if (! empty($s[$key])) {
+                        $s[$key] = $this->localSiteAssetUrl((string) $s[$key]);
+                    }
                 }
 
                 return $s;
@@ -610,6 +610,40 @@ class SiteContentService
         ];
 
         return $out;
+    }
+
+    /**
+     * Hekim sitesi paneli yüklemeleri (site/slider, logo…) bu app'in public/storage altında.
+     * media_url() API host'a çevirir — slider için KULLANILMAZ.
+     */
+    protected function localSiteAssetUrl(?string $path): ?string
+    {
+        $path = trim(str_replace('\\', '/', (string) $path));
+        if ($path === '') {
+            return null;
+        }
+
+        // Yerel site/ path'ini her zaman bu domain'in /storage/… adresine çek
+        if (preg_match('#(?:^|/)(site/(?:slider|logo|favicon|uploads|media)/.+)$#i', $path, $m)) {
+            return asset('storage/'.$m[1]);
+        }
+
+        // Zaten absolute harici URL (unsplash vb.) — olduğu gibi
+        if (preg_match('#^https?://#i', $path) || str_starts_with($path, 'data:')) {
+            // Yanlışlıkla API media'ya yazılmış site/slider URL'lerini düzelt
+            if (preg_match('#/media/(?:storage/)?(site/.+)$#i', $path, $m)) {
+                return asset('storage/'.$m[1]);
+            }
+
+            return $path;
+        }
+
+        $path = ltrim($path, '/');
+        if (str_starts_with($path, 'storage/')) {
+            return asset($path);
+        }
+
+        return asset('storage/'.$path);
     }
 
     protected function extractBullets(string $text): array

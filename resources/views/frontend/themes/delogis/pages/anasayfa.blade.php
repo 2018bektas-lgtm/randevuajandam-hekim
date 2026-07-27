@@ -49,16 +49,24 @@
                 $cta = $slide['cta'] ?? 'Randevu Al';
                 $ctaUrl = $slide['cta_url'] ?? route('frontend.randevu');
                 if ($ctaUrl === '/randevu') { $ctaUrl = route('frontend.randevu'); }
-                $bg = $slide['bg'] ?? ($dg.'/images/backgrounds/main-slider-three-bg.jpg');
+                // Panelden yüklenen görsel önce gelir (local storage); yoksa tema arkaplanı
+                $bg = $slide['bg'] ?? $slide['image'] ?? ($dg.'/images/backgrounds/main-slider-three-bg.jpg');
+                $sideImg = $slide['thumb'] ?? null;
+                // thumb yoksa ve bg zaten slide image ise sağdaki figürü tekrar basma (çift görüntü)
+                if (! $sideImg && ! empty($slide['image']) && ($bg === $slide['image'])) {
+                    $sideImg = null;
+                } elseif (! $sideImg && ! empty($slide['image']) && $bg !== $slide['image']) {
+                    $sideImg = $slide['image'];
+                }
             @endphp
             <div class="item main-slider-three__slide-{{ ($i % 3) + 1 }}">
                 <div class="main-slider-three__bg" style="background-image: url({{ $bg }});"></div>
                 <div class="main-slider-three__shape-3 img-bounce">
                     <img src="{{ $dg }}/images/shapes/main-slider-three-shape-3.png" alt="">
                 </div>
-                @if($img)
+                @if($sideImg)
                     <div class="main-slider-three__img">
-                        <img src="{{ $img }}" alt="{{ $title }}">
+                        <img src="{{ $sideImg }}" alt="{{ $title }}">
                     </div>
                 @endif
                 <div class="main-slider-three__star-one zoominout">
