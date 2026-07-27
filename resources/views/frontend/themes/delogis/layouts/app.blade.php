@@ -33,18 +33,21 @@
 
     <div class="mobile-nav__wrapper">
         <div class="mobile-nav__overlay mobile-nav__toggler"></div>
-        <div class="mobile-nav__content">
-            <span class="mobile-nav__close mobile-nav__toggler"><i class="fa fa-times"></i></span>
+        <div class="mobile-nav__content dg-mobile-drawer">
+            <span class="mobile-nav__close mobile-nav__toggler" aria-label="Kapat"><i class="fa fa-times"></i></span>
             <div class="logo-box">
                 <a href="{{ route('frontend.anasayfa') }}" aria-label="logo">
                     @if($logo)
-                        <img src="{{ $logo }}" width="135" alt="{{ $adSoyad }}">
+                        <img src="{{ $logo }}" alt="{{ $adSoyad }}" class="dg-mobile-drawer__logo">
                     @else
-                        <strong style="color:#fff">{{ $adSoyad }}</strong>
+                        <strong class="dg-mobile-drawer__name">{{ $adSoyad }}</strong>
                     @endif
                 </a>
             </div>
             <div class="mobile-nav__container"></div>
+            <div class="dg-mobile-drawer__cta">
+                <a href="{{ route('frontend.randevu') }}" class="thm-btn dg-mobile-drawer__btn">Randevu Al</a>
+            </div>
             <ul class="mobile-nav__contact list-unstyled">
                 @if($eposta)
                     <li><i class="fa fa-envelope"></i> <a href="mailto:{{ $eposta }}">{{ $eposta }}</a></li>

@@ -2,7 +2,7 @@
     if (! isset($nav) || ! is_array($nav)) {
         $nav = function_exists('site_nav') ? site_nav(isset($doktor) && is_array($doktor) ? $doktor : null) : [];
     }
-    // Menüde "Randevu Al" yok — sağda sabit buton var
+    // Menüde "Randevu Al" yok — sağda / mobilde sabit buton var
     $nav = collect($nav)
         ->filter(function ($item) {
             $label = mb_strtolower(trim((string) ($item['label'] ?? '')));
@@ -21,6 +21,11 @@
         <div class="main-menu-three__wrapper">
             <div class="container">
                 <div class="main-menu-three__wrapper-inner dg-header-bar">
+                    {{-- Mobil: hamburger solda --}}
+                    <a href="#" class="mobile-nav__toggler dg-header-toggler" aria-label="Menü">
+                        <i class="fa fa-bars"></i>
+                    </a>
+
                     <div class="main-menu-three__left">
                         <div class="main-menu-three__logo">
                             <a href="{{ route('frontend.anasayfa') }}">
@@ -32,7 +37,6 @@
                             </a>
                         </div>
                         <div class="main-menu-three__main-menu-box">
-                            <a href="#" class="mobile-nav__toggler"><i class="fa fa-bars"></i></a>
                             <ul class="main-menu__list">
                                 @foreach ($nav as $item)
                                     @php $active = ! empty($item['match']) && request()->routeIs($item['match']); @endphp
@@ -44,6 +48,7 @@
                             </ul>
                         </div>
                     </div>
+
                     <div class="main-menu-three__right">
                         <div class="dg-header-cta">
                             <a href="{{ route('frontend.randevu') }}" class="dg-header-cta__btn">

@@ -336,46 +336,196 @@ body.theme-delogis .stricky-header .container {
   padding-left: 15px;
   padding-right: 15px;
 }
-@media (max-width: 991px) {
+/* ------------------------------------------------------------------
+   Mobil header (≤1199) — temiz bar: [☰] [logo] [Randevu]
+------------------------------------------------------------------- */
+body.theme-delogis .dg-header-toggler {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: #f2edea;
+  color: #976147 !important;
+  font-size: 18px;
+  flex-shrink: 0;
+  text-decoration: none !important;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+body.theme-delogis .dg-header-toggler:hover {
+  background: #976147;
+  color: #fff !important;
+}
+
+@media (max-width: 1199px) {
+  /* Mobilde her zaman solid bar (anasayfada absolute/şeffaf bozuluyor) */
+  body.theme-delogis.dg-home .main-header-three,
+  body.theme-delogis.dg-inner .main-header-three {
+    position: relative !important;
+    background: #fff !important;
+    box-shadow: 0 2px 16px rgba(26, 20, 20, 0.08);
+  }
   body.theme-delogis .main-menu-three__wrapper-inner.dg-header-bar {
-    flex-wrap: nowrap;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-height: 64px;
+    padding: 6px 0 !important;
+  }
+  body.theme-delogis .dg-header-toggler {
+    display: inline-flex !important;
+    order: 1;
+  }
+  body.theme-delogis .main-menu-three__left {
+    order: 2;
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex !important;
+    justify-content: center;
+    padding: 0 !important;
   }
   body.theme-delogis .main-menu-three__logo {
-    margin-right: 12px !important;
-    max-width: min(200px, 42vw);
+    margin: 0 auto !important;
+    max-width: min(180px, 48vw);
+    padding: 4px 0 !important;
   }
   body.theme-delogis .main-menu-three__logo img {
-    max-height: 48px !important;
+    max-height: 46px !important;
+    margin: 0 auto;
+  }
+  body.theme-delogis .main-menu-three__main-menu-box {
+    /* desktop menü listesi mobilde gizli; drawer'a kopyalanır */
+    flex: 0 0 auto;
+  }
+  body.theme-delogis .main-menu-three__main-menu-box .main-menu__list {
+    display: none !important;
+  }
+  body.theme-delogis .main-menu-three__right {
+    order: 3;
+    margin-left: 0 !important;
+    padding: 0 !important;
+    padding-left: 0 !important;
+  }
+  body.theme-delogis .dg-header-cta {
+    padding: 0 !important;
+    padding-left: 0 !important;
+    margin: 0 !important;
   }
   body.theme-delogis .dg-header-cta__btn {
     padding: 9px 12px 9px 10px;
     gap: 6px;
     font-size: 12px;
+    box-shadow: 0 3px 10px rgba(151, 97, 71, 0.3);
   }
   body.theme-delogis .dg-header-cta__icon {
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
   }
   body.theme-delogis .dg-header-cta__icon svg {
-    width: 13px;
-    height: 13px;
+    width: 12px;
+    height: 12px;
   }
   body.theme-delogis .dg-header-cta__arrow {
-    display: none; /* dar ekranda sade tut */
+    display: none;
+  }
+  /* Anasayfa absolute değilken slider üst padding */
+  body.theme-delogis.dg-home .main-slider-three {
+    margin-top: 0;
   }
 }
 @media (max-width: 575px) {
+  body.theme-delogis .main-menu-three__wrapper-inner.dg-header-bar {
+    min-height: 58px;
+    gap: 6px;
+  }
+  body.theme-delogis .dg-header-toggler {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+  }
   body.theme-delogis .main-menu-three__logo {
-    max-width: min(160px, 46vw);
+    max-width: min(140px, 40vw);
   }
   body.theme-delogis .main-menu-three__logo img {
-    max-height: 44px !important;
+    max-height: 40px !important;
+  }
+  body.theme-delogis .dg-header-logo-text {
+    font-size: 0.95rem !important;
+    max-width: 120px;
   }
   body.theme-delogis .dg-header-cta__btn {
-    padding: 8px 11px 8px 9px;
+    padding: 8px 10px;
   }
   body.theme-delogis .dg-header-cta__label {
-    /* çok dar ekranda kısaltma gerekirse tam metin kalsın, ikon yeter */
+    max-width: 4.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+/* Mobil drawer güzelleştirme */
+body.theme-delogis .mobile-nav__content.dg-mobile-drawer {
+  background: #1a1414;
+  width: min(320px, 86vw);
+  padding: 28px 18px 32px;
+}
+body.theme-delogis .mobile-nav__content .logo-box {
+  margin-bottom: 28px;
+  padding-right: 36px;
+}
+body.theme-delogis .dg-mobile-drawer__logo {
+  max-height: 48px;
+  width: auto;
+  max-width: 180px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+body.theme-delogis .dg-mobile-drawer__name {
+  color: #fff;
+  font-family: Castoro, Georgia, serif;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+body.theme-delogis .mobile-nav__content .main-menu__list > li > a {
+  font-size: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+body.theme-delogis .dg-mobile-drawer__cta {
+  margin: 22px 0 18px;
+}
+body.theme-delogis .dg-mobile-drawer__btn {
+  display: inline-flex !important;
+  width: 100%;
+  justify-content: center;
+  padding: 14px 20px !important;
+  border-radius: 999px !important;
+  background: linear-gradient(135deg, #976147, #5b4034) !important;
+  color: #fff !important;
+  font-weight: 700;
+  text-align: center;
+}
+body.theme-delogis .mobile-nav__contact {
+  margin-top: 12px;
+}
+body.theme-delogis .mobile-nav__contact li {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+body.theme-delogis .mobile-nav__contact a {
+  color: #fff;
+}
+body.theme-delogis .mobile-nav__social a {
+  color: #fff;
+}
+
+@media (min-width: 1200px) {
+  body.theme-delogis .dg-header-toggler {
+    display: none !important;
   }
 }
 /* Anasayfa services-three dekoratif bg de sadeleştir */
