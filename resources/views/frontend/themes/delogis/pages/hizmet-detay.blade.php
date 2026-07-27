@@ -12,7 +12,7 @@
 @section('icerik')
 @php
     $dg = rtrim((string) request()->getBasePath(), '/').'/themes/delogis';
-    $img = $h['image'] ?? $h['resim'] ?? $dg.'/images/resources/services-details-img-1.jpg';
+    $img = $h['image'] ?? $h['resim'] ?? null;
 @endphp
 
 @include('frontend.themes.delogis.partials.page-header', ['title' => $hAd, 'crumb' => 'Hizmetler'])
@@ -22,9 +22,11 @@
         <div class="row">
             <div class="col-xl-8 col-lg-7">
                 <div class="services-details__left">
-                    <div class="services-details__img">
-                        <img src="{{ $img }}" alt="{{ $hAd }}">
-                    </div>
+                    @if($img)
+                        <div class="services-details__img">
+                            <img src="{{ $img }}" alt="{{ $hAd }}">
+                        </div>
+                    @endif
                     <h3 class="services-details__title-1">{{ $hAd }}</h3>
                     <div class="services-details__text-1 dg-prose">
                         {!! $hDesc !!}

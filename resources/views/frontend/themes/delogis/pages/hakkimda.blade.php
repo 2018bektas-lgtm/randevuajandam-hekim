@@ -7,8 +7,8 @@
 @php
     $dg = rtrim((string) request()->getBasePath(), '/').'/themes/delogis';
     $photo = function_exists('doctor_photo')
-        ? doctor_photo($doktor ?? null, $dg.'/images/resources/about-four-img-1.jpg')
-        : ($doktor['profil_resmi'] ?? $dg.'/images/resources/about-four-img-1.jpg');
+        ? doctor_photo($doktor ?? null, null)
+        : ($doktor['profil_resmi'] ?? null);
     $ad = trim(($doktor['unvan'] ?? '').' '.($doktor['ad_soyad'] ?? 'Hekim'));
     $bio = $doktor['bio'] ?? $doktor['biyografi'] ?? $doktor['kisa_bio'] ?? '';
     $mezuniyet = collect($doktor['mezuniyet'] ?? [])->filter()->take(8);
@@ -20,6 +20,7 @@
 <section class="about-four">
     <div class="container">
         <div class="row">
+            @if($photo)
             <div class="col-xl-6 col-lg-5">
                 <div class="about-four__left">
                     <div class="about-four__img">
@@ -27,7 +28,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col-xl-6 col-lg-7">
+            @endif
+            <div class="{{ $photo ? 'col-xl-6 col-lg-7' : 'col-xl-12' }}">
                 <div class="about-four__right">
                     <div class="section-title text-left">
                         <span class="section-title__tagline">{{ $doktor['uzmanlik'] ?? 'Uzman hekim' }}</span>

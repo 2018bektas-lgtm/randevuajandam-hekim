@@ -243,28 +243,29 @@ class SiteContentService
                 ->all();
         }
 
-        // Slider: panel slaytları varsa onları kullan; yoksa fromApi/buildSlider (veya mevcut) kalsın
+        // Slider: YALNIZCA panelde eklenen slaytlar (otomatik/sahte slider YOK)
+        $panelSlides = [];
         if (! empty($slider['slides']) && is_array($slider['slides'])) {
             $panelSlides = array_values(array_filter(
                 $slider['slides'],
-                fn ($s) => ! empty($s['baslik']) || ! empty($s['image'])
+                fn ($s) => is_array($s) && (! empty($s['baslik']) || ! empty($s['image']))
             ));
-            if ($panelSlides !== []) {
-                // medya URL'lerini normalize et
-                $out['slider'] = array_map(function ($s) {
-                    $s = is_array($s) ? $s : (array) $s;
-                    if (! empty($s['image'])) {
-                        $s['image'] = media_url($s['image']) ?: $s['image'];
-                    }
-                    if (! empty($s['thumb'])) {
-                        $s['thumb'] = media_url($s['thumb']) ?: $s['thumb'];
-                    }
-
-                    return $s;
-                }, $panelSlides);
-            }
         }
-        // Panel boşsa $out['slider'] (API/auto) bozulmaz
+        if ($panelSlides !== []) {
+            $out['slider'] = array_map(function ($s) {
+                $s = is_array($s) ? $s : (array) $s;
+                if (! empty($s['image'])) {
+                    $s['image'] = media_url($s['image']) ?: $s['image'];
+                }
+                if (! empty($s['thumb'])) {
+                    $s['thumb'] = media_url($s['thumb']) ?: $s['thumb'];
+                }
+
+                return $s;
+            }, $panelSlides);
+        } else {
+            $out['slider'] = [];
+        }
 
         // Ana sayfa bölümleri: görünürlük + sıralama + özel başlıklar
         $defaultBolumler = [
@@ -592,7 +593,8 @@ class SiteContentService
             ])->filter(fn ($y) => $y['metin'] !== '')->values()->all();
         }
 
-        $out['slider'] = $this->buildSlider($out);
+        // Otomatik slider üretme — panel boşsa boş kalsın (applyLocalSettings panel slaytlarını koyar)
+        $out['slider'] = [];
         $out['istatistikler'] = $this->buildStats($out);
         $out['surec'] = [
             ['adim' => '01', 'baslik' => 'Online randevu', 'aciklama' => 'Uygun gün ve saati seçerek randevu talebinizi oluşturun.'],
@@ -700,16 +702,22 @@ class SiteContentService
             $yil = (int) $m[1];
         }
 
-        return array_values(array_filter([
-            $yil > 0 ? ['deger' => $yil, 'suffix' => '+', 'etiket' => 'Yıllık Deneyim', 'aciklama' => 'Klinik pratik'] : null,
-            ['deger' => max($hizmetSay, 0), 'suffix' => '', 'etiket' => 'Aktif Hizmet', 'aciklama' => 'Ana platform'],
-            ['deger' => max($blogSay, 0), 'suffix' => '', 'etiket' => 'Blog Yazısı', 'aciklama' => 'Bilgilendirici içerik'],
-            [
-                'deger' => $puan !== null ? round((float) $puan, 1) : max($yorumSay, 0),
-                'suffix' => '',
-                'etiket' => $puan !== null ? 'Ortalama Puan' : 'Onaylı Yorum',
-                'aciklama' => 'Danışan geri bildirimi',
-            ],
-        ]));
+        $items = [];
+        if ($yil > 0) {
+            $items[] = ['deger' => $yil, 'suffix' => '+', 'etiket' => 'Yıllık Deneyim', 'aciklama' => 'Klinik pratik'];
+        }
+        if ($hizmetSay > 0) {
+            $items[] = ['deger' => $hizmetSay, 'suffix' => '', 'etiket' => 'Aktif Hizmet', 'aciklama' => 'Ana platform'];
+        }
+        if ($blogSay > 0) {
+            $items[] = ['deger' => $blogSay, 'suffix' => '', 'etiket' => 'Blog Yazısı', 'aciklama' => 'Bilgilendirici içerik'];
+        }
+        if ($puan !== null && (float) $puan > 0) {
+            $items[] = ['deger' => round((float) $puan, 1), 'suffix' => '', 'etiket' => 'Ortalama Puan', 'aciklama' => 'Danışan geri bildirimi'];
+        } elseif ($yorumSay > 0) {
+            $items[] = ['deger' => $yorumSay, 'suffix' => '', 'etiket' => 'Onaylı Yorum', 'aciklama' => 'Danışan geri bildirimi'];
+        }
+
+        return $items;
     }
 }
