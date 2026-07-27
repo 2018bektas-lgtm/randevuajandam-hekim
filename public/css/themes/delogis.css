@@ -225,6 +225,18 @@ body.theme-delogis .dg-header-cta {
   flex-shrink: 0;
   padding: 10px 0 !important;
   margin-left: auto;
+  /* Menü metninden ayır — biraz sağa */
+  padding-left: 20px !important;
+  margin-right: 0;
+}
+body.theme-delogis .main-menu-three__left {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding-right: 12px;
+}
+body.theme-delogis .main-menu-three__main-menu-box {
+  flex: 1 1 auto;
+  min-width: 0;
 }
 body.theme-delogis .dg-header-cta__btn {
   position: relative;
