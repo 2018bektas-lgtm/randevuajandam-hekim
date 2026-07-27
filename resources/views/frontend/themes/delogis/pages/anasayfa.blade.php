@@ -42,23 +42,19 @@
          data-owl-options='{"loop": {{ count($slider) > 1 ? 'true' : 'false' }}, "items": 1, "navText": ["<span class=\"icon-left-arrow\"></span>","<span class=\"icon-right-arrow\"></span>"], "margin": 0, "dots": false, "nav": true, "animateOut": "fadeOut", "animateIn": "fadeIn", "active": true, "smartSpeed": 1000, "autoplay": {{ count($slider) > 1 ? 'true' : 'false' }}, "autoplayTimeout": 7000, "autoplayHoverPause": false}'>
         @foreach ($slider as $i => $slide)
             @php
-                $img = $slide['image'] ?? $slide['thumb'] ?? $photo;
-                $title = $slide['baslik'] ?? $ad;
-                $vurgulu = $slide['baslik_vurgulu'] ?? null;
-                $etiket = $slide['etiket'] ?? ($slide['badge'] ?? ($doktor['vitrin_badge'] ?? $doktor['uzmanlik'] ?? null));
-                $cta = $slide['cta'] ?? 'Randevu Al';
+                // index3: bg = dekoratif arkaplan, __img = sağdaki ana görsel (panelden)
+                $bg = $slide['bg'] ?? ($dg.'/images/backgrounds/main-slider-three-bg.jpg');
+                $sideImg = $slide['image'] ?? $slide['thumb'] ?? $photo ?? null;
+                $title = decode_text($slide['baslik'] ?? $ad);
+                $vurgulu = decode_text($slide['baslik_vurgulu'] ?? '');
+                $alt = decode_text($slide['alt'] ?? '');
+                $etiket = decode_text($slide['etiket'] ?? ($slide['badge'] ?? ($doktor['vitrin_badge'] ?? $doktor['uzmanlik'] ?? '')));
+                $cta = decode_text($slide['cta'] ?? 'Randevu Al');
                 $ctaUrl = $slide['cta_url'] ?? route('frontend.randevu');
                 if ($ctaUrl === '/randevu') { $ctaUrl = route('frontend.randevu'); }
-                // Panel görseli local storage'dan; bg olarak kullan (API değil)
-                $bg = $slide['bg'] ?? $slide['image'] ?? ($dg.'/images/backgrounds/main-slider-three-bg.jpg');
-                $sideImg = $slide['thumb'] ?? null;
-                // thumb = image ise (panelde tek görsel) sağda tekrar gösterme
-                if ($sideImg && $sideImg === $bg) {
-                    $sideImg = null;
-                }
-                if (! $sideImg && ! empty($slide['image']) && $slide['image'] !== $bg) {
-                    $sideImg = $slide['image'];
-                }
+                $cta2 = decode_text($slide['cta2'] ?? '');
+                $cta2Url = $slide['cta2_url'] ?? null;
+                if ($cta2Url === '/iletisim') { $cta2Url = route('frontend.iletisim'); }
             @endphp
             <div class="item main-slider-three__slide-{{ ($i % 3) + 1 }}">
                 <div class="main-slider-three__bg" style="background-image: url({{ $bg }});"></div>
@@ -78,7 +74,7 @@
                 </div>
                 <div class="container">
                     <div class="main-slider-three__content">
-                        @if($etiket)
+                        @if($etiket !== '')
                             <div class="main-slider-three__sub-title-box">
                                 <div class="main-slider-three__shape-1" style="background-image: url({{ $dg }}/images/shapes/main-slider-three-shape-1.png);"></div>
                                 <p class="main-slider-three__sub-title">{{ $etiket }}</p>
@@ -86,12 +82,18 @@
                         @endif
                         <h2 class="main-slider-three__title">
                             {{ $title }}
-                            @if($vurgulu)
+                            @if($vurgulu !== '')
                                 <br><span>{{ $vurgulu }}</span>
                             @endif
                         </h2>
+                        @if($alt !== '')
+                            <p class="main-slider-three__text dg-slider-alt">{{ $alt }}</p>
+                        @endif
                         <div class="main-slider-three__btn-founder-box">
                             <a href="{{ $ctaUrl }}" class="main-slider-two__btn-one thm-btn">{{ $cta }}</a>
+                            @if($cta2 !== '' && $cta2Url)
+                                <a href="{{ $cta2Url }}" class="main-slider-two__btn-two thm-btn thm-btn--two" style="margin-left:12px">{{ $cta2 }}</a>
+                            @endif
                             <div class="main-slider-three__founder-box">
                                 <h4 class="main-slider-three__founder-name">{{ $ad }}</h4>
                                 <p class="main-slider-three__founder-sub-title">{{ $doktor['uzmanlik'] ?? '' }}</p>

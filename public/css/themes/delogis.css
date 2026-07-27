@@ -569,6 +569,107 @@ body.theme-delogis .sidebar__post-image img {
 }
 
 /* ------------------------------------------------------------------
+   Slider (main-slider-three) — index3 yerleşim + panel fotoğrafları
+   Tema: bg dekoratif (opacity), görsel sağda __img
+------------------------------------------------------------------- */
+body.theme-delogis .main-slider-three {
+  overflow: hidden;
+}
+body.theme-delogis .main-slider-three__bg {
+  /* Dekoratif arka plan — tema gibi */
+  background-size: cover !important;
+  background-position: center center !important;
+  mix-blend-mode: multiply;
+  opacity: 0.25;
+}
+body.theme-delogis .main-slider-three__img {
+  /* index3: sağ alt figür — mix-blend darken kesilmiş PNG içindi;
+     panel fotoğrafları için normal, kontrollü boyut */
+  mix-blend-mode: normal !important;
+  right: 8% !important;
+  bottom: 0 !important;
+  left: auto !important;
+  top: auto !important;
+  width: min(42vw, 520px) !important;
+  max-width: 520px;
+  height: auto !important;
+  max-height: 78% !important;
+  display: flex !important;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 2 !important;
+  pointer-events: none;
+}
+body.theme-delogis .main-slider-three__img img {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
+  max-height: min(620px, 72vh) !important;
+  object-fit: contain !important;
+  object-position: bottom center !important;
+  display: block !important;
+  filter: drop-shadow(0 18px 40px rgba(26, 20, 20, 0.18));
+}
+body.theme-delogis .main-slider-three__content {
+  max-width: 640px;
+}
+body.theme-delogis .main-slider-three .dg-slider-alt {
+  margin: 14px 0 0;
+  max-width: 480px;
+  color: var(--delogis-gray, #736b6b);
+  font-size: 17px;
+  line-height: 1.65;
+  position: relative;
+  z-index: 15;
+}
+@media only screen and (min-width: 1400px) and (max-width: 1700px) {
+  body.theme-delogis .main-slider-three__img {
+    right: 4% !important;
+    width: min(40vw, 460px) !important;
+  }
+}
+@media only screen and (min-width: 1200px) and (max-width: 1399px) {
+  body.theme-delogis .main-slider-three__img {
+    right: 2% !important;
+    width: min(38vw, 400px) !important;
+  }
+}
+@media only screen and (min-width: 992px) and (max-width: 1199px) {
+  body.theme-delogis .main-slider-three__img {
+    right: -40px !important;
+    width: 340px !important;
+  }
+}
+@media only screen and (max-width: 991px) {
+  /* Temada tablet/mobilde figür gizli; panelli sitede küçük üst görsel göster */
+  body.theme-delogis .main-slider-three__img {
+    display: block !important;
+    position: relative !important;
+    right: auto !important;
+    bottom: auto !important;
+    width: min(280px, 70%) !important;
+    max-height: 280px !important;
+    margin: 0 auto 10px;
+    transform: none !important;
+    opacity: 1 !important;
+    order: -1;
+  }
+  body.theme-delogis .main-slider-three__img img {
+    max-height: 260px !important;
+    margin: 0 auto;
+  }
+  body.theme-delogis .main-slider-three .item {
+    display: flex;
+    flex-direction: column;
+    padding-top: 120px !important;
+    padding-bottom: 80px !important;
+  }
+  body.theme-delogis .main-slider-three__content {
+    max-width: 100%;
+  }
+}
+
+/* ------------------------------------------------------------------
    Randevu (mp-book) — Delogis temaya uyum
 ------------------------------------------------------------------- */
 body.theme-delogis {
