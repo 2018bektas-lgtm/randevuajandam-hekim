@@ -1,7 +1,10 @@
 @extends(theme_layout())
 
 @php
-    /** blog-details.html → section.blog-details */
+    /**
+     * Delogis blog-details.html
+     * section.blog-details + sidebar (Latest Posts + Categories)
+     */
     $y = $yazi ?? $blog ?? [];
     $title = $y['baslik'] ?? $y['title'] ?? 'Yazı';
     $icerik = $y['icerik'] ?? $y['content'] ?? $y['ozet'] ?? '';
@@ -22,17 +25,17 @@
             $dateLabel = (string) $rawDate;
         }
     }
-    $digerYazilar = collect($doktor['bloglar'] ?? [])
-        ->filter(function ($b) use ($y) {
-            if (! is_array($b)) {
-                return false;
-            }
-            $slug = $b['slug'] ?? null;
-            $cur = $y['slug'] ?? null;
 
-            return $slug && $cur ? $slug !== $cur : true;
-        })
-        ->take(4)
+    $allPosts = collect($doktor['bloglar'] ?? [])
+        ->filter(fn ($b) => is_array($b) && filled($b['baslik'] ?? $b['title'] ?? null))
+        ->values();
+    $curSlug = $y['slug'] ?? null;
+    $curIdx = $allPosts->search(fn ($b) => ($b['slug'] ?? null) === $curSlug);
+    $prevPost = ($curIdx !== false && $curIdx > 0) ? $allPosts[$curIdx - 1] : null;
+    $nextPost = ($curIdx !== false && $curIdx < $allPosts->count() - 1) ? $allPosts[$curIdx + 1] : null;
+    $digerYazilar = $allPosts
+        ->filter(fn ($b) => ($b['slug'] ?? null) !== $curSlug)
+        ->take(3)
         ->values();
 @endphp
 
@@ -42,6 +45,7 @@
 @section('icerik')
 @include('frontend.themes.delogis.partials.page-header', ['title' => $title, 'crumb' => 'Blog'])
 
+{{-- blog-details.html --}}
 <section class="blog-details">
     <div class="container">
         <div class="row">
@@ -57,26 +61,31 @@
                             @endif
                         </div>
                     @endif
+
                     <div class="blog-details__content">
                         <ul class="blog-details__meta list-unstyled">
                             @if($author)
                                 <li>
-                                    <span><i class="fas fa-user-circle"></i> {{ $author }}</span>
+                                    <span><i class="fas fa-user-circle"></i>{{ $author }}</span>
                                 </li>
                             @endif
                             @if($dateLabel)
                                 <li>
-                                    <span><i class="fas fa-clock"></i> {{ $dateLabel }}</span>
+                                    <span><i class="fas fa-clock"></i>{{ $dateLabel }}</span>
                                 </li>
                             @endif
                         </ul>
+
                         <h3 class="blog-details__title">{{ $title }}</h3>
+
                         <div class="blog-details__text-1 dg-prose">
                             {!! $icerik !!}
                         </div>
-                        <div class="blog-details__bottom" style="margin-top:28px">
+
+                        <div class="blog-details__bottom">
                             <p class="blog-details__tags">
-                                <a href="{{ route('frontend.blog') }}">← Tüm yazılar</a>
+                                <span>Etiketler</span>
+                                <a href="{{ route('frontend.blog') }}">Blog</a>
                             </p>
                             @php $sosyal = array_filter($doktor['sosyal'] ?? [], fn ($u) => filled($u)); @endphp
                             @if(count($sosyal))
@@ -96,20 +105,71 @@
                                 </div>
                             @endif
                         </div>
+
+                        @if($prevPost || $nextPost)
+                            <div class="blog-details__pagenation">
+                                @if($prevPost)
+                                    @php
+                                        $pTitle = $prevPost['baslik'] ?? $prevPost['title'] ?? 'Yazı';
+                                        $pSlug = $prevPost['slug'] ?? \Illuminate\Support\Str::slug($pTitle);
+                                        $pImg = $prevPost['image'] ?? $prevPost['kapak'] ?? $prevPost['resim'] ?? null;
+                                        $pDate = $prevPost['tarih'] ?? $prevPost['created_at'] ?? null;
+                                        $pDateStr = '';
+                                        if ($pDate) {
+                                            try { $pDateStr = \Illuminate\Support\Carbon::parse($pDate)->format('d M, Y'); } catch (\Throwable) {}
+                                        }
+                                    @endphp
+                                    <div class="blog-details__pagenation-left">
+                                        @if($pImg)
+                                            <div class="blog-details__pagenation-left-img">
+                                                <img src="{{ $pImg }}" alt="{{ $pTitle }}">
+                                            </div>
+                                        @endif
+                                        <div class="blog-details__pagenation-left-content">
+                                            @if($pDateStr)
+                                                <p class="blog-details__pagenation-left-date"><i class="fas fa-clock"></i> {{ $pDateStr }}</p>
+                                            @endif
+                                            <h4 class="blog-details__pagenation-left-title">
+                                                <a href="{{ route('frontend.blog.detay', $pSlug) }}">{{ \Illuminate\Support\Str::limit($pTitle, 48) }}</a>
+                                            </h4>
+                                        </div>
+                                    </div>
+                                @endif
+                                @if($nextPost)
+                                    @php
+                                        $nTitle = $nextPost['baslik'] ?? $nextPost['title'] ?? 'Yazı';
+                                        $nSlug = $nextPost['slug'] ?? \Illuminate\Support\Str::slug($nTitle);
+                                        $nImg = $nextPost['image'] ?? $nextPost['kapak'] ?? $nextPost['resim'] ?? null;
+                                        $nDate = $nextPost['tarih'] ?? $nextPost['created_at'] ?? null;
+                                        $nDateStr = '';
+                                        if ($nDate) {
+                                            try { $nDateStr = \Illuminate\Support\Carbon::parse($nDate)->format('d M, Y'); } catch (\Throwable) {}
+                                        }
+                                    @endphp
+                                    <div class="blog-details__pagenation-right">
+                                        <div class="blog-details__pagenation-right-content">
+                                            @if($nDateStr)
+                                                <p class="blog-details__pagenation-right-date"><i class="fas fa-clock"></i> {{ $nDateStr }}</p>
+                                            @endif
+                                            <h4 class="blog-details__pagenation-right-title">
+                                                <a href="{{ route('frontend.blog.detay', $nSlug) }}">{{ \Illuminate\Support\Str::limit($nTitle, 48) }}</a>
+                                            </h4>
+                                        </div>
+                                        @if($nImg)
+                                            <div class="blog-details__pagenation-right-img">
+                                                <img src="{{ $nImg }}" alt="{{ $nTitle }}">
+                                            </div>
+                                        @endif
+                                    </div>
+                                @endif
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
+
             <div class="col-xl-4 col-lg-5">
                 <div class="sidebar">
-                    <div class="sidebar__single sidebar__category">
-                        <h3 class="sidebar__title">Bağlantılar</h3>
-                        <ul class="sidebar__category-list list-unstyled">
-                            <li><a href="{{ route('frontend.blog') }}">Blog</a></li>
-                            <li><a href="{{ route('frontend.hizmetler') }}">Hizmetler</a></li>
-                            <li><a href="{{ route('frontend.randevu') }}">Randevu Al</a></li>
-                            <li><a href="{{ route('frontend.iletisim') }}">İletişim</a></li>
-                        </ul>
-                    </div>
                     @if($digerYazilar->isNotEmpty())
                         <div class="sidebar__single sidebar__post">
                             <h3 class="sidebar__title">Son yazılar</h3>
@@ -137,6 +197,16 @@
                             </ul>
                         </div>
                     @endif
+
+                    <div class="sidebar__single sidebar__category">
+                        <h3 class="sidebar__title">Bağlantılar</h3>
+                        <ul class="sidebar__category-list list-unstyled">
+                            <li><a href="{{ route('frontend.blog') }}">Blog</a></li>
+                            <li><a href="{{ route('frontend.hizmetler') }}">Hizmetler</a></li>
+                            <li><a href="{{ route('frontend.randevu') }}">Randevu Al</a></li>
+                            <li><a href="{{ route('frontend.iletisim') }}">İletişim</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>

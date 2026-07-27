@@ -292,36 +292,55 @@
 </section>
 @endif
 
-{{-- 7) Blog — sadece kapak/başlık olan yazılar; sahte blog görseli yok --}}
+{{-- 7) Blog — blog-6.html kartları (blog-four__single); sahte görsel yok --}}
 @if($show('blog') && $bloglar->isNotEmpty())
-<section class="blog-two">
+@php
+    $monthsHome = ['', 'Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'];
+@endphp
+<section class="blog-one">
     <div class="container">
         <div class="section-title text-center">
             <span class="section-title__tagline">Blog</span>
             <h2 class="section-title__title">Son yazılar</h2>
         </div>
-        <div class="row">
-            @foreach ($bloglar as $b)
+        <div class="row gutter-y-30">
+            @foreach ($bloglar as $idx => $b)
                 @php
                     $bTitle = $b['baslik'] ?? $b['title'] ?? 'Yazı';
                     $bSlug = $b['slug'] ?? \Illuminate\Support\Str::slug($bTitle);
                     $bImg = $b['image'] ?? $b['kapak'] ?? $b['resim'] ?? null;
                     $href = route('frontend.blog.detay', $bSlug);
+                    $day = '—';
+                    $mon = '';
+                    $rawDate = $b['tarih'] ?? $b['created_at'] ?? $b['yayin_tarihi'] ?? null;
+                    if ($rawDate) {
+                        try {
+                            $dt = \Illuminate\Support\Carbon::parse($rawDate);
+                            $day = $dt->format('d');
+                            $mon = $monthsHome[(int) $dt->format('n')] ?? $dt->format('M');
+                        } catch (\Throwable) {
+                        }
+                    }
                 @endphp
-                <div class="col-xl-4 col-lg-4 wow fadeInUp dg-card-col">
-                    <div class="blog-two__single dg-card">
-                        <div class="blog-two__img dg-card__img">
+                <div class="col-lg-4 col-md-6 wow fadeInUp dg-card-col" data-wow-delay="{{ ($idx % 3) * 100 }}ms">
+                    <div class="blog-four__single dg-card">
+                        <div class="blog-four__single__image dg-card__media">
                             @if($bImg)
                                 <img src="{{ $bImg }}" alt="{{ $bTitle }}">
                             @else
-                                <div class="dg-card__img--empty"></div>
+                                <div class="dg-card__img--empty" aria-hidden="true"></div>
                             @endif
-                            <a href="{{ $href }}"><span class="blog-two__plus"></span></a>
+                            <a href="{{ $href }}" class="blog-four__single__image__link" aria-label="{{ $bTitle }}"></a>
                         </div>
-                        <div class="blog-two__content dg-card__body">
-                            <h3 class="blog-two__title"><a href="{{ $href }}">{{ $bTitle }}</a></h3>
-                            <p class="blog-two__text">{{ \Illuminate\Support\Str::limit(strip_tags((string)($b['ozet'] ?? $b['icerik'] ?? '')), 100) }}</p>
+                        <div class="blog-four__single__content dg-card__body">
+                            <div class="blog-four__single__date"><span>{{ $day }}</span>{{ $mon }}</div>
+                            <h3 class="blog-four__single__title">
+                                <a href="{{ $href }}">{{ $bTitle }}</a>
+                            </h3>
                         </div>
+                        <a class="blog-four__single__rm" href="{{ $href }}">
+                            Devamını oku<span class="delogis-icons-two-right-arrow"></span>
+                        </a>
                     </div>
                 </div>
             @endforeach

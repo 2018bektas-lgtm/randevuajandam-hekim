@@ -5,7 +5,10 @@
 
 @section('icerik')
 @php
-    /** blog-6.html → section.blog-one + blog-four__single */
+    /**
+     * Delogis blog-6.html
+     * section.blog-one + .blog-four__single kartlar
+     */
     $bloglar = collect($doktor['bloglar'] ?? $yazilar ?? [])
         ->filter(fn ($b) => is_array($b) && filled($b['baslik'] ?? $b['title'] ?? null))
         ->values();
@@ -14,6 +17,7 @@
 
 @include('frontend.themes.delogis.partials.page-header', ['title' => 'Blog', 'crumb' => 'Blog'])
 
+{{-- blog-6.html --}}
 <section class="blog-one">
     <div class="container">
         @if($bloglar->isEmpty())
@@ -41,6 +45,7 @@
                             }
                         }
                     @endphp
+                    {{-- Blog Start (blog-6) --}}
                     <div class="col-lg-4 col-md-6 wow fadeInUp dg-card-col" data-wow-delay="{{ ($idx % 3) * 100 }}ms">
                         <div class="blog-four__single dg-card">
                             <div class="blog-four__single__image dg-card__media">
@@ -58,10 +63,11 @@
                                 </h3>
                             </div>
                             <a class="blog-four__single__rm" href="{{ $href }}">
-                                Devamını oku <span class="icon-right-arrow"></span>
+                                Devamını oku<span class="delogis-icons-two-right-arrow"></span>
                             </a>
                         </div>
                     </div>
+                    {{-- Blog End --}}
                 @endforeach
             </div>
         @endif
