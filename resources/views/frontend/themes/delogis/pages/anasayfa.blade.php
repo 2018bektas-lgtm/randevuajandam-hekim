@@ -205,7 +205,7 @@
 @if($show('hizmetler') && $hizmetler->isNotEmpty())
 <section class="services-three" id="hizmetler">
     <div class="services-three__bg-box">
-        <div class="services-three__bg" style="background-image: url({{ $dg }}/images/backgrounds/services-three-bg.png);"></div>
+        <div class="services-three__bg"></div>
     </div>
     <div class="container">
         <div class="section-title text-center">

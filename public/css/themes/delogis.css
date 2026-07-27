@@ -83,6 +83,45 @@ body.theme-pack-delogis .mp-btn-primary {
 .gallery-page__single { margin-bottom: 28px; }
 .gallery-page__img { position: relative; }
 
+/* ------------------------------------------------------------------
+   Page header — foto YOK, header yapısı bozulmaz
+   Orijinal .page-header / .page-header-bg yüksekliği korunur
+------------------------------------------------------------------- */
+.page-header.page-header--solid {
+  position: relative;
+  overflow: hidden;
+}
+.page-header.page-header--solid .page-header-bg--solid {
+  background-image: none !important;
+  /* Sıcak kahve → koyu (index3 --delogis-base / --delogis-black) */
+  background-color: #1a1414;
+  background-image:
+    radial-gradient(ellipse 80% 120% at 10% 20%, rgba(151, 97, 71, 0.45) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 100% at 90% 80%, rgba(151, 97, 71, 0.28) 0%, transparent 50%),
+    linear-gradient(135deg, #1a1414 0%, #2a1f1a 45%, #1a1414 100%) !important;
+  background-size: cover;
+  background-position: center;
+}
+/* Hafif doku (görsel dosya yok) */
+.page-header.page-header--solid .page-header-bg--solid::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(26, 20, 20, 0.15) 0%, rgba(26, 20, 20, 0.35) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+.page-header.page-header--solid .container {
+  position: relative;
+  z-index: 2;
+}
+/* Anasayfa services-three dekoratif bg de sadeleştir */
+.services-three__bg {
+  background-image: none !important;
+  background-color: transparent;
+}
+
 
 .thm-btn,
 .main-menu-three__call-number a,
