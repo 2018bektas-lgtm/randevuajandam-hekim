@@ -5,47 +5,61 @@
 
 @section('icerik')
 @php
-    $dg = rtrim((string) request()->getBasePath(), '/').'/themes/delogis';
-    $bloglar = collect($doktor['bloglar'] ?? $yazilar ?? [])->values();
+    /** blog-6.html → section.blog-one + blog-four__single */
+    $bloglar = collect($doktor['bloglar'] ?? $yazilar ?? [])
+        ->filter(fn ($b) => is_array($b) && filled($b['baslik'] ?? $b['title'] ?? null))
+        ->values();
+    $months = ['', 'Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'];
 @endphp
 
 @include('frontend.themes.delogis.partials.page-header', ['title' => 'Blog', 'crumb' => 'Blog'])
 
-<section class="blog-page">
+<section class="blog-one">
     <div class="container">
         @if($bloglar->isEmpty())
             <div class="text-center" style="padding:48px 0">
                 <p>Henüz blog yazısı yok.</p>
             </div>
         @else
-            <div class="row">
-                @foreach ($bloglar as $b)
+            <div class="row gutter-y-30">
+                @foreach ($bloglar as $idx => $b)
                     @php
                         $bTitle = $b['baslik'] ?? $b['title'] ?? 'Yazı';
                         $bSlug = $b['slug'] ?? \Illuminate\Support\Str::slug($bTitle);
                         $bImg = $b['image'] ?? $b['kapak'] ?? $b['resim'] ?? null;
-                        $bOzet = \Illuminate\Support\Str::limit(strip_tags((string)($b['ozet'] ?? $b['icerik'] ?? $b['content'] ?? '')), 120);
                         $href = route('frontend.blog.detay', $bSlug);
-                        $tarih = $b['tarih'] ?? $b['created_at'] ?? null;
+                        $day = '—';
+                        $mon = '';
+                        $rawDate = $b['tarih'] ?? $b['created_at'] ?? $b['yayin_tarihi'] ?? null;
+                        if ($rawDate) {
+                            try {
+                                $dt = \Illuminate\Support\Carbon::parse($rawDate);
+                                $day = $dt->format('d');
+                                $mon = $months[(int) $dt->format('n')] ?? $dt->format('M');
+                            } catch (\Throwable) {
+                                $day = \Illuminate\Support\Str::limit((string) $rawDate, 2, '');
+                            }
+                        }
                     @endphp
-                    <div class="col-xl-4 col-lg-4 col-md-6 wow fadeInUp dg-card-col">
-                        <div class="blog-two__single dg-card">
-                            <div class="blog-two__img dg-card__media dg-card__img">
+                    <div class="col-lg-4 col-md-6 wow fadeInUp dg-card-col" data-wow-delay="{{ ($idx % 3) * 100 }}ms">
+                        <div class="blog-four__single dg-card">
+                            <div class="blog-four__single__image dg-card__media">
                                 @if($bImg)
                                     <img src="{{ $bImg }}" alt="{{ $bTitle }}">
                                 @else
-                                    <div class="dg-card__img--empty"></div>
+                                    <div class="dg-card__img--empty" aria-hidden="true"></div>
                                 @endif
-                                <a href="{{ $href }}"><span class="blog-two__plus"></span></a>
+                                <a href="{{ $href }}" class="blog-four__single__image__link" aria-label="{{ $bTitle }}"></a>
                             </div>
-                            <div class="blog-two__content dg-card__body">
-                                @if($tarih)
-                                    <p class="blog-two__date" style="font-size:12px;opacity:.7;margin-bottom:8px">{{ \Illuminate\Support\Str::limit((string)$tarih, 32) }}</p>
-                                @endif
-                                <h3 class="blog-two__title"><a href="{{ $href }}">{{ $bTitle }}</a></h3>
-                                <p class="blog-two__text">{{ $bOzet }}</p>
-                                <a href="{{ $href }}" class="blog-two__read-more" style="font-weight:600;color:var(--delogis-base,#976147)">Devamını oku →</a>
+                            <div class="blog-four__single__content dg-card__body">
+                                <div class="blog-four__single__date"><span>{{ $day }}</span>{{ $mon }}</div>
+                                <h3 class="blog-four__single__title">
+                                    <a href="{{ $href }}">{{ $bTitle }}</a>
+                                </h3>
                             </div>
+                            <a class="blog-four__single__rm" href="{{ $href }}">
+                                Devamını oku <span class="icon-right-arrow"></span>
+                            </a>
                         </div>
                     </div>
                 @endforeach
