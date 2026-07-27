@@ -620,6 +620,37 @@ body.theme-delogis .sidebar__post-image img {
 }
 
 /* ------------------------------------------------------------------
+   FAQ (faq.html) — solid sol kutu, tema accordion
+------------------------------------------------------------------- */
+body.theme-delogis .faq-page {
+  padding-top: 40px;
+}
+body.theme-delogis .faq-page__content-bg {
+  /* foto yok — solid */
+  background-image: none !important;
+  opacity: 1 !important;
+  mix-blend-mode: normal !important;
+  background: linear-gradient(145deg, #2a1f1a 0%, #5b4034 55%, #976147 100%) !important;
+}
+body.theme-delogis .faq-page__content {
+  background-color: #5b4034;
+}
+body.theme-delogis .faq-page__cta .thm-btn {
+  background: #fff !important;
+  color: #976147 !important;
+  border-color: #fff !important;
+}
+body.theme-delogis .faq-page__cta .thm-btn:hover {
+  background: #f2edea !important;
+}
+body.theme-delogis .faq-one-accrodion .accrodion {
+  background: #fff;
+}
+body.theme-delogis .faq-search-box__inner {
+  background: var(--delogis-primary, #f2edea);
+}
+
+/* ------------------------------------------------------------------
    Randevu (mp-book) — Delogis temaya uyum
 ------------------------------------------------------------------- */
 body.theme-delogis {
