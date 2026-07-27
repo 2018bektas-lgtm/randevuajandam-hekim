@@ -181,24 +181,41 @@ body.theme-delogis .main-menu-three__wrapper-inner.dg-header-bar {
   flex-wrap: nowrap;
 }
 body.theme-delogis .main-menu-three__logo {
-  padding: 12px 0 !important;
+  padding: 10px 0 !important;
   margin-right: 28px !important;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  max-width: min(280px, 38vw);
 }
+body.theme-delogis .main-menu-three__logo a {
+  display: flex;
+  align-items: center;
+  line-height: 0;
+  max-width: 100%;
+}
+/* Logo: daha büyük, oran korunur, header yüksekliğini zorlamaz */
 body.theme-delogis .main-menu-three__logo img {
-  max-height: 42px !important;
-  width: auto;
+  display: block;
+  width: auto !important;
+  height: auto !important;
+  max-height: 56px !important;
+  max-width: 100% !important;
+  object-fit: contain;
+  object-position: left center;
 }
 body.theme-delogis .dg-header-logo-text {
   font-family: Castoro, Georgia, serif;
-  font-size: 1.15rem !important;
+  font-size: clamp(1.05rem, 2.2vw, 1.35rem) !important;
   font-weight: 600;
   color: var(--delogis-black, #1a1414);
   display: inline-block;
-  max-width: 200px;
+  max-width: 100%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   vertical-align: middle;
+  line-height: 1.25;
 }
 /* Tema 1200–1500px aralığında .main-menu-three__call { display:none } — ezeriz */
 body.theme-delogis .main-menu-three__right,
@@ -229,7 +246,10 @@ body.theme-delogis .main-menu-three__randevu-btn:hover {
   color: #fff !important;
 }
 body.theme-delogis .stricky-header .main-menu-three__logo {
-  padding: 10px 0 !important;
+  padding: 8px 0 !important;
+}
+body.theme-delogis .stricky-header .main-menu-three__logo img {
+  max-height: 48px !important;
 }
 body.theme-delogis .stricky-header .container {
   max-width: 1200px;
@@ -243,10 +263,10 @@ body.theme-delogis .stricky-header .container {
   }
   body.theme-delogis .main-menu-three__logo {
     margin-right: 12px !important;
+    max-width: min(200px, 42vw);
   }
-  body.theme-delogis .dg-header-logo-text {
-    max-width: 140px;
-    font-size: 1rem !important;
+  body.theme-delogis .main-menu-three__logo img {
+    max-height: 48px !important;
   }
   body.theme-delogis .main-menu-three__randevu-btn {
     padding: 8px 14px !important;
@@ -254,6 +274,12 @@ body.theme-delogis .stricky-header .container {
   }
 }
 @media (max-width: 575px) {
+  body.theme-delogis .main-menu-three__logo {
+    max-width: min(160px, 46vw);
+  }
+  body.theme-delogis .main-menu-three__logo img {
+    max-height: 44px !important;
+  }
   body.theme-delogis .main-menu-three__randevu-btn {
     padding: 8px 12px !important;
   }

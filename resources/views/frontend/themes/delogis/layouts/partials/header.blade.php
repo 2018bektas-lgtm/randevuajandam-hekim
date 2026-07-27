@@ -25,7 +25,7 @@
                         <div class="main-menu-three__logo">
                             <a href="{{ route('frontend.anasayfa') }}">
                                 @if($logo)
-                                    <img src="{{ $logo }}" alt="{{ $adSoyad }}" style="max-height:42px;width:auto">
+                                    <img src="{{ $logo }}" alt="{{ $adSoyad }}" class="dg-header-logo-img">
                                 @else
                                     <span class="dg-header-logo-text">{{ $adSoyad }}</span>
                                 @endif
