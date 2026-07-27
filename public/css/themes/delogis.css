@@ -148,18 +148,19 @@ body.theme-delogis.dg-inner .main-menu-three__wrapper-inner {
 body.theme-delogis.dg-inner .main-menu-three__logo span {
   color: var(--delogis-black, #1a1414) !important;
 }
-body.theme-delogis.dg-inner .main-menu__list > li > a {
+/* Sadece üst header menüsü — mobile drawer hariç */
+body.theme-delogis.dg-inner .main-header-three .main-menu__list > li > a,
+body.theme-delogis.dg-inner .stricky-header .main-menu__list > li > a {
   color: var(--delogis-black, #1a1414);
 }
-body.theme-delogis.dg-inner .main-menu__list > li.current > a,
-body.theme-delogis.dg-inner .main-menu__list > li:hover > a {
+body.theme-delogis.dg-inner .main-header-three .main-menu__list > li.current > a,
+body.theme-delogis.dg-inner .main-header-three .main-menu__list > li:hover > a,
+body.theme-delogis.dg-inner .stricky-header .main-menu__list > li.current > a,
+body.theme-delogis.dg-inner .stricky-header .main-menu__list > li:hover > a {
   color: var(--delogis-base, #976147);
 }
 body.theme-delogis.dg-inner .stricky-header {
   background: #fff;
-}
-body.theme-delogis.dg-inner .stricky-header .main-menu__list > li > a {
-  color: var(--delogis-black, #1a1414);
 }
 
 /* Anasayfa: absolute header (index3) korunur */
@@ -466,15 +467,21 @@ body.theme-delogis .dg-header-toggler:hover {
   }
 }
 
-/* Mobil drawer güzelleştirme */
+/* Mobil drawer — koyu zemin + beyaz yazı (header stilleri buraya sızmasın) */
+body.theme-delogis .mobile-nav__content,
 body.theme-delogis .mobile-nav__content.dg-mobile-drawer {
-  background: #1a1414;
+  background: #1a1414 !important;
   width: min(320px, 86vw);
   padding: 28px 18px 32px;
+  color: #fff !important;
 }
 body.theme-delogis .mobile-nav__content .logo-box {
   margin-bottom: 28px;
   padding-right: 36px;
+}
+body.theme-delogis .mobile-nav__close {
+  color: #fff !important;
+  z-index: 5;
 }
 body.theme-delogis .dg-mobile-drawer__logo {
   max-height: 48px;
@@ -484,15 +491,38 @@ body.theme-delogis .dg-mobile-drawer__logo {
   filter: brightness(0) invert(1);
 }
 body.theme-delogis .dg-mobile-drawer__name {
-  color: #fff;
+  color: #fff !important;
   font-family: Castoro, Georgia, serif;
   font-size: 1.2rem;
   font-weight: 500;
 }
-body.theme-delogis .mobile-nav__content .main-menu__list > li > a {
-  font-size: 16px;
-  padding: 12px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+body.theme-delogis .mobile-nav__content .main-menu__list,
+body.theme-delogis .mobile-nav__container .main-menu__list {
+  display: block !important;
+}
+body.theme-delogis .mobile-nav__content .main-menu__list > li > a,
+body.theme-delogis .mobile-nav__content .main-menu__list > li > ul > li > a,
+body.theme-delogis .mobile-nav__container .main-menu__list > li > a,
+body.theme-delogis.dg-inner .mobile-nav__content .main-menu__list > li > a,
+body.theme-delogis.dg-home .mobile-nav__content .main-menu__list > li > a {
+  color: #ffffff !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  line-height: 1.35 !important;
+  height: auto !important;
+  min-height: 48px;
+  padding: 12px 4px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+body.theme-delogis .mobile-nav__content .main-menu__list > li.current > a,
+body.theme-delogis .mobile-nav__content .main-menu__list > li > a:hover,
+body.theme-delogis .mobile-nav__content .main-menu__list > li > a.expanded {
+  color: #e7b58a !important;
+}
+body.theme-delogis .mobile-nav__content .main-menu__list > li {
+  border-bottom: none !important;
 }
 body.theme-delogis .dg-mobile-drawer__cta {
   margin: 22px 0 18px;
@@ -507,20 +537,21 @@ body.theme-delogis .dg-mobile-drawer__btn {
   color: #fff !important;
   font-weight: 700;
   text-align: center;
+  text-decoration: none !important;
 }
 body.theme-delogis .mobile-nav__contact {
   margin-top: 12px;
 }
 body.theme-delogis .mobile-nav__contact li {
-  color: rgba(255, 255, 255, 0.75);
+  color: rgba(255, 255, 255, 0.8) !important;
   font-size: 13px;
   margin-bottom: 10px;
 }
 body.theme-delogis .mobile-nav__contact a {
-  color: #fff;
+  color: #fff !important;
 }
 body.theme-delogis .mobile-nav__social a {
-  color: #fff;
+  color: #fff !important;
 }
 
 @media (min-width: 1200px) {
