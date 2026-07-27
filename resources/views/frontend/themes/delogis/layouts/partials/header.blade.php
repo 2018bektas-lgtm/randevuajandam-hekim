@@ -45,10 +45,21 @@
                         </div>
                     </div>
                     <div class="main-menu-three__right">
-                        <div class="main-menu-three__call dg-header-cta">
-                            <div class="main-menu-three__call-content">
-                                <a href="{{ route('frontend.randevu') }}" class="thm-btn main-menu-three__randevu-btn">Randevu Al</a>
-                            </div>
+                        <div class="dg-header-cta">
+                            <a href="{{ route('frontend.randevu') }}" class="dg-header-cta__btn">
+                                <span class="dg-header-cta__icon" aria-hidden="true">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="3" y="4" width="18" height="18" rx="2"/>
+                                        <path d="M16 2v4M8 2v4M3 10h18"/>
+                                    </svg>
+                                </span>
+                                <span class="dg-header-cta__label">Randevu Al</span>
+                                <span class="dg-header-cta__arrow" aria-hidden="true">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M5 12h14M13 6l6 6-6 6"/>
+                                    </svg>
+                                </span>
+                            </a>
                         </div>
                     </div>
                 </div>
