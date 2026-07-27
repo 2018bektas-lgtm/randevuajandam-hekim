@@ -287,9 +287,9 @@
             @foreach ($yorumlar as $y)
                 <div class="col-xl-6 col-lg-6">
                     <div class="testimonial-three__single" style="margin-bottom:24px">
-                        <p class="testimonial-three__text">“{{ \Illuminate\Support\Str::limit(strip_tags((string)($y['yorum'] ?? $y['metin'] ?? $y['content'] ?? '')), 180) }}”</p>
+                        <p class="testimonial-three__text">“{{ plain_text($y['yorum'] ?? $y['metin'] ?? $y['content'] ?? '', 180) }}”</p>
                         <div class="testimonial-three__client-info">
-                            <h4 class="testimonial-three__client-name">{{ $y['hasta_adi'] ?? $y['ad'] ?? 'Danışan' }}</h4>
+                            <h4 class="testimonial-three__client-name">{{ decode_text($y['hasta_adi'] ?? $y['ad'] ?? 'Danışan') }}</h4>
                             <p class="testimonial-three__client-sub-title">
                                 @if(!empty($y['puan'])) {{ $y['puan'] }}/5 · @endif
                                 Değerlendirme
