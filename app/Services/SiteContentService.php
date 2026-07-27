@@ -604,9 +604,9 @@ class SiteContentService
             ['adim' => '04', 'baslik' => 'Tedavi & takip', 'aciklama' => 'Kişiye özel plan ve kontrol randevuları ile süreciniz yönetilir.'],
         ];
         $out['ozellikler'] = [
-            ['baslik' => 'Ana platform ile senkron', 'aciklama' => 'Bilgiler, randevu ve içerikler Randevu Ajandam hekim panelinden yönetilir.'],
-            ['baslik' => 'Kişiye özel plan', 'aciklama' => 'Her danışan için yaş, risk ve şikayete göre özelleştirilmiş değerlendirme.'],
-            ['baslik' => 'Kolay randevu', 'aciklama' => 'Online randevu ile size uygun saatte planlama.'],
+            ['baslik' => 'Güvenli ve gizli görüşme', 'aciklama' => 'Danışan bilgileriniz gizli tutulur; süreç profesyonel etik kurallara uygun yürütülür.'],
+            ['baslik' => 'Kişiye özel yaklaşım', 'aciklama' => 'Her danışanın ihtiyaçlarına göre planlanan, yaş ve şikayete uygun değerlendirme.'],
+            ['baslik' => 'Kolay randevu', 'aciklama' => 'Size uygun gün ve saati seçerek hızlıca randevu talebi oluşturabilirsiniz.'],
         ];
 
         return $out;
