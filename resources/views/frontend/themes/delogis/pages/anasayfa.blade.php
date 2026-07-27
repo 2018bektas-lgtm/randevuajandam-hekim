@@ -24,9 +24,6 @@
     $yorumlar = collect($doktor['yorumlar'] ?? [])
         ->filter(fn ($y) => is_array($y) && filled($y['yorum'] ?? $y['metin'] ?? $y['content'] ?? null))
         ->take(4);
-    $stats = collect($doktor['istatistikler'] ?? [])
-        ->filter(fn ($s) => is_array($s) && (int) preg_replace('/\D/', '', (string) ($s['deger'] ?? 0)) > 0)
-        ->take(4);
     $ad = trim(($doktor['unvan'] ?? '').' '.($doktor['ad_soyad'] ?? 'Hekim'));
     $bolum = $doktor['anasayfa_bolumler'] ?? [];
     $show = fn (string $key) => (bool) ($bolum[$key] ?? true);
@@ -255,28 +252,7 @@
 </section>
 @endif
 
-{{-- 5) Counter — sadece gerçek istatistik --}}
-@if($show('istatistik') && $stats->isNotEmpty())
-<section class="counter-two">
-    <div class="container">
-        <div class="row">
-            @foreach ($stats as $st)
-                <div class="col-xl-3 col-lg-3 col-md-6">
-                    <div class="counter-two__single">
-                        <div class="counter-two__count-box">
-                            <h3 class="odometer" data-count="{{ (int) preg_replace('/\D/', '', (string)($st['deger'] ?? 0)) }}">00</h3>
-                            <span class="counter-two__plus">{{ $st['suffix'] ?? '' }}</span>
-                        </div>
-                        <p class="counter-two__text">{{ $st['etiket'] ?? '' }}</p>
-                    </div>
-                </div>
-            @endforeach
-        </div>
-    </div>
-</section>
-@endif
-
-{{-- 6) Testimonials --}}
+{{-- 5) Testimonials --}}
 @if($show('yorumlar') && $yorumlar->isNotEmpty())
 <section class="testimonial-three">
     <div class="container">
