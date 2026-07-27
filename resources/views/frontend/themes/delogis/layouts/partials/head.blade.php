@@ -22,14 +22,12 @@
     $pageTitle = trim($decodeEntities($__env->yieldContent('baslik'))) ?: ($seoTitle !== '' ? $seoTitle : $defaultTitle);
     $pageDesc = trim($decodeEntities($__env->yieldContent('meta_aciklama'))) ?: ($seoDesc !== '' ? $seoDesc : $decodeEntities($doktor['kisa_bio'] ?? ''));
     $temaMeta = resolve_site_theme($doktor['tema_id'] ?? ($doktor['tema']['id'] ?? 'delogis'));
-    $theme = $doktor['tema_renk'] ?? ($temaMeta['renk'] ?? '#B9905D');
-    $palette = function_exists('theme_palette') ? theme_palette($theme) : ['500' => $theme];
+    // index3 orijinal vurgu: #976147 (delogis.css --delogis-base)
+    $theme = '#976147';
+    $palette = function_exists('theme_palette') ? theme_palette($theme) : ['500' => $theme, '600' => '#7a4e39'];
     $ogImage = $doktor['logo'] ?? $doktor['profil_resmi'] ?? ($doktor['slider'][0]['image'] ?? null);
     $canonical = url()->current();
-    $hex = ltrim((string) $theme, '#');
-    $r = hexdec(substr($hex, 0, 2));
-    $g = hexdec(substr($hex, 2, 2));
-    $b = hexdec(substr($hex, 4, 2));
+    $r = 151; $g = 97; $b = 71;
 @endphp
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -66,11 +64,14 @@
 @include('frontend.themes.delogis.layouts.partials.assets-css')
 <link rel="stylesheet" href="{{ rtrim((string) request()->getBasePath(), '/') }}/css/themes/delogis.css?v=2">
 <style>
+/* Orijinal delogis.css ile aynı — panel tema_renk ile bozulmasın */
 :root {
-  --brand-500: {{ $palette['500'] ?? $theme }};
-  --brand-600: {{ $palette['600'] ?? $theme }};
-  --delogis-base: {{ $theme }};
-  --delogis-base-rgb: {{ $r }}, {{ $g }}, {{ $b }};
+  --brand-500: #976147;
+  --brand-600: #7a4e39;
+  --delogis-base: #976147;
+  --delogis-base-rgb: 151, 97, 71;
+  --delogis-black: #1a1414;
+  --delogis-primary: #f2edea;
 }
 </style>
 @stack('head')

@@ -1,27 +1,29 @@
-/* Delogis tema override — panel vurgu rengi + iç sayfa uyumu */
+﻿/* Delogis override â€” index3 orijinal palet (#976147), color-1 (#976147/#1a1414) KULLANILMAZ */
 :root {
-  --delogis-base: var(--brand-500, #B9905D);
-  --delogis-base-rgb: 185, 144, 93;
+  --delogis-base: #976147;
+  --delogis-base-rgb: 151, 97, 71;
+  --delogis-black: #1a1414;
+  --delogis-primary: #f2edea;
 }
 
-/* HTML içerik (bio, blog) */
+/* HTML iÃ§erik (bio, blog) */
 .dg-prose {
-  color: var(--delogis-gray, #8A969E);
+  color: var(--delogis-gray, #736b6b);
   line-height: 1.8;
   font-size: 16px;
 }
 .dg-prose h2,
 .dg-prose h3 {
-  color: var(--delogis-black, #293B46);
+  color: var(--delogis-black, #1a1414);
   font-family: var(--delogis-font-two, Castoro, serif);
   margin: 1.25em 0 0.5em;
 }
 .dg-prose p { margin: 0 0 1em; }
 .dg-prose ul { padding-left: 1.25rem; margin: 0 0 1em; }
 .dg-prose li { margin-bottom: 0.35em; }
-.dg-prose a { color: var(--delogis-base, #B9905D); }
+.dg-prose a { color: var(--delogis-base, #976147); }
 
-/* İletişim kartları (eksik sınıf yedek) */
+/* Ä°letiÅŸim kartlarÄ± (eksik sÄ±nÄ±f yedek) */
 .contact-page__single {
   background: #fff;
   border: 1px solid var(--delogis-bdr-color, #EBE2D8);
@@ -40,25 +42,25 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--delogis-base, #B9905D);
+  color: var(--delogis-base, #976147);
   font-size: 22px;
 }
 .contact-page__title {
   font-family: var(--delogis-font-two, Castoro, serif);
   font-size: 1.25rem;
   margin-bottom: 8px;
-  color: var(--delogis-black, #293B46);
+  color: var(--delogis-black, #1a1414);
 }
 .contact-page__text,
 .contact-page__text a {
-  color: var(--delogis-gray, #8A969E);
+  color: var(--delogis-gray, #736b6b);
   text-decoration: none;
 }
 .contact-page__text a:hover {
-  color: var(--delogis-base, #B9905D);
+  color: var(--delogis-base, #976147);
 }
 
-/* Randevu sihirbazı Delogis içinde */
+/* Randevu sihirbazÄ± Delogis iÃ§inde */
 body.theme-delogis .mp-book-shell,
 body.theme-pack-delogis .mp-book-shell {
   background: #fff;
@@ -68,13 +70,13 @@ body.theme-pack-delogis .mp-book-shell {
   box-shadow: 0 12px 40px rgba(41, 59, 70, 0.06);
 }
 body.theme-delogis .mp-book-head {
-  background: linear-gradient(135deg, #384E5C 0%, #293B46 100%);
+  background: var(--delogis-black, #1a1414);
   color: #fff;
 }
 body.theme-delogis .mp-btn-primary,
 body.theme-pack-delogis .mp-btn-primary {
-  background: var(--delogis-base, #B9905D) !important;
-  border-color: var(--delogis-base, #B9905D) !important;
+  background: var(--delogis-base, #976147) !important;
+  border-color: var(--delogis-base, #976147) !important;
 }
 
 /* Galeri hover */
@@ -89,7 +91,7 @@ body.theme-pack-delogis .mp-btn-primary {
   /* marka rengi panelden gelir */
 }
 
-/* Randevu wizard / form alanları (iç sayfalar) */
+/* Randevu wizard / form alanlarÄ± (iÃ§ sayfalar) */
 .dg-page {
   padding: 60px 0 90px;
 }
@@ -108,7 +110,7 @@ body.theme-pack-delogis .mp-btn-primary {
   margin-bottom: 12px;
 }
 .dg-muted {
-  color: var(--delogis-gray, #8A969E);
+  color: var(--delogis-gray, #736b6b);
   line-height: 1.7;
 }
 .dg-grid-2 {
@@ -142,10 +144,10 @@ body.theme-pack-delogis .mp-btn-primary {
   border-bottom: 1px solid var(--delogis-bdr-color, #EBE2D8);
 }
 .dg-list li::before {
-  content: "✓";
+  content: "âœ“";
   position: absolute;
   left: 0;
-  color: var(--delogis-base, #B9905D);
+  color: var(--delogis-base, #976147);
   font-weight: 700;
 }
 .dg-svc-grid {
@@ -206,7 +208,7 @@ body.theme-pack-delogis .mp-btn-primary {
   text-transform: uppercase;
   letter-spacing: .04em;
   margin-bottom: 6px;
-  color: var(--delogis-primary, #384E5C);
+  color: var(--delogis-primary, #1a1414);
 }
 .dg-form input,
 .dg-form textarea,
@@ -223,8 +225,9 @@ body.theme-pack-delogis .mp-btn-primary {
   border: 0;
   cursor: pointer;
 }
-/* Guest booking / mevcut randevu bileşenleri */
+/* Guest booking / mevcut randevu bileÅŸenleri */
 .dg-page .guest-booking,
 .dg-page form {
   max-width: 100%;
 }
+
