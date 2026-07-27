@@ -167,6 +167,19 @@ body.theme-delogis.dg-home .main-header-three {
   position: absolute;
   background: transparent;
 }
+
+/* Header sağ: sabit Randevu Al butonu */
+body.theme-delogis .main-menu-three__randevu-btn {
+  padding: 12px 26px !important;
+  white-space: nowrap;
+}
+body.theme-delogis .main-menu-three__call {
+  padding: 28px 0;
+}
+body.theme-delogis.dg-inner .main-menu-three__randevu-btn {
+  background: var(--delogis-base, #976147) !important;
+  color: #fff !important;
+}
 /* Anasayfa services-three dekoratif bg de sadeleştir */
 .services-three__bg {
   background-image: none !important;

@@ -5,8 +5,6 @@
     $dg = rtrim((string) request()->getBasePath(), '/').'/themes/delogis';
     $logo = $doktor['logo'] ?? null;
     $adSoyad = trim(($doktor['unvan'] ?? '').' '.($doktor['ad_soyad'] ?? 'Hekim'));
-    $tel = $doktor['telefon'] ?? null;
-    $telRaw = $doktor['telefon_raw'] ?? preg_replace('/\D+/', '', (string) $tel);
 @endphp
 <header class="main-header-three">
     <nav class="main-menu main-menu-three">
@@ -39,25 +37,11 @@
                     </div>
                 </div>
                 <div class="main-menu-three__right">
-                    @if($tel)
-                        <div class="main-menu-three__call">
-                            <div class="main-menu-three__call-icon">
-                                <span class="icon-phone-call"></span>
-                            </div>
-                            <div class="main-menu-three__call-content">
-                                <p class="main-menu-three__call-sub-title">Sorunuz mu var?</p>
-                                <h5 class="main-menu-three__call-number">
-                                    <a href="tel:{{ $telRaw }}">{{ $tel }}</a>
-                                </h5>
-                            </div>
+                    <div class="main-menu-three__call">
+                        <div class="main-menu-three__call-content">
+                            <a href="{{ route('frontend.randevu') }}" class="thm-btn main-menu-three__randevu-btn">Randevu Al</a>
                         </div>
-                    @else
-                        <div class="main-menu-three__call">
-                            <div class="main-menu-three__call-content">
-                                <a href="{{ route('frontend.randevu') }}" class="thm-btn" style="padding:12px 22px">Randevu Al</a>
-                            </div>
-                        </div>
-                    @endif
+                    </div>
                 </div>
             </div>
         </div>

@@ -62,7 +62,7 @@
 @endif
 
 @include('frontend.themes.delogis.layouts.partials.assets-css')
-<link rel="stylesheet" href="{{ rtrim((string) request()->getBasePath(), '/') }}/css/themes/delogis.css?v=10">
+<link rel="stylesheet" href="{{ rtrim((string) request()->getBasePath(), '/') }}/css/themes/delogis.css?v=11">
 <style>
 /* Orijinal delogis.css ile aynı — panel tema_renk ile bozulmasın */
 :root {
