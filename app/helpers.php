@@ -90,7 +90,20 @@ if (! function_exists('media_url')) {
             $path = substr($path, 7);
         }
 
-        return rtrim(media_base(), '/').'/'.$path;
+        $relative = $path;
+        $viaApiMedia = rtrim(media_base(), '/').'/'.$relative;
+
+        // Dosya API media yerine ana site public/uploads üzerindeyse doğrudan SITE_URL kullan
+        $sitePublic = (string) config('randevu_api.site_media_url', env('SITE_MEDIA_URL', env('MEDIA_URL', '')));
+        if ($sitePublic !== '') {
+            $sitePublic = rtrim($sitePublic, '/');
+            // MEDIA_URL bazen https://randevuajandam.com ( /media yok )
+            if (! str_ends_with($sitePublic, '/media')) {
+                return $sitePublic.'/'.$relative;
+            }
+        }
+
+        return $viaApiMedia;
     }
 }
 

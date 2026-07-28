@@ -31,6 +31,9 @@
                         $hSlug = $h['slug'] ?? \Illuminate\Support\Str::slug($hAd);
                         $href = route('frontend.hizmet.detay', $hSlug ?: ($h['id'] ?? ''));
                         $img = $h['image'] ?? $h['resim'] ?? $h['kapak'] ?? null;
+                        if (filled($img) && function_exists('media_url') && ! preg_match('#^(https?:)?//#i', (string) $img)) {
+                            $img = media_url((string) $img) ?: $img;
+                        }
                         $sure = $h['sure'] ?? $h['duration'] ?? null;
                         // Blog tarih rozeti yerine süre / sıra
                         $badgeTop = '—';

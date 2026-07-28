@@ -31,6 +31,9 @@
                         $bTitle = $b['baslik'] ?? $b['title'] ?? 'Yazı';
                         $bSlug = $b['slug'] ?? \Illuminate\Support\Str::slug($bTitle);
                         $bImg = $b['image'] ?? $b['kapak'] ?? $b['resim'] ?? null;
+                        if (filled($bImg) && function_exists('media_url') && ! preg_match('#^(https?:)?//#i', (string) $bImg)) {
+                            $bImg = media_url((string) $bImg) ?: $bImg;
+                        }
                         $href = route('frontend.blog.detay', $bSlug);
                         $day = '—';
                         $mon = '';

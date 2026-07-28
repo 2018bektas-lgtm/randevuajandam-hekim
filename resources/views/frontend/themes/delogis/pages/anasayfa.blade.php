@@ -159,7 +159,7 @@
         {{-- ── Özellikler ── --}}
         @case('ozellikler')
             @if($ozellikler->isNotEmpty())
-            <section class="feature-one" style="padding:60px 0">
+            <section class="why-choose-one" id="ozellikler" style="padding:60px 0">
                 <div class="container">
                     <div class="section-title text-center">
                         <span class="section-title__tagline">Özellikler</span>
@@ -171,8 +171,8 @@
                     <div class="row">
                         @foreach ($ozellikler as $idx => $oz)
                             <div class="col-xl-4 col-md-6" style="margin-bottom:24px">
-                                <div class="feature-two__single" style="padding:24px;height:100%;background:#fff;border:1px solid #e5e7eb;border-radius:12px">
-                                    <div class="feature-two__icon" style="margin-bottom:12px">
+                                <div style="padding:24px;height:100%;background:#fff;border:1px solid #e5e7eb;border-radius:12px">
+                                    <div style="margin-bottom:12px;color:var(--delogis-base,#C96A2B)">
                                         <span class="{{ $icons[$idx % count($icons)] }}" style="font-size:1.75rem"></span>
                                     </div>
                                     <h3 style="font-size:1.1rem;margin:0 0 8px">{{ decode_text($oz['baslik'] ?? '') }}</h3>
@@ -269,6 +269,9 @@
                                 $hSlug = $h['slug'] ?? \Illuminate\Support\Str::slug($hAd);
                                 $href = route('frontend.hizmet.detay', $hSlug ?: ($h['id'] ?? ''));
                                 $hImg = $h['image'] ?? $h['resim'] ?? $h['kapak'] ?? null;
+                                if (filled($hImg) && function_exists('media_url') && ! preg_match('#^(https?:)?//#i', (string) $hImg)) {
+                                    $hImg = media_url((string) $hImg) ?: $hImg;
+                                }
                                 $sure = $h['sure'] ?? $h['duration'] ?? null;
                                 $badgeTop = str_pad((string) ($idx + 1), 2, '0', STR_PAD_LEFT);
                                 $badgeBottom = 'Hiz';
@@ -417,6 +420,9 @@
                                 $bTitle = $b['baslik'] ?? $b['title'] ?? 'Yazı';
                                 $bSlug = $b['slug'] ?? \Illuminate\Support\Str::slug($bTitle);
                                 $bImg = $b['image'] ?? $b['kapak'] ?? $b['resim'] ?? null;
+                                if (filled($bImg) && function_exists('media_url') && ! preg_match('#^(https?:)?//#i', (string) $bImg)) {
+                                    $bImg = media_url((string) $bImg) ?: $bImg;
+                                }
                                 $href = route('frontend.blog.detay', $bSlug);
                                 $day = '—';
                                 $mon = '';
