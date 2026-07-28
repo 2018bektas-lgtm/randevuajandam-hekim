@@ -61,15 +61,40 @@ if (! function_exists('media_url')) {
 
         $path = str_replace('\\', '/', trim($path));
 
+        $sitePublic = rtrim((string) (
+            config('randevu_api.site_media_url')
+            ?: env('SITE_MEDIA_URL')
+            ?: env('MEDIA_URL')
+            ?: ''
+        ), '/');
+        // Ana site public kökü (uploads doğrudan burada): /media soneki yok
+        if ($sitePublic !== '' && str_ends_with($sitePublic, '/media')) {
+            $sitePublic = substr($sitePublic, 0, -strlen('/media'));
+        }
+
         // Already absolute or data URI
         if (preg_match('#^(https?:)?//#i', $path) || str_starts_with($path, 'data:')) {
-            // Her host'taki uploads/storage yollarını medya tabanına çek
-            if (preg_match('#^https?://[^/]+/(?:public/)?(uploads|storage)/(.+)$#i', $path, $m)) {
-                return rtrim(media_base(), '/').'/'.$m[1].'/'.ltrim($m[2], '/');
+            // Ana sitedeki /uploads/... URL'lerini olduğu gibi bırak (veya sitePublic'e normalize et)
+            if (preg_match('#^https?://[^/]+/(?:public/)?(uploads)/(.+)$#i', $path, $m)) {
+                if ($sitePublic !== '') {
+                    return $sitePublic.'/uploads/'.ltrim($m[2], '/');
+                }
+
+                return $path;
             }
-            // /media/uploads/... absolute
-            if (preg_match('#^https?://[^/]+/media/(.+)$#i', $path, $m)) {
-                return rtrim(media_base(), '/').'/'.ltrim($m[1], '/');
+            // storage/uploads → site uploads
+            if (preg_match('#^https?://[^/]+/storage/uploads/(.+)$#i', $path, $m)) {
+                if ($sitePublic !== '') {
+                    return $sitePublic.'/uploads/'.ltrim($m[1], '/');
+                }
+            }
+            // /media/uploads/... → tercih site public, yoksa media_base
+            if (preg_match('#^https?://[^/]+/media/(uploads/.+)$#i', $path, $m)) {
+                if ($sitePublic !== '') {
+                    return $sitePublic.'/'.$m[1];
+                }
+
+                return rtrim(media_base(), '/').'/'.$m[1];
             }
 
             return $path;
@@ -89,21 +114,23 @@ if (! function_exists('media_url')) {
         if (str_starts_with($path, 'public/')) {
             $path = substr($path, 7);
         }
-
-        $relative = $path;
-        $viaApiMedia = rtrim(media_base(), '/').'/'.$relative;
-
-        // Dosya API media yerine ana site public/uploads üzerindeyse doğrudan SITE_URL kullan
-        $sitePublic = (string) config('randevu_api.site_media_url', env('SITE_MEDIA_URL', env('MEDIA_URL', '')));
-        if ($sitePublic !== '') {
-            $sitePublic = rtrim($sitePublic, '/');
-            // MEDIA_URL bazen https://randevuajandam.com ( /media yok )
-            if (! str_ends_with($sitePublic, '/media')) {
-                return $sitePublic.'/'.$relative;
-            }
+        // storage/uploads/x → uploads/x
+        if (str_starts_with($path, 'storage/uploads/')) {
+            $path = substr($path, strlen('storage/'));
         }
 
-        return $viaApiMedia;
+        $relative = $path;
+
+        // Dosyalar SHARED site public altında — doğrudan randevuajandam.com/uploads/...
+        if ($sitePublic !== '' && (str_starts_with($relative, 'uploads/') || str_starts_with($relative, 'storage/'))) {
+            if (str_starts_with($relative, 'storage/')) {
+                $relative = substr($relative, strlen('storage/'));
+            }
+
+            return $sitePublic.'/'.$relative;
+        }
+
+        return rtrim(media_base(), '/').'/'.$relative;
     }
 }
 
