@@ -89,6 +89,7 @@ class BlogController extends Controller
             'baslik' => ['required', 'string', 'max:255'],
             'icerik' => ['required', 'string'],
             'resim' => ['nullable', 'image', 'max:10240'],
+            'resim_sil' => ['nullable'],
             'meta_baslik' => ['nullable', 'string', 'max:255'],
             'meta_aciklama' => ['nullable', 'string', 'max:500'],
             'meta_anahtar_kelimeler' => ['nullable', 'string', 'max:500'],
@@ -102,9 +103,13 @@ class BlogController extends Controller
                 'meta_aciklama' => $request->meta_aciklama,
                 'meta_anahtar_kelimeler' => $request->meta_anahtar_kelimeler,
                 'aktif_mi' => $request->boolean('aktif_mi'),
+                'resim_sil' => $request->boolean('resim_sil') ? 1 : 0,
                 '_method' => 'PUT',
             ];
             $files = $request->hasFile('resim') ? ['resim' => $request->file('resim')] : [];
+            if ($files) {
+                $fields['resim_sil'] = 0;
+            }
             $this->api->postMultipart('/bloglar/'.$id, $fields, $files);
             $this->siteContent->forgetCache();
         } catch (RuntimeException $e) {

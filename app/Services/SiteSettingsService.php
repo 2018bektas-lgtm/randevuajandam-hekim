@@ -89,8 +89,16 @@ class SiteSettingsService
     public function deleteMediaIfOwned(?string $path): void
     {
         $path = trim((string) $path);
-        if ($path === '' || str_starts_with($path, 'http')) {
+        if ($path === '') {
             return;
+        }
+        // Absolute URL → local storage relative path (site/slider/...)
+        if (preg_match('#^https?://#i', $path)) {
+            if (preg_match('#/storage/(site/.+)$#i', $path, $m)) {
+                $path = $m[1];
+            } else {
+                return; // harici URL — diskte silinmez
+            }
         }
         $relative = preg_replace('#^/?storage/#', '', $path) ?: $path;
         try {

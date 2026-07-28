@@ -536,6 +536,14 @@ window.openSlideModal = function (slide) {
     form.reset();
     methodBox.innerHTML = '';
     document.getElementById('f_image_sil').checked = false;
+    document.getElementById('f_image_sil').onchange = function () {
+        if (this.checked) {
+            f_image_url.value = '';
+            setImagePreview('');
+            const file = document.getElementById('f_image_file');
+            if (file) file.value = '';
+        }
+    };
     clearStats();
 
     if (slide && slide.id) {

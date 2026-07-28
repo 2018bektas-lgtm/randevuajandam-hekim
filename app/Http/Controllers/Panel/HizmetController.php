@@ -104,6 +104,7 @@ class HizmetController extends Controller
             'meta_anahtar_kelimeler' => ['nullable', 'string', 'max:500'],
             'aktif_mi' => ['nullable'],
             'resim' => ['nullable', 'image', 'max:10240'],
+            'resim_sil' => ['nullable'],
         ]);
         $fields = [
             'ad' => $data['ad'],
@@ -114,12 +115,14 @@ class HizmetController extends Controller
             'meta_aciklama' => $data['meta_aciklama'] ?? null,
             'meta_anahtar_kelimeler' => $data['meta_anahtar_kelimeler'] ?? null,
             'aktif_mi' => $request->boolean('aktif_mi'),
+            'resim_sil' => $request->boolean('resim_sil') ? 1 : 0,
             '_method' => 'PUT',
         ];
 
         try {
             $files = $request->hasFile('resim') ? ['resim' => $request->file('resim')] : [];
             if ($files) {
+                $fields['resim_sil'] = 0;
                 $this->api->postMultipart('/hizmetler/'.$id, $fields, $files);
             } else {
                 $this->api->put('/hizmetler/'.$id, collect($fields)->except('_method')->all());

@@ -530,6 +530,7 @@ class SiteAyarlariController extends Controller
         if ($request->boolean('image_sil')) {
             $this->settings->deleteMediaIfOwned($current);
 
+            // Görsel silindi — formda kalan image_url'i yok say
             return null;
         }
 
@@ -544,24 +545,21 @@ class SiteAyarlariController extends Controller
 
         $url = trim((string) $request->input('image_url', ''));
         if ($url !== '') {
-            // Harici URL veya mevcut storage path
-            if ($current && $url !== $current && $url !== $this->settings->mediaUrl($current)) {
-                // Yeni harici URL — eski upload'u temizle
-                if (! str_starts_with($url, 'http') && $url !== $current) {
-                    // relative path kept
-                } elseif (str_starts_with($url, 'http')) {
-                    $this->settings->deleteMediaIfOwned($current);
-
-                    return $url;
-                }
-            }
             if (str_starts_with($url, 'http')) {
+                // Aynı mevcut URL tekrar gönderildiyse değiştirme
+                $currentUrl = $current ? $this->settings->mediaUrl($current) : null;
+                if ($current && ($url === $current || $url === $currentUrl)) {
+                    return $current;
+                }
                 if ($current && $current !== $url) {
                     $this->settings->deleteMediaIfOwned($current);
                 }
 
                 return $url;
             }
+
+            // relative path
+            return $url;
         }
 
         return $current;
