@@ -125,7 +125,7 @@ class SiteAyarlariController extends Controller
 
     public function temalar()
     {
-        $aktif = (string) $this->settings->option('tema_id', (string) config('themes.default', 'klasik'));
+        $aktif = (string) $this->settings->option('tema_id', (string) config('themes.default', 'tema-1'));
         $renk = (string) $this->settings->option('tema_renk', '');
         $resolved = resolve_site_theme($aktif);
 
@@ -174,7 +174,7 @@ class SiteAyarlariController extends Controller
             'tema_id' => ['nullable', 'string', 'max:40'],
         ]);
 
-        $temaId = (string) $request->input('tema_id', config('themes.default', 'klasik'));
+        $temaId = (string) $request->input('tema_id', config('themes.default', 'tema-1'));
         $tema = resolve_site_theme($temaId);
         $temaRenk = $request->input('tema_renk');
         if (! is_string($temaRenk) || ! preg_match('/^#[0-9A-Fa-f]{6}$/', $temaRenk)) {

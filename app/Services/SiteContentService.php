@@ -215,7 +215,7 @@ class SiteContentService
         if (! empty($genel['tema_renk'])) {
             $out['tema_renk'] = $genel['tema_renk'];
         }
-        $temaId = (string) ($genel['tema_id'] ?? config('themes.default', 'klasik'));
+        $temaId = (string) ($genel['tema_id'] ?? config('themes.default', 'tema-1'));
         $tema = resolve_site_theme($temaId);
         $out['tema_id'] = $tema['id'];
         $out['tema'] = $tema;

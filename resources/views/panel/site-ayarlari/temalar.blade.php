@@ -24,8 +24,8 @@
     <div class="sa-card mb-5">
         <div class="sa-card-head">
             <div>
-                <h3>Hazır site temaları</h3>
-                <p class="sa-hint">Tema değişince yalnızca renk değil; header, anasayfa düzeni, kartlar ve footer da değişir (tam layout paketi). Premium temalar web sitesi paketinde yer alır.</p>
+                <h3>Hekim site temaları</h3>
+                <p class="sa-hint">Bireysel hekim sitesi için: <strong>Hipno</strong> ve <strong>Delogis</strong>. Tema değişince header, anasayfa, kartlar ve footer tamamen değişir. Klinik temaları ayrıdır. Premium temalar web sitesi paketinde yer alır.</p>
             </div>
             <span class="sa-badge">{{ count($temalar) }} tema</span>
         </div>

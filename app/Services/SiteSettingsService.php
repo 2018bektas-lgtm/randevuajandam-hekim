@@ -156,7 +156,7 @@ class SiteSettingsService
                     'slogan_override' => $this->option('slogan_override', ''),
                     'footer_metin' => $this->option('footer_metin', ''),
                     'tema_renk' => $this->option('tema_renk', '#0d9488'),
-                    'tema_id' => $this->option('tema_id', (string) config('themes.default', 'klasik')),
+                    'tema_id' => $this->option('tema_id', (string) config('themes.default', 'tema-1')),
                     'vitrin_badge' => $this->option('vitrin_badge', ''),
                     'logo' => $this->option('site_logo', ''),
                     'favicon' => $this->option('site_favicon', ''),

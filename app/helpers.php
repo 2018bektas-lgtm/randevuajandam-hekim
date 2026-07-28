@@ -226,7 +226,19 @@ if (! function_exists('resolve_site_theme')) {
     function resolve_site_theme(?string $id = null): array
     {
         $catalog = site_themes();
-        $default = (string) config('themes.default', 'klasik');
+        $default = (string) config('themes.default', 'tema-1');
+        // Eski id'ler → hekim kataloguna map
+        $aliases = [
+            'klasik' => 'tema-1',
+            'hipno' => 'tema-1',
+            'modern' => 'tema-1',
+            'minimalist' => 'tema-1',
+            'minimal' => 'tema-1',
+            'custom' => 'tema-1',
+        ];
+        if (is_string($id) && isset($aliases[$id]) && ! isset($catalog[$id])) {
+            $id = $aliases[$id];
+        }
         $key = ($id && isset($catalog[$id])) ? $id : $default;
 
         // Premium kilitliyse ücretsiz varsayılana düş
@@ -235,11 +247,11 @@ if (! function_exists('resolve_site_theme')) {
         }
 
         if (! isset($catalog[$key])) {
-            $key = array_key_first($catalog) ?: 'klasik';
+            $key = array_key_first($catalog) ?: 'tema-1';
             $catalog[$key] = $catalog[$key] ?? [
-                'ad' => 'Varsayılan',
-                'renk' => '#0d9488',
-                'google_fonts' => 'Inter:wght@400;600;700',
+                'ad' => 'Hipno',
+                'renk' => '#9B9A84',
+                'google_fonts' => 'Marcellus&family=Sora:wght@100..800',
             ];
         }
 
@@ -344,11 +356,11 @@ if (! function_exists('theme_view_name')) {
                 return $byId;
             }
         }
-        // 3) Klasik paket (eksik sayfa için tam set yedek)
-        if ($pack !== 'klasik') {
-            $klasik = 'frontend.themes.klasik.'.$name;
-            if (view()->exists($klasik)) {
-                return $klasik;
+        // 3) Hekim varsayılan paket (eksik sayfa için yedek): tema-1
+        if ($pack !== 'tema-1') {
+            $fallback = 'frontend.themes.tema-1.'.$name;
+            if (view()->exists($fallback)) {
+                return $fallback;
             }
         }
         // 4) Eski ortak frontend/* (son çare)

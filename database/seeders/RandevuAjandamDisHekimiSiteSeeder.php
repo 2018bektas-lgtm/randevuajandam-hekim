@@ -14,7 +14,7 @@ class RandevuAjandamDisHekimiSiteSeeder extends Seeder
             'site_baslik_ek' => 'Genel Diş Hekimi',
             'slogan_override' => 'Sağlıklı ve doğal gülüşler için yanınızdayız.',
             'footer_metin' => 'Dt. Randevu Ajandam ile ağız ve diş sağlığınız için güvenilir bakım.',
-            'tema_id' => 'klasik',
+            'tema_id' => 'tema-1',
             'tema_renk' => '#0d9488',
             'vitrin_badge' => 'Genel Diş Hekimliği',
             'seo_meta_baslik' => 'Dt. Randevu Ajandam | Genel Diş Hekimi',
