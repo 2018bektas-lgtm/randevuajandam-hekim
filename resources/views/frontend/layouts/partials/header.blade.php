@@ -46,13 +46,41 @@
         <nav class="nav-desktop" aria-label="Ana menü">
             @foreach ($nav as $item)
                 @php
+                    $children = $item['children'] ?? [];
                     $active = !empty($item['match']) && request()->routeIs($item['match']);
+                    if (! $active && $children) {
+                        foreach ($children as $ch) {
+                            if (!empty($ch['match']) && request()->routeIs($ch['match'])) { $active = true; break; }
+                        }
+                    }
                 @endphp
-                <a href="{{ $item['href'] }}"
-                   class="{{ $active ? 'active' : '' }}"
-                   @if(!empty($item['external'])) target="_blank" rel="noopener" @endif>
-                    {{ $item['label'] }}
-                </a>
+                @if(!empty($children))
+                    <div class="nav-item has-dropdown {{ $active ? 'active' : '' }}">
+                        <a href="{{ $item['href'] }}"
+                           class="{{ $active ? 'active' : '' }}"
+                           @if(!empty($item['external'])) target="_blank" rel="noopener" @endif>
+                            {{ $item['label'] }}
+                            <span class="nav-caret" aria-hidden="true">▾</span>
+                        </a>
+                        <div class="nav-dropdown" role="menu">
+                            @foreach($children as $child)
+                                @php $cActive = !empty($child['match']) && request()->routeIs($child['match']); @endphp
+                                <a href="{{ $child['href'] }}"
+                                   class="{{ $cActive ? 'active' : '' }}"
+                                   role="menuitem"
+                                   @if(!empty($child['external'])) target="_blank" rel="noopener" @endif>
+                                    {{ $child['label'] }}
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
+                @else
+                    <a href="{{ $item['href'] }}"
+                       class="{{ $active ? 'active' : '' }}"
+                       @if(!empty($item['external'])) target="_blank" rel="noopener" @endif>
+                        {{ $item['label'] }}
+                    </a>
+                @endif
             @endforeach
         </nav>
 
@@ -72,6 +100,7 @@
     <div class="mobile-nav" id="mobile-menu">
         @foreach ($nav as $item)
             @php
+                $children = $item['children'] ?? [];
                 $active = !empty($item['match']) && request()->routeIs($item['match']);
             @endphp
             <a href="{{ $item['href'] }}"
@@ -79,6 +108,14 @@
                @if(!empty($item['external'])) target="_blank" rel="noopener" @endif>
                 {{ $item['label'] }}
             </a>
+            @foreach($children as $child)
+                @php $cActive = !empty($child['match']) && request()->routeIs($child['match']); @endphp
+                <a href="{{ $child['href'] }}"
+                   class="mobile-nav-child {{ $cActive ? 'active' : '' }}"
+                   @if(!empty($child['external'])) target="_blank" rel="noopener" @endif>
+                    {{ $child['label'] }}
+                </a>
+            @endforeach
         @endforeach
         <a href="{{ route('frontend.randevu') }}" class="btn btn-primary" style="margin:.5rem 0 0;width:100%">Online Randevu</a>
     </div>

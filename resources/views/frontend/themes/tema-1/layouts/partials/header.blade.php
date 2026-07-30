@@ -31,11 +31,7 @@
                 <div class="collapse navbar-collapse main-menu">
                     <div class="nav-menu-wrapper">
                         <ul class="navbar-nav mr-auto" id="menu">
-                            @foreach ($nav as $item)
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ nav_href($item) }}">{{ $item['label'] }}</a>
-                                </li>
-                            @endforeach
+                            @include('frontend.layouts.partials.nav-items', ['nav' => $nav, 'mode' => 'list'])
                         </ul>
                     </div>
                     <div class="header-btn d-inline-flex">

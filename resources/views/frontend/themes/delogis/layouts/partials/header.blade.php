@@ -38,13 +38,7 @@
                         </div>
                         <div class="main-menu-three__main-menu-box">
                             <ul class="main-menu__list">
-                                @foreach ($nav as $item)
-                                    @php $active = ! empty($item['match']) && request()->routeIs($item['match']); @endphp
-                                    <li class="{{ $active ? 'current' : '' }}">
-                                        <a href="{{ $item['href'] }}"
-                                           @if(!empty($item['external'])) target="_blank" rel="noopener" @endif>{{ $item['label'] }}</a>
-                                    </li>
-                                @endforeach
+                                @include('frontend.layouts.partials.nav-items', ['nav' => $nav, 'mode' => 'delogis'])
                             </ul>
                         </div>
                     </div>

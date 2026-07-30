@@ -168,6 +168,7 @@ class SiteSettingsService
                 'menu' => [
                     'items' => $this->menuItems()->map(fn ($m) => [
                         'id' => $m->id,
+                        'parent_id' => $m->parent_id ? (int) $m->parent_id : null,
                         'key' => $m->key,
                         'label' => $m->label,
                         'route' => $m->route,
