@@ -15,7 +15,9 @@
     $telefonRaw = $doktor['telefon_raw'] ?? preg_replace('/[^0-9+]/', '', $telefon ?? '');
     $eposta = $doktor['e_posta'] ?? null;
     $adres = $doktor['adres'] ?? null;
-    $footerNav = array_slice($nav ?? [], 0, 5);
+    $footerNav = function_exists('site_footer_nav')
+        ? site_footer_nav(is_array($doktor ?? null) ? $doktor : null)
+        : array_slice($nav ?? [], 0, 5);
     $wpNum = $doktor['whatsapp'] ?? $telefonRaw;
 @endphp
 

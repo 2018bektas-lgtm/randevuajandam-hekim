@@ -560,6 +560,8 @@ if (! function_exists('nav_href')) {
 
 if (! function_exists('site_footer_pages')) {
     /**
+     * Özel sayfalar (Sayfalar → Footer’da göster).
+     *
      * @return array<int, array{baslik: string, href: string, slug: string}>
      */
     function site_footer_pages(): array
@@ -577,5 +579,77 @@ if (! function_exists('site_footer_pages')) {
         } catch (\Throwable) {
             return [];
         }
+    }
+}
+
+if (! function_exists('site_footer_nav')) {
+    /**
+     * Footer “Keşfet” linkleri — panel Site Ayarları → Footer.
+     * Boşsa header menü ana seviyesine, o da yoksa varsayılanlara düşer.
+     *
+     * @return array<int, array{href: string, label: string, external: bool}>
+     */
+    function site_footer_nav(?array $doktor = null): array
+    {
+        if ($doktor === null) {
+            try {
+                $shared = view()->shared('doktor');
+                $doktor = is_array($shared) ? $shared : [];
+            } catch (\Throwable) {
+                $doktor = [];
+            }
+        }
+
+        $mapItem = static function (array $item): array {
+            $href = function_exists('nav_href') ? nav_href($item) : ($item['url'] ?? '#');
+            $isExternal = filled($item['url'] ?? null)
+                && (str_starts_with((string) $item['url'], 'http') || str_starts_with((string) $item['url'], '//'));
+
+            return [
+                'href' => $href,
+                'label' => $item['label'] ?? ($item['key'] ?? 'Link'),
+                'external' => $isExternal,
+            ];
+        };
+
+        if (! empty($doktor['footer_menu']) && is_array($doktor['footer_menu'])) {
+            return collect($doktor['footer_menu'])
+                ->filter(fn ($i) => is_array($i))
+                ->sortBy(fn ($i) => (int) ($i['sira'] ?? 0))
+                ->map($mapItem)
+                ->values()
+                ->all();
+        }
+
+        // Geriye uyumluluk: eski siteler header menüsünden
+        if (! empty($doktor['menu']) && is_array($doktor['menu'])) {
+            return collect($doktor['menu'])
+                ->filter(fn ($i) => is_array($i) && empty($i['parent_id']) && ($i['key'] ?? '') !== 'anasayfa')
+                ->sortBy(fn ($i) => (int) ($i['sira'] ?? 0))
+                ->map($mapItem)
+                ->values()
+                ->all();
+        }
+
+        $defaults = [
+            ['route' => 'frontend.hakkimda', 'label' => 'Hakkımda'],
+            ['route' => 'frontend.hizmetler', 'label' => 'Hizmetler'],
+            ['route' => 'frontend.galeri', 'label' => 'Galeri'],
+            ['route' => 'frontend.blog', 'label' => 'Blog'],
+            ['route' => 'frontend.sss', 'label' => 'S.S.S.'],
+            ['route' => 'frontend.iletisim', 'label' => 'İletişim'],
+        ];
+        $nav = [];
+        foreach ($defaults as $d) {
+            if (\Illuminate\Support\Facades\Route::has($d['route'])) {
+                $nav[] = [
+                    'href' => route($d['route']),
+                    'label' => $d['label'],
+                    'external' => false,
+                ];
+            }
+        }
+
+        return $nav;
     }
 }

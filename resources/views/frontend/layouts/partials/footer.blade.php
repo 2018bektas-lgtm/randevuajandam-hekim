@@ -1,29 +1,7 @@
 @php
-    if (! empty($doktor['menu']) && is_array($doktor['menu'])) {
-        $footerNav = collect($doktor['menu'])
-            ->filter(fn ($i) => empty($i['parent_id']) && ($i['key'] ?? '') !== 'anasayfa')
-            ->sortBy(fn ($i) => (int) ($i['sira'] ?? 0))
-            ->map(fn ($item) => [
-                'href' => nav_href($item),
-                'label' => $item['label'] ?? ($item['key'] ?? ''),
-                'external' => filled($item['url'] ?? null) && str_starts_with((string) $item['url'], 'http'),
-            ])
-            ->values()
-            ->all();
-    } else {
-        $footerNav = [
-            ['href' => route('frontend.hakkimda'), 'label' => 'Hakkımda', 'external' => false],
-            ['href' => route('frontend.hizmetler'), 'label' => 'Hizmetler', 'external' => false],
-            ['href' => route('frontend.egitimler'), 'label' => 'Eğitimler', 'external' => false],
-            ['href' => route('frontend.galeri'), 'label' => 'Galeri', 'external' => false],
-            ['href' => route('frontend.blog'), 'label' => 'Blog', 'external' => false],
-            ['href' => route('frontend.sss'), 'label' => 'S.S.S.', 'external' => false],
-            ['href' => route('frontend.iletisim'), 'label' => 'İletişim', 'external' => false],
-        ];
-        if (empty($doktor['egitimler'])) {
-            $footerNav = array_values(array_filter($footerNav, fn ($i) => $i['label'] !== 'Eğitimler'));
-        }
-    }
+    $footerNav = function_exists('site_footer_nav')
+        ? site_footer_nav($doktor ?? null)
+        : [];
 @endphp
 <footer class="site-footer">
     <div class="container footer-grid">

@@ -9,10 +9,8 @@
     $bio = plain_text($doktor['footer_metin'] ?? $doktor['kisa_bio'] ?? $doktor['slogan'] ?? 'Güvenilir, kişiye özel sağlık hizmeti.', 160);
     $sosyal = array_filter($doktor['sosyal'] ?? [], fn ($u) => filled($u));
 
-    // Menü — header ile aynı kaynak
-    $footerNav = collect(function_exists('site_nav') ? site_nav(is_array($doktor ?? null) ? $doktor : null) : [])
-        ->filter(fn ($i) => ($i['match'] ?? '') !== 'frontend.anasayfa')
-        ->take(7)
+    // Footer linkleri — Site Ayarları → Footer (header menüsünden bağımsız)
+    $footerNav = collect(function_exists('site_footer_nav') ? site_footer_nav(is_array($doktor ?? null) ? $doktor : null) : [])
         ->values();
 
     // Çalışma saatleri — API'den normalize (calisma_saatleri_ozet tercih)
