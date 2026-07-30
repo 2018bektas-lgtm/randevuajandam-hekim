@@ -44,33 +44,35 @@ class SiteAyarlariController extends Controller
         ]);
     }
 
-    public function menu()
+    public function menu(Request $request)
     {
         $this->syncSystemMenuItems();
 
-        $items = $this->settings->menuItems();
-        $roots = $items->whereNull('parent_id')->values();
-        $childrenByParent = $items->whereNotNull('parent_id')->groupBy('parent_id');
-
-        // Hiyerarşik düz liste: üst öğe → alt öğeler (panel sürükle-bırak sırası)
-        $ordered = collect();
-        foreach ($roots as $root) {
-            $ordered->push($root);
-            foreach ($childrenByParent->get($root->id, collect()) as $child) {
-                $ordered->push($child);
+        $ustId = (int) $request->query('ust', 0);
+        $parent = null;
+        if ($ustId > 0) {
+            $parent = SiteMenuItem::query()->whereNull('parent_id')->find($ustId);
+            if (! $parent) {
+                return redirect()->route('panel.site-ayarlari.menu')
+                    ->with('hata', 'Üst menü bulunamadı.');
             }
         }
-        // Yetim alt öğeler (üst silinmişse) ana seviyede göster
-        foreach ($items as $item) {
-            if ($item->parent_id && ! $roots->contains('id', $item->parent_id) && ! $ordered->contains('id', $item->id)) {
-                $ordered->push($item);
-            }
+
+        $all = $this->settings->menuItems();
+        $childCounts = $all->whereNotNull('parent_id')->groupBy('parent_id')
+            ->map(fn ($g) => $g->count());
+
+        if ($parent) {
+            $items = $all->where('parent_id', $parent->id)->values();
+        } else {
+            $items = $all->whereNull('parent_id')->values();
         }
 
         return view('panel.site-ayarlari.menu', [
             'group' => 'menu',
-            'items' => $ordered,
-            'rootItems' => $roots,
+            'items' => $items,
+            'parent' => $parent,
+            'childCounts' => $childCounts,
             'pageOptions' => $this->internalPageOptions(),
             'pageGroups' => $this->internalPageGroups(),
         ]);
@@ -397,14 +399,37 @@ class SiteAyarlariController extends Controller
         $urls = $request->input('url', []);
         $routes = $request->input('route', []);
         $linkTypes = $request->input('link_type', []);
-        $parents = $request->input('parent_id', []);
         $aktif = $request->input('aktif', []);
         $allowedRoutes = array_keys($this->internalPageOptions());
-        $validRootIds = SiteMenuItem::query()->pluck('id')->map(fn ($id) => (int) $id)->all();
+
+        // Bu kaydetme yalnızca mevcut seviyedeki satırlar içindir (ana veya bir üstün altları)
+        $contextParent = (int) $request->input('context_parent_id', 0);
+        $forcedParentId = null;
+        if ($contextParent > 0) {
+            $parentRow = SiteMenuItem::query()->whereNull('parent_id')->find($contextParent);
+            $forcedParentId = $parentRow ? (int) $parentRow->id : null;
+            if (! $forcedParentId) {
+                return redirect()->route('panel.site-ayarlari.menu')
+                    ->with('hata', 'Üst menü geçersiz.');
+            }
+        }
 
         foreach ($ids as $i => $id) {
             $id = (int) $id;
             if ($id < 1) {
+                continue;
+            }
+
+            // Sadece bu seviyedeki kayıtları güncelle (güvenlik)
+            $existing = SiteMenuItem::query()->find($id);
+            if (! $existing) {
+                continue;
+            }
+            if ($forcedParentId) {
+                if ((int) $existing->parent_id !== $forcedParentId) {
+                    continue;
+                }
+            } elseif ($existing->parent_id) {
                 continue;
             }
 
@@ -438,44 +463,15 @@ class SiteAyarlariController extends Controller
                 $label = 'Menü öğesi';
             }
 
-            // Tek seviye alt menü: parent yalnızca ana seviye öğe olabilir; kendini seçemez
-            $parentId = (int) ($parents[$i] ?? 0);
-            if ($parentId === $id || $parentId < 1 || ! in_array($parentId, $validRootIds, true)) {
-                $parentId = null;
-            } else {
-                // Seçilen üst zaten alt öğeyse reddet (max 1 seviye)
-                $parentRow = SiteMenuItem::query()->find($parentId);
-                if (! $parentRow || $parentRow->parent_id) {
-                    $parentId = null;
-                }
-            }
-
             SiteMenuItem::query()->where('id', $id)->update([
                 'label' => $label,
                 'route' => $route,
                 'url' => $type === 'url' ? $url : null,
-                'parent_id' => $parentId,
+                'parent_id' => $forcedParentId,
                 'aktif' => ! empty($aktif[$i]),
                 'sira' => $i + 1,
             ]);
         }
-
-        // En fazla 1 seviye: çocuk sahibi satırlar ana menüde kalır; yetim alt öğeler ana seviyeye alınır
-        $parentIdsWithChildren = SiteMenuItem::query()
-            ->whereNotNull('parent_id')
-            ->pluck('parent_id')
-            ->unique()
-            ->filter()
-            ->values()
-            ->all();
-        if ($parentIdsWithChildren !== []) {
-            SiteMenuItem::query()->whereIn('id', $parentIdsWithChildren)->update(['parent_id' => null]);
-        }
-        $rootIds = SiteMenuItem::query()->whereNull('parent_id')->pluck('id')->all();
-        SiteMenuItem::query()
-            ->whereNotNull('parent_id')
-            ->whereNotIn('parent_id', $rootIds ?: [0])
-            ->update(['parent_id' => null]);
 
         $this->settings->forgetCache();
 
@@ -487,9 +483,10 @@ class SiteAyarlariController extends Controller
         $max = (int) SiteMenuItem::query()->max('sira');
         $parentId = (int) $request->input('parent_id', 0);
         if ($parentId > 0) {
-            $parent = SiteMenuItem::query()->find($parentId);
-            if (! $parent || $parent->parent_id) {
-                $parentId = 0;
+            $parent = SiteMenuItem::query()->whereNull('parent_id')->find($parentId);
+            if (! $parent) {
+                return redirect()->route('panel.site-ayarlari.menu')
+                    ->with('hata', 'Üst menü bulunamadı.');
             }
         }
 
@@ -504,19 +501,31 @@ class SiteAyarlariController extends Controller
         ]);
         $this->settings->forgetCache();
 
-        return back()->with('basari', 'Menü öğesi eklendi. Etiket ve bağlantıyı düzenleyip kaydedin.');
+        $redirect = $parentId > 0
+            ? route('panel.site-ayarlari.menu', ['ust' => $parentId])
+            : route('panel.site-ayarlari.menu');
+
+        return redirect($redirect)->with('basari', 'Menü öğesi eklendi. Etiket ve bağlantıyı düzenleyip kaydedin.');
     }
 
     public function menuSil(int $id)
     {
         $item = SiteMenuItem::query()->find($id);
+        $ust = $item?->parent_id;
         if ($item) {
-            SiteMenuItem::query()->where('parent_id', $item->id)->update(['parent_id' => null]);
+            // Ana menü silinirse altları da sil
+            if (! $item->parent_id) {
+                SiteMenuItem::query()->where('parent_id', $item->id)->delete();
+            }
             $item->delete();
             $this->settings->forgetCache();
         }
 
-        return back()->with('basari', 'Menü öğesi silindi.');
+        $redirect = $ust
+            ? route('panel.site-ayarlari.menu', ['ust' => $ust])
+            : route('panel.site-ayarlari.menu');
+
+        return redirect($redirect)->with('basari', 'Menü öğesi silindi.');
     }
 
     /**
