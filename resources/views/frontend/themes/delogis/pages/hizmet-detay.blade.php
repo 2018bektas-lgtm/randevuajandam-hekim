@@ -3,13 +3,19 @@
 @php
     /**
      * Blog-details ile aynı tasarım: blog-details layout + sidebar
-     * Fiyat gösterilmez.
+     * Fiyat: diğer temalarla tutarlı (varsa göster).
      */
     $h = $hizmet ?? [];
     $hAd = decode_text($h['baslik'] ?? $h['ad'] ?? 'Hizmet');
     $hDesc = decode_text($h['aciklama'] ?? $h['kisa'] ?? $h['icerik'] ?? '');
     $img = $h['image'] ?? $h['resim'] ?? $h['kapak'] ?? null;
     $sure = decode_text($h['sure'] ?? $h['duration'] ?? null);
+    $fiyat = $h['fiyat'] ?? $h['ucret'] ?? null;
+    if (is_numeric($fiyat) && (float) $fiyat > 0) {
+        $fiyat = '₺'.number_format((float) $fiyat, 0, ',', '.');
+    } else {
+        $fiyat = filled($fiyat) ? decode_text((string) $fiyat) : null;
+    }
     $curSlug = $h['slug'] ?? \Illuminate\Support\Str::slug($hAd);
 
     $tumHizmetler = collect($doktor['hizmetler'] ?? [])
@@ -68,6 +74,11 @@
                             @if(filled($sure))
                                 <li>
                                     <span><i class="fas fa-clock"></i>{{ $sure }}</span>
+                                </li>
+                            @endif
+                            @if(filled($fiyat))
+                                <li>
+                                    <span><i class="fas fa-tag"></i>{{ $fiyat }}</span>
                                 </li>
                             @endif
                         </ul>
