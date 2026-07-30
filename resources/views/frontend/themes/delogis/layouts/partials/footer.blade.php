@@ -218,12 +218,14 @@
                             ·
                             <a href="https://randevuajandam.com" target="_blank" rel="noopener">Randevu Ajandam</a>
                             ile hazırlanmıştır.
-                            <br>
-                            <a href="{{ route('frontend.legal.kvkk') }}">KVKK</a>
-                            ·
-                            <a href="{{ route('frontend.legal.gizlilik') }}">Gizlilik</a>
-                            ·
-                            <a href="{{ route('frontend.legal.kullanim') }}">Kullanım</a>
+                            @php $footerPages = site_footer_pages(); @endphp
+                            @if($footerPages !== [])
+                                <br>
+                                @foreach($footerPages as $i => $fp)
+                                    @if($i > 0) · @endif
+                                    <a href="{{ $fp['href'] }}">{{ $fp['baslik'] }}</a>
+                                @endforeach
+                            @endif
                         </p>
                     </div>
                 </div>
