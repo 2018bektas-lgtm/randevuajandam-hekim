@@ -1,7 +1,8 @@
 @php
     if (! empty($doktor['menu']) && is_array($doktor['menu'])) {
         $footerNav = collect($doktor['menu'])
-            ->filter(fn ($i) => ($i['key'] ?? '') !== 'anasayfa')
+            ->filter(fn ($i) => empty($i['parent_id']) && ($i['key'] ?? '') !== 'anasayfa')
+            ->sortBy(fn ($i) => (int) ($i['sira'] ?? 0))
             ->map(fn ($item) => [
                 'href' => nav_href($item),
                 'label' => $item['label'] ?? ($item['key'] ?? ''),
