@@ -108,13 +108,11 @@
                 <a href="mailto:{{ $doktor['e_posta'] }}">{{ $doktor['e_posta'] }}</a>
             @endif
             <span class="footer-legal" style="display:block;margin-top:.5rem;font-size:11px;opacity:.85">
-                <a href="https://randevuajandam.com/kvkk" target="_blank" rel="noopener">KVKK</a>
+                <a href="{{ route('frontend.legal.kvkk') }}">KVKK</a>
                 ·
-                <a href="https://randevuajandam.com/gizlilik-politikasi" target="_blank" rel="noopener">Gizlilik</a>
+                <a href="{{ route('frontend.legal.gizlilik') }}">Gizlilik</a>
                 ·
-                <a href="https://randevuajandam.com/kullanim-kosullari" target="_blank" rel="noopener">Kullanım</a>
-                ·
-                <a href="https://randevuajandam.com/mesafeli-satis-sozlesmesi" target="_blank" rel="noopener">Mesafeli satış</a>
+                <a href="{{ route('frontend.legal.kullanim') }}">Kullanım</a>
             </span>
         </span>
     </div>
