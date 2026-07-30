@@ -124,7 +124,12 @@
                     <div class="footer-menu">
                         <ul>
                             @foreach ($footerNav as $item)
-                            <li><a href="{{ nav_href($item) }}">{{ $item['label'] }}</a></li>
+                            <li>
+                                <a href="{{ $item['href'] ?? (function_exists('nav_href') ? nav_href($item) : '#') }}"
+                                   @if(!empty($item['external'])) target="_blank" rel="noopener" @endif>
+                                    {{ $item['label'] }}
+                                </a>
+                            </li>
                             @endforeach
                         </ul>
                     </div>
