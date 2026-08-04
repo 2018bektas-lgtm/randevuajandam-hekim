@@ -376,6 +376,7 @@ class SiteContentService
             'egitim' => [], // özgeçmiş timeline (demo)
             'egitimler' => [], // kurs/webinar ürünleri
             'online_gorusme' => false,
+            'features' => [],
             'api_synced' => false,
         ];
     }
@@ -385,6 +386,8 @@ class SiteContentService
         $out = $this->emptySkeleton();
         $out['api_synced'] = true;
         $out['id'] = $profile['id'] ?? null;
+        $features = $profile['features'] ?? $profile['paket_ozellikleri'] ?? $content['features'] ?? [];
+        $out['features'] = is_array($features) ? array_values(array_filter(array_map('strval', $features))) : [];
 
         $out['ad_soyad'] = decode_text($profile['ad_soyad'] ?? '');
         $out['unvan'] = decode_text($profile['unvan'] ?? '');

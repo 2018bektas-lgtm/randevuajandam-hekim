@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Services\SiteContentService;
+use App\Support\PaketOzellik;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -52,6 +53,8 @@ class SiteController extends Controller
 
     public function hakkimda(): View
     {
+        $this->requireFeature('hakkimda');
+
         return $this->themePage('hakkimda');
     }
 
@@ -79,16 +82,21 @@ class SiteController extends Controller
 
     public function galeri(): View
     {
+        $this->requireFeature('galeri');
+
         return $this->themePage('galeri');
     }
 
     public function blog(): View
     {
+        $this->requireFeature('blog');
+
         return $this->themePage('blog');
     }
 
     public function blogDetay(string $slug): View
     {
+        $this->requireFeature('blog');
         $doktor = $this->doktor();
         $yazi = collect($doktor['bloglar'] ?? [])->firstWhere('slug', $slug);
 
@@ -100,13 +108,24 @@ class SiteController extends Controller
         ]);
     }
 
+    protected function requireFeature(string $code): void
+    {
+        $doktor = $this->doktor();
+        if (! PaketOzellik::contentHas($doktor, $code)) {
+            abort(404);
+        }
+    }
+
     public function egitimler(): View
     {
+        $this->requireFeature('egitimler');
+
         return $this->themePage('egitimler');
     }
 
     public function egitimDetay(string $slug): View
     {
+        $this->requireFeature('egitimler');
         $doktor = $this->doktor();
         $egitim = collect($doktor['egitimler'] ?? [])->first(function ($e) use ($slug) {
             return ($e['slug'] ?? '') === $slug || (string) ($e['id'] ?? '') === $slug;
@@ -137,6 +156,8 @@ class SiteController extends Controller
 
     public function sss(): View
     {
+        $this->requireFeature('faq');
+
         return $this->themePage('sss');
     }
 
