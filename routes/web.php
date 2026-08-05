@@ -16,6 +16,7 @@ use App\Http\Controllers\Panel\RandevuController;
 use App\Http\Controllers\Panel\SiteAyarlariController;
 use App\Http\Controllers\Panel\TwoFactorController;
 use App\Http\Controllers\Panel\YorumController;
+use App\Http\Controllers\Panel\AsistanController;
 use App\Http\Controllers\Panel\PaketExtraController;
 use Illuminate\Support\Facades\Route;
 
@@ -309,6 +310,13 @@ Route::prefix('yonetim')->name('panel.')->group(function () {
                 Route::post('/finans/hasta/{hastaId}/borc', [FinansController::class, 'hastaBorcEkle'])->name('finans.hasta-borc')->whereNumber('hastaId');
             });
             Route::middleware('panel.paket:finans_rapor')->get('/finans/rapor/pdf', [FinansController::class, 'raporPdf'])->name('finans.rapor-pdf');
+
+            // AI Asistan — Profesyonel+ paket
+            Route::middleware('panel.paket:ai_asistan')->group(function () {
+                Route::post('/asistan/mesaj', [AsistanController::class, 'mesaj'])
+                    ->middleware('throttle:100,1440')
+                    ->name('asistan.mesaj');
+            });
         });
     });
 });
