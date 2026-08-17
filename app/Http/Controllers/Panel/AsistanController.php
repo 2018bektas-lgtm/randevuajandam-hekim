@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
 use App\Services\PlatformApiClient;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use RuntimeException;
 
 class AsistanController extends Controller
@@ -42,9 +44,25 @@ class AsistanController extends Controller
                 'secim_gerekli' => $paket['secim_gerekli'] ?? ($res['secim_gerekli'] ?? null),
             ]);
         } catch (RuntimeException $e) {
+            Log::warning('Asistan API', ['code' => $e->getCode(), 'msg' => $e->getMessage()]);
             if ($e->getCode() === 403) {
                 return response()->json(['yanit' => 'AI Asistan bu paket için mevcut değil.', 'onay_gerekli' => null], 403);
             }
+            if ($e->getCode() === 401) {
+                return response()->json(['yanit' => 'Oturumunuz sona erdi. Lütfen yeniden giriş yapın.', 'onay_gerekli' => null], 401);
+            }
+            if ($e->getCode() === 429) {
+                return response()->json(['yanit' => 'Çok fazla istek gönderildi. Bir süre sonra tekrar deneyin.', 'onay_gerekli' => null], 429);
+            }
+
+            return response()->json(['yanit' => 'Asistan şu an yanıt veremiyor.', 'onay_gerekli' => null], 500);
+        } catch (ConnectionException $e) {
+            Log::error('Asistan API baglanti', ['msg' => $e->getMessage()]);
+
+            return response()->json(['yanit' => 'Asistan şu an yanıt veremiyor.', 'onay_gerekli' => null], 502);
+        } catch (\Throwable $e) {
+            Log::error('Asistan beklenmeyen', ['msg' => $e->getMessage()]);
+
             return response()->json(['yanit' => 'Asistan şu an yanıt veremiyor.', 'onay_gerekli' => null], 500);
         }
     }
