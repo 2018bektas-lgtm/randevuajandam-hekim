@@ -33,12 +33,13 @@ class AsistanController extends Controller
                 'secim_parametreler' => $request->input('secim_parametreler'),
             ], fn ($v) => $v !== null);
 
-            $res = $this->api->post('/asistan/mesaj', $payload);
+            $res = $this->api->post('/asistan/mesaj', $payload, 45);
+            $paket = is_array($res['data'] ?? null) ? $res['data'] : $res;
 
             return response()->json([
-                'yanit'         => $res['yanit']         ?? ($res['message'] ?? 'Bir hata oluştu.'),
-                'onay_gerekli'  => $res['onay_gerekli']  ?? null,
-                'secim_gerekli' => $res['secim_gerekli'] ?? null,
+                'yanit'         => $paket['yanit']         ?? ($res['yanit'] ?? $res['message'] ?? 'Bir hata oluştu.'),
+                'onay_gerekli'  => $paket['onay_gerekli']  ?? ($res['onay_gerekli'] ?? null),
+                'secim_gerekli' => $paket['secim_gerekli'] ?? ($res['secim_gerekli'] ?? null),
             ]);
         } catch (RuntimeException $e) {
             if ($e->getCode() === 403) {

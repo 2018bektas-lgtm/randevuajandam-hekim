@@ -229,6 +229,8 @@
     };
 </script>
 @stack('scripts')
-@include('panel.partials.asistan_widget')
+@if(\App\Support\PaketOzellik::has('ai_asistan'))
+    @include('panel.partials.asistan_widget')
+@endif
 </body>
 </html>

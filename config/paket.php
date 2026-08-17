@@ -53,5 +53,6 @@ return [
         'destek_email' => 'E-posta destek',
         'destek_oncelikli' => 'Öncelikli destek',
         'veri_tasima' => 'Veri taşıma',
+        'ai_asistan' => 'Dijital AI Asistan',
     ],
 ];

@@ -179,10 +179,10 @@ class PlatformApiClient
         return $this->decode($res);
     }
 
-    public function post(string $path, array $data = []): array
+    public function post(string $path, array $data = [], ?int $timeout = null): array
     {
         $this->assertReady();
-        $res = $this->http(true)->post($this->doctorBase().$path, $data);
+        $res = $this->http(true, $timeout)->post($this->doctorBase().$path, $data);
 
         return $this->decode($res);
     }
