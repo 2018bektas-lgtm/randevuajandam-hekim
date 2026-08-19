@@ -23,7 +23,6 @@
                 ['href' => $has('randevu_talepleri', 'randevu_talebi_goruntule') ? $r('panel.randevular.talepler') : $paketUyari, 'match' => 'panel.randevular.talepler', 'label' => 'Randevu Talepleri', 'locked' => ! $has('randevu_talepleri', 'randevu_talebi_goruntule')],
                 ['href' => $has('bekleme_listesi') ? $r('panel.bekleme') : $paketUyari, 'match' => 'panel.bekleme*', 'label' => 'Bekleme Listesi', 'locked' => ! $has('bekleme_listesi')],
                 ['href' => $has('hasta_kartlari') ? $r('panel.hastalar') : $paketUyari, 'match' => 'panel.hastalar*', 'label' => 'Hasta Kayitlari', 'locked' => ! $has('hasta_kartlari')],
-                ['href' => $has('onam_formu') ? $r('panel.onam.index') : $paketUyari, 'match' => 'panel.onam.*', 'label' => 'Onam Formlari', 'locked' => ! $has('onam_formu')],
                 ['href' => $has('online_takvim') ? $r('panel.randevu-ayarlari') : $paketUyari, 'match' => 'panel.randevu-ayarlari*', 'label' => 'Randevu Ayarlari', 'locked' => ! $has('online_takvim')],
             ],
         ],
