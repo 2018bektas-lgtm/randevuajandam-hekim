@@ -139,4 +139,31 @@ class SayfaBuilderTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->builder->paletSec('yok-boyle-palet');
     }
+
+    public function test_tema_2_hipno_slider_default_set(): void
+    {
+        $eklenen = $this->builder->defaultSetiOlustur('tema-2');
+        $this->assertEquals(12, $eklenen);
+        $this->assertTrue(SiteHomepageSection::where('tema_id', 'tema-2')->where('key', 'hero_slider')->exists());
+        $this->assertFalse(SiteHomepageSection::where('tema_id', 'tema-2')->where('key', 'hero_static')->exists());
+    }
+
+    public function test_tema_3_hipno_video_default_set(): void
+    {
+        $eklenen = $this->builder->defaultSetiOlustur('tema-3');
+        $this->assertEquals(12, $eklenen);
+        $this->assertTrue(SiteHomepageSection::where('tema_id', 'tema-3')->where('key', 'hero_video')->exists());
+        $this->assertFalse(SiteHomepageSection::where('tema_id', 'tema-3')->where('key', 'hero_static')->exists());
+    }
+
+    public function test_tema_secme_ile_gecis(): void
+    {
+        $this->builder->temaSec('tema-1');
+        $this->builder->temaSec('tema-2');
+
+        $this->assertEquals('tema-2', $this->builder->aktifTemaId());
+        // Her iki tema kaydı da DB'de duruyor (silme yok, sadece aktif geçiş)
+        $this->assertEquals(12, SiteHomepageSection::where('tema_id', 'tema-1')->count());
+        $this->assertEquals(12, SiteHomepageSection::where('tema_id', 'tema-2')->count());
+    }
 }

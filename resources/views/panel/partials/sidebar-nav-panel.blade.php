@@ -51,6 +51,7 @@
                 ['href' => $r('panel.site-ayarlari.menu'), 'match' => 'panel.site-ayarlari.menu', 'label' => 'Menü'],
                 ['href' => $r('panel.site-ayarlari.slider'), 'match' => 'panel.site-ayarlari.slider', 'label' => 'Slider'],
                 ['href' => $r('panel.site-ayarlari.anasayfa'), 'match' => 'panel.site-ayarlari.anasayfa', 'label' => 'Ana Sayfa'],
+                ['href' => $r('panel.sayfa-builder.index'), 'match' => 'panel.sayfa-builder*', 'label' => 'Modüller'],
                 ['href' => $r('panel.site-ayarlari.seo'), 'match' => 'panel.site-ayarlari.seo', 'label' => 'SEO'],
                 ['href' => $r('panel.site-ayarlari.iletisim'), 'match' => 'panel.site-ayarlari.iletisim', 'label' => 'İletişim'],
                 ['href' => $r('panel.site-ayarlari.sayfalar'), 'match' => 'panel.site-ayarlari.sayfalar*', 'label' => 'Sayfalar'],

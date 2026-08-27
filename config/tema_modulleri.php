@@ -296,6 +296,383 @@ return [
             ],
         ],
 
-        // TEMA-2..9 sonraki sprint'lerde eklenecek — katalog yapı örneği yukarıdaki tema-1 gibi.
+        // ============================================================
+        // TEMA-2 — Hipno Slider (çoklu slayt hero)
+        // ============================================================
+        'tema-2' => [
+            'ad' => 'Hipno Slider',
+            'aciklama' => 'Hero bölümünde swiper slider — 2-5 slayt arası çoklu tanıtım.',
+            'onizleme' => '/uploads/tema-onizleme/tema-2.jpg',
+            'kaynak_html' => 'tema-1/html.awaikenthemes.com/hipno/index-slider.html',
+            'onerilen_uzmanlik' => ['psikoloji', 'psikiyatri', 'danışmanlık'],
+            'renk_paletleri' => [
+                'koyu-altin' => [
+                    'ad' => 'Koyu & Altın (varsayılan)',
+                    'primary' => '#262626', 'accent' => '#9B9A84', 'bg' => '#F9F9F9',
+                    'text' => '#333333', 'text_light' => '#FFFFFF',
+                ],
+                'acik-mavi' => [
+                    'ad' => 'Açık & Mavi',
+                    'primary' => '#2E5C8A', 'accent' => '#7BA7CF', 'bg' => '#F0F4F8',
+                    'text' => '#1A2E42', 'text_light' => '#FFFFFF',
+                ],
+                'doga-yesil' => [
+                    'ad' => 'Doğal Yeşil',
+                    'primary' => '#4A5C3E', 'accent' => '#C4A76D', 'bg' => '#F5F3EE',
+                    'text' => '#2A2A2A', 'text_light' => '#FFFFFF',
+                ],
+            ],
+            'varsayilan_palet' => 'koyu-altin',
+
+            'moduller' => [
+                'hero_slider' => [
+                    'ad' => 'Hero (Slider)',
+                    'kategori' => 'ust',
+                    'sira' => 10,
+                    'aktif_varsayilan' => true,
+                    'silinebilir' => false,
+                    'aciklama' => 'Swiper ile 2-5 slaytlık çoklu tanıtım. Her slayt kendi başlık/görsel/CTA sahibidir.',
+                    'alanlar' => [
+                        'slaytlar' => ['tip' => 'ikon_baslik_metin', 'label' => 'Slaytlar (max 5) — {ikon: resim_url, baslik, metin}', 'varsayilan' => [
+                            ['ikon' => '', 'baslik' => 'Ruh sağlığı yolculuğunuzda yanınızdayım', 'metin' => 'Bireysel danışmanlık ile hayatınıza değişim başlatın.'],
+                            ['ikon' => '', 'baslik' => 'Çift ve aile terapisinde uzman destek', 'metin' => 'İlişkilerinizde yeni bir dönem başlatmak için buradayım.'],
+                            ['ikon' => '', 'baslik' => 'Çocuk ve ergen danışmanlığı', 'metin' => 'Genç danışanlarınızın gelişimine güvenilir bir yol arkadaşı.'],
+                        ]],
+                        'ust_baslik' => ['tip' => 'metin', 'label' => 'Slaytlar Üstü Küçük Başlık', 'varsayilan' => 'Hoş Geldiniz'],
+                        'cta_metin' => ['tip' => 'metin', 'label' => 'Buton Metni', 'varsayilan' => 'Randevu Al'],
+                        'otomatik_gecis_sn' => ['tip' => 'sayi', 'label' => 'Slayt Otomatik Geçiş (saniye, 0=kapalı)', 'varsayilan' => 6],
+                    ],
+                ],
+
+                // Kalan modüller tema-1 ile aynı — burada aynen tekrar tanımlanıyor
+                // ki hekim tema değiştirdiğinde default set doğru üretilsin.
+                'about' => [
+                    'ad' => 'Hakkımda', 'kategori' => 'orta', 'sira' => 20,
+                    'aktif_varsayilan' => true, 'silinebilir' => true,
+                    'aciklama' => 'İki fotoğraflı hakkımda bölümü + misyon/vizyon.',
+                    'alanlar' => [
+                        'kucuk_baslik' => ['tip' => 'metin', 'label' => 'Küçük Üst Başlık', 'varsayilan' => 'Hakkımda'],
+                        'ana_baslik' => ['tip' => 'metin', 'label' => 'Ana Başlık', 'varsayilan' => 'Deneyim ve empati ile birlikte'],
+                        'aciklama' => ['tip' => 'uzun_metin', 'label' => 'Ana Açıklama', 'varsayilan' => 'Onlarca yıllık klinik deneyimimle danışanlarımın hayatlarında kalıcı değişimler yaratmayı hedefliyorum.'],
+                        'misyon_baslik' => ['tip' => 'metin', 'label' => 'Misyon Başlığı', 'varsayilan' => 'Misyonum'],
+                        'misyon_metin' => ['tip' => 'uzun_metin', 'label' => 'Misyon Metni', 'varsayilan' => 'Her danışanın kendine özgü yolunda rehberlik etmek.'],
+                        'vizyon_baslik' => ['tip' => 'metin', 'label' => 'Vizyon Başlığı', 'varsayilan' => 'Vizyonum'],
+                        'vizyon_metin' => ['tip' => 'uzun_metin', 'label' => 'Vizyon Metni', 'varsayilan' => 'Ruh sağlığı hizmetine erişimi kolaylaştırmak.'],
+                        'resim_1' => ['tip' => 'resim', 'label' => 'Fotoğraf 1', 'varsayilan' => null],
+                        'resim_2' => ['tip' => 'resim', 'label' => 'Fotoğraf 2', 'varsayilan' => null],
+                        'danisan_puani' => ['tip' => 'sayi', 'label' => 'Danışan Puanı (0-5)', 'varsayilan' => 5],
+                    ],
+                ],
+                'services' => [
+                    'ad' => 'Hizmetler', 'kategori' => 'orta', 'sira' => 30,
+                    'aktif_varsayilan' => true, 'silinebilir' => true,
+                    'aciklama' => 'Hekim panelindeki hizmetler kart olarak.',
+                    'alanlar' => [
+                        'bolum_baslik' => ['tip' => 'metin', 'label' => 'Bölüm Başlığı', 'varsayilan' => 'Sunduğum Hizmetler'],
+                        'kucuk_baslik' => ['tip' => 'metin', 'label' => 'Küçük Üst Başlık', 'varsayilan' => 'Hizmetlerim'],
+                        'aciklama' => ['tip' => 'uzun_metin', 'label' => 'Açıklama', 'varsayilan' => 'Her danışanın ihtiyacına özel programlar sunuyorum.'],
+                        'hizmet_limiti' => ['tip' => 'sayi', 'label' => 'Hizmet Sayısı', 'varsayilan' => 6],
+                        'hizmet_kaynagi' => ['tip' => 'db_kaynak', 'label' => 'Kaynak: Hekim Paneli → Hizmetler', 'varsayilan' => 'hizmetler'],
+                    ],
+                ],
+                'why_choose' => [
+                    'ad' => 'Neden Ben?', 'kategori' => 'orta', 'sira' => 40,
+                    'aktif_varsayilan' => true, 'silinebilir' => true,
+                    'aciklama' => '4 sebep kartı.',
+                    'alanlar' => [
+                        'kucuk_baslik' => ['tip' => 'metin', 'label' => 'Küçük Üst Başlık', 'varsayilan' => 'Neden Ben?'],
+                        'ana_baslik' => ['tip' => 'metin', 'label' => 'Ana Başlık', 'varsayilan' => 'Farkımı yaratan yaklaşımlar'],
+                        'aciklama' => ['tip' => 'uzun_metin', 'label' => 'Açıklama', 'varsayilan' => 'Danışanlarımın güvenini kazanan yaklaşımlar.'],
+                        'sebepler' => ['tip' => 'ikon_baslik_metin', 'label' => 'Sebep Kartları (max 4)', 'varsayilan' => [
+                            ['ikon' => 'fa-heart', 'baslik' => 'Empati Odaklı', 'metin' => 'Yargısız ve şefkatli bir alan sunuyorum.'],
+                            ['ikon' => 'fa-shield-halved', 'baslik' => 'Gizlilik Garantisi', 'metin' => 'Görüşmeleriniz tamamen gizlidir.'],
+                            ['ikon' => 'fa-user-doctor', 'baslik' => 'Bilimsel Yaklaşım', 'metin' => 'Kanıta dayalı terapi teknikleri.'],
+                            ['ikon' => 'fa-clock', 'baslik' => 'Esnek Randevu', 'metin' => 'Online ve yüz yüze seçenekler.'],
+                        ]],
+                    ],
+                ],
+                'what_we_do' => [
+                    'ad' => 'Ne Yapıyorum?', 'kategori' => 'orta', 'sira' => 50,
+                    'aktif_varsayilan' => false, 'silinebilir' => true,
+                    'aciklama' => 'Tedavi yaklaşımı başlıkları.',
+                    'alanlar' => [
+                        'kucuk_baslik' => ['tip' => 'metin', 'label' => 'Küçük Üst Başlık', 'varsayilan' => 'Yaklaşımım'],
+                        'ana_baslik' => ['tip' => 'metin', 'label' => 'Ana Başlık', 'varsayilan' => 'Danışanlarıma sunduğum destek'],
+                        'aciklama' => ['tip' => 'uzun_metin', 'label' => 'Açıklama', 'varsayilan' => 'Farklı ihtiyaçlara özel yaklaşımlar.'],
+                        'ogeler' => ['tip' => 'ikon_baslik_metin', 'label' => 'Öğeler (max 4)', 'varsayilan' => [
+                            ['ikon' => 'fa-brain', 'baslik' => 'Bilişsel Davranışçı', 'metin' => 'Düşünce kalıplarını yeniden şekillendirmek.'],
+                            ['ikon' => 'fa-users', 'baslik' => 'İlişki Danışmanlığı', 'metin' => 'Çift ve aile dinamiklerini iyileştirmek.'],
+                            ['ikon' => 'fa-hand-holding-heart', 'baslik' => 'Travma Odaklı', 'metin' => 'İyileşme yolculuğu.'],
+                        ]],
+                    ],
+                ],
+                'case_study' => [
+                    'ad' => 'Öne Çıkan Yazılar', 'kategori' => 'orta', 'sira' => 60,
+                    'aktif_varsayilan' => false, 'silinebilir' => true,
+                    'aciklama' => 'Blog yazılarınızdan öne çıkanlar.',
+                    'alanlar' => [
+                        'ana_baslik' => ['tip' => 'metin', 'label' => 'Ana Başlık', 'varsayilan' => 'Öne Çıkan Makalelerim'],
+                        'aciklama' => ['tip' => 'uzun_metin', 'label' => 'Açıklama', 'varsayilan' => null],
+                        'blog_limiti' => ['tip' => 'sayi', 'label' => 'Yazı Sayısı', 'varsayilan' => 3],
+                        'blog_kaynagi' => ['tip' => 'db_kaynak', 'label' => 'Kaynak: Blog', 'varsayilan' => 'bloglar'],
+                    ],
+                ],
+                'how_it_work' => [
+                    'ad' => 'Nasıl Çalışır?', 'kategori' => 'orta', 'sira' => 70,
+                    'aktif_varsayilan' => true, 'silinebilir' => true,
+                    'aciklama' => 'Danışan yolculuğu adımları.',
+                    'alanlar' => [
+                        'kucuk_baslik' => ['tip' => 'metin', 'label' => 'Küçük Üst Başlık', 'varsayilan' => 'Süreç'],
+                        'ana_baslik' => ['tip' => 'metin', 'label' => 'Ana Başlık', 'varsayilan' => 'İlk seansa kadar süreç'],
+                        'adimlar' => ['tip' => 'ikon_baslik_metin', 'label' => 'Adımlar (max 4)', 'varsayilan' => [
+                            ['ikon' => '01', 'baslik' => 'Randevu Alın', 'metin' => 'Online takvimden uygun saati seçin.'],
+                            ['ikon' => '02', 'baslik' => 'Ön Görüşme', 'metin' => 'Kısa telefon görüşmesi ile tanışalım.'],
+                            ['ikon' => '03', 'baslik' => 'İlk Seans', 'metin' => 'Yüz yüze veya online ilk seansımız.'],
+                            ['ikon' => '04', 'baslik' => 'Süreç Takibi', 'metin' => 'Düzenli seanslarla hedefinize.'],
+                        ]],
+                    ],
+                ],
+                'cta' => [
+                    'ad' => 'Randevu Bandı', 'kategori' => 'orta', 'sira' => 80,
+                    'aktif_varsayilan' => true, 'silinebilir' => true,
+                    'aciklama' => 'Büyük CTA bandı.',
+                    'alanlar' => [
+                        'baslik' => ['tip' => 'metin', 'label' => 'Ana Mesaj', 'varsayilan' => 'İlk adımı bugün atın'],
+                        'aciklama' => ['tip' => 'uzun_metin', 'label' => 'Alt Açıklama', 'varsayilan' => 'Hayatınızda değişim başlatmak için 30 dakika yeter.'],
+                        'buton_metin' => ['tip' => 'metin', 'label' => 'Buton Metni', 'varsayilan' => 'Randevu Al'],
+                        'arkaplan_resmi' => ['tip' => 'resim', 'label' => 'Arkaplan Resmi', 'varsayilan' => null],
+                    ],
+                ],
+                'testimonial' => [
+                    'ad' => 'Danışan Yorumları', 'kategori' => 'alt', 'sira' => 90,
+                    'aktif_varsayilan' => true, 'silinebilir' => true,
+                    'aciklama' => 'Onaylı yorumlar slider.',
+                    'alanlar' => [
+                        'kucuk_baslik' => ['tip' => 'metin', 'label' => 'Küçük Üst Başlık', 'varsayilan' => 'Danışan Yorumları'],
+                        'ana_baslik' => ['tip' => 'metin', 'label' => 'Ana Başlık', 'varsayilan' => 'Danışanlarımın hikayeleri'],
+                        'yorum_limiti' => ['tip' => 'sayi', 'label' => 'Yorum Sayısı', 'varsayilan' => 6],
+                        'yorum_kaynagi' => ['tip' => 'db_kaynak', 'label' => 'Kaynak: Yorumlar', 'varsayilan' => 'yorumlar'],
+                    ],
+                ],
+                'faq' => [
+                    'ad' => 'S.S.S.', 'kategori' => 'alt', 'sira' => 100,
+                    'aktif_varsayilan' => true, 'silinebilir' => true,
+                    'aciklama' => 'Accordion sorular.',
+                    'alanlar' => [
+                        'kucuk_baslik' => ['tip' => 'metin', 'label' => 'Küçük Üst Başlık', 'varsayilan' => 'S.S.S'],
+                        'ana_baslik' => ['tip' => 'metin', 'label' => 'Ana Başlık', 'varsayilan' => 'Sıkça sorulan sorular'],
+                        'sss_limiti' => ['tip' => 'sayi', 'label' => 'Soru Sayısı', 'varsayilan' => 6],
+                        'sss_kaynagi' => ['tip' => 'db_kaynak', 'label' => 'Kaynak: S.S.S.', 'varsayilan' => 'sss'],
+                    ],
+                ],
+                'blog' => [
+                    'ad' => 'Son Yazılar', 'kategori' => 'alt', 'sira' => 110,
+                    'aktif_varsayilan' => true, 'silinebilir' => true,
+                    'aciklama' => 'Son blog yazıları kart.',
+                    'alanlar' => [
+                        'kucuk_baslik' => ['tip' => 'metin', 'label' => 'Küçük Üst Başlık', 'varsayilan' => 'Blog'],
+                        'ana_baslik' => ['tip' => 'metin', 'label' => 'Ana Başlık', 'varsayilan' => 'Son yazılarım'],
+                        'aciklama' => ['tip' => 'uzun_metin', 'label' => 'Açıklama', 'varsayilan' => null],
+                        'blog_limiti' => ['tip' => 'sayi', 'label' => 'Yazı Sayısı', 'varsayilan' => 3],
+                        'blog_kaynagi' => ['tip' => 'db_kaynak', 'label' => 'Kaynak: Blog', 'varsayilan' => 'bloglar'],
+                    ],
+                ],
+                'appointment' => [
+                    'ad' => 'Randevu Formu', 'kategori' => 'alt', 'sira' => 120,
+                    'aktif_varsayilan' => true, 'silinebilir' => false,
+                    'aciklama' => 'Sayfa altı randevu CTA.',
+                    'alanlar' => [
+                        'kucuk_baslik' => ['tip' => 'metin', 'label' => 'Küçük Üst Başlık', 'varsayilan' => 'Randevu'],
+                        'ana_baslik' => ['tip' => 'metin', 'label' => 'Ana Başlık', 'varsayilan' => 'Hemen randevu alın'],
+                        'aciklama' => ['tip' => 'uzun_metin', 'label' => 'Açıklama', 'varsayilan' => 'Randevu takvimimden size uygun saati seçin.'],
+                    ],
+                ],
+            ],
+        ],
+
+        // ============================================================
+        // TEMA-3 — Hipno Video (fullscreen background video)
+        // ============================================================
+        'tema-3' => [
+            'ad' => 'Hipno Video',
+            'aciklama' => 'Hero bölümünde tam ekran arka plan videosu — sinemasal, dikkat çekici.',
+            'onizleme' => '/uploads/tema-onizleme/tema-3.jpg',
+            'kaynak_html' => 'tema-1/html.awaikenthemes.com/hipno/index-video.html',
+            'onerilen_uzmanlik' => ['psikoloji', 'psikiyatri', 'danışmanlık'],
+            'renk_paletleri' => [
+                'koyu-altin' => [
+                    'ad' => 'Koyu & Altın (varsayılan)',
+                    'primary' => '#262626', 'accent' => '#9B9A84', 'bg' => '#F9F9F9',
+                    'text' => '#333333', 'text_light' => '#FFFFFF',
+                ],
+                'acik-mavi' => [
+                    'ad' => 'Açık & Mavi',
+                    'primary' => '#2E5C8A', 'accent' => '#7BA7CF', 'bg' => '#F0F4F8',
+                    'text' => '#1A2E42', 'text_light' => '#FFFFFF',
+                ],
+                'doga-yesil' => [
+                    'ad' => 'Doğal Yeşil',
+                    'primary' => '#4A5C3E', 'accent' => '#C4A76D', 'bg' => '#F5F3EE',
+                    'text' => '#2A2A2A', 'text_light' => '#FFFFFF',
+                ],
+            ],
+            'varsayilan_palet' => 'koyu-altin',
+
+            'moduller' => [
+                'hero_video' => [
+                    'ad' => 'Hero (Video)',
+                    'kategori' => 'ust',
+                    'sira' => 10,
+                    'aktif_varsayilan' => true,
+                    'silinebilir' => false,
+                    'aciklama' => 'Tam ekran arka plan video + başlık + CTA.',
+                    'alanlar' => [
+                        'video_url' => ['tip' => 'metin', 'label' => 'Video URL (mp4)', 'varsayilan' => ''],
+                        'video_youtube_id' => ['tip' => 'metin', 'label' => 'YouTube Video ID (mp4 yoksa kullanılır)', 'varsayilan' => ''],
+                        'ust_baslik' => ['tip' => 'metin', 'label' => 'Küçük Üst Başlık', 'varsayilan' => 'Hoş Geldiniz'],
+                        'ana_baslik' => ['tip' => 'metin', 'label' => 'Ana Başlık (H1)', 'varsayilan' => 'Ruh sağlığı yolculuğunuzda yanınızdayım'],
+                        'aciklama' => ['tip' => 'uzun_metin', 'label' => 'Açıklama Paragrafı', 'varsayilan' => 'Bireysel, çift ve aile danışmanlığı ile hayatınızdaki değişimlere destek oluyorum.'],
+                        'cta_metin' => ['tip' => 'metin', 'label' => 'Buton Metni', 'varsayilan' => 'Randevu Al'],
+                        'sosyal_kanit_goster' => ['tip' => 'sayi', 'label' => 'Sosyal Kanıt (0=gizle, 1=göster)', 'varsayilan' => 1],
+                        'sosyal_kanit_sayi' => ['tip' => 'sayi', 'label' => 'Danışan Sayısı', 'varsayilan' => 100],
+                        'sosyal_kanit_metin' => ['tip' => 'metin', 'label' => 'Sosyal Kanıt Metni', 'varsayilan' => 'Mutlu Danışan'],
+                    ],
+                ],
+
+                // Kalan modüller tema-1 ile aynı — kod tekrarını önlemek için Sprint 3'te
+                // bir spread helper'a alınabilir. Şimdilik açık tanım.
+                'about' => [
+                    'ad' => 'Hakkımda', 'kategori' => 'orta', 'sira' => 20,
+                    'aktif_varsayilan' => true, 'silinebilir' => true,
+                    'aciklama' => 'İki fotoğraflı hakkımda + misyon/vizyon.',
+                    'alanlar' => [
+                        'kucuk_baslik' => ['tip' => 'metin', 'label' => 'Küçük Üst Başlık', 'varsayilan' => 'Hakkımda'],
+                        'ana_baslik' => ['tip' => 'metin', 'label' => 'Ana Başlık', 'varsayilan' => 'Deneyim ve empati ile birlikte'],
+                        'aciklama' => ['tip' => 'uzun_metin', 'label' => 'Ana Açıklama', 'varsayilan' => 'Onlarca yıllık klinik deneyimimle danışanlarımın hayatlarında kalıcı değişimler yaratıyorum.'],
+                        'misyon_baslik' => ['tip' => 'metin', 'label' => 'Misyon Başlığı', 'varsayilan' => 'Misyonum'],
+                        'misyon_metin' => ['tip' => 'uzun_metin', 'label' => 'Misyon Metni', 'varsayilan' => 'Her danışanın kendine özgü yolunda rehberlik etmek.'],
+                        'vizyon_baslik' => ['tip' => 'metin', 'label' => 'Vizyon Başlığı', 'varsayilan' => 'Vizyonum'],
+                        'vizyon_metin' => ['tip' => 'uzun_metin', 'label' => 'Vizyon Metni', 'varsayilan' => 'Ruh sağlığı hizmetine erişimi kolaylaştırmak.'],
+                        'resim_1' => ['tip' => 'resim', 'label' => 'Fotoğraf 1', 'varsayilan' => null],
+                        'resim_2' => ['tip' => 'resim', 'label' => 'Fotoğraf 2', 'varsayilan' => null],
+                        'danisan_puani' => ['tip' => 'sayi', 'label' => 'Danışan Puanı (0-5)', 'varsayilan' => 5],
+                    ],
+                ],
+                'services' => [
+                    'ad' => 'Hizmetler', 'kategori' => 'orta', 'sira' => 30,
+                    'aktif_varsayilan' => true, 'silinebilir' => true, 'aciklama' => 'Hizmet kart ızgarası.',
+                    'alanlar' => [
+                        'bolum_baslik' => ['tip' => 'metin', 'label' => 'Bölüm Başlığı', 'varsayilan' => 'Sunduğum Hizmetler'],
+                        'kucuk_baslik' => ['tip' => 'metin', 'label' => 'Küçük Üst Başlık', 'varsayilan' => 'Hizmetlerim'],
+                        'aciklama' => ['tip' => 'uzun_metin', 'label' => 'Açıklama', 'varsayilan' => 'Her danışana özel programlar.'],
+                        'hizmet_limiti' => ['tip' => 'sayi', 'label' => 'Hizmet Sayısı', 'varsayilan' => 6],
+                        'hizmet_kaynagi' => ['tip' => 'db_kaynak', 'label' => 'Kaynak: Hizmetler', 'varsayilan' => 'hizmetler'],
+                    ],
+                ],
+                'why_choose' => [
+                    'ad' => 'Neden Ben?', 'kategori' => 'orta', 'sira' => 40,
+                    'aktif_varsayilan' => true, 'silinebilir' => true, 'aciklama' => '4 sebep kartı.',
+                    'alanlar' => [
+                        'kucuk_baslik' => ['tip' => 'metin', 'label' => 'Küçük Üst Başlık', 'varsayilan' => 'Neden Ben?'],
+                        'ana_baslik' => ['tip' => 'metin', 'label' => 'Ana Başlık', 'varsayilan' => 'Farkımı yaratan yaklaşımlar'],
+                        'aciklama' => ['tip' => 'uzun_metin', 'label' => 'Açıklama', 'varsayilan' => 'Danışanlarımın güvenini kazanan yaklaşımlar.'],
+                        'sebepler' => ['tip' => 'ikon_baslik_metin', 'label' => 'Sebep Kartları', 'varsayilan' => [
+                            ['ikon' => 'fa-heart', 'baslik' => 'Empati Odaklı', 'metin' => 'Yargısız alan.'],
+                            ['ikon' => 'fa-shield-halved', 'baslik' => 'Gizlilik', 'metin' => 'Tamamen gizli görüşme.'],
+                            ['ikon' => 'fa-user-doctor', 'baslik' => 'Bilimsel', 'metin' => 'Kanıta dayalı yöntemler.'],
+                            ['ikon' => 'fa-clock', 'baslik' => 'Esnek', 'metin' => 'Online + yüz yüze.'],
+                        ]],
+                    ],
+                ],
+                'what_we_do' => [
+                    'ad' => 'Ne Yapıyorum?', 'kategori' => 'orta', 'sira' => 50,
+                    'aktif_varsayilan' => false, 'silinebilir' => true, 'aciklama' => 'Yaklaşım başlıkları.',
+                    'alanlar' => [
+                        'kucuk_baslik' => ['tip' => 'metin', 'label' => 'Küçük Üst Başlık', 'varsayilan' => 'Yaklaşımım'],
+                        'ana_baslik' => ['tip' => 'metin', 'label' => 'Ana Başlık', 'varsayilan' => 'Danışanlarıma sunduğum destek'],
+                        'aciklama' => ['tip' => 'uzun_metin', 'label' => 'Açıklama', 'varsayilan' => 'Farklı ihtiyaçlara özel yaklaşımlar.'],
+                        'ogeler' => ['tip' => 'ikon_baslik_metin', 'label' => 'Öğeler', 'varsayilan' => [
+                            ['ikon' => 'fa-brain', 'baslik' => 'BDT', 'metin' => 'Düşünce kalıpları.'],
+                            ['ikon' => 'fa-users', 'baslik' => 'İlişki', 'metin' => 'Çift ve aile.'],
+                            ['ikon' => 'fa-hand-holding-heart', 'baslik' => 'Travma', 'metin' => 'İyileşme.'],
+                        ]],
+                    ],
+                ],
+                'case_study' => [
+                    'ad' => 'Öne Çıkan Yazılar', 'kategori' => 'orta', 'sira' => 60,
+                    'aktif_varsayilan' => false, 'silinebilir' => true, 'aciklama' => 'Blog seçkileri.',
+                    'alanlar' => [
+                        'ana_baslik' => ['tip' => 'metin', 'label' => 'Ana Başlık', 'varsayilan' => 'Öne Çıkan Makalelerim'],
+                        'aciklama' => ['tip' => 'uzun_metin', 'label' => 'Açıklama', 'varsayilan' => null],
+                        'blog_limiti' => ['tip' => 'sayi', 'label' => 'Yazı Sayısı', 'varsayilan' => 3],
+                        'blog_kaynagi' => ['tip' => 'db_kaynak', 'label' => 'Kaynak: Blog', 'varsayilan' => 'bloglar'],
+                    ],
+                ],
+                'how_it_work' => [
+                    'ad' => 'Nasıl Çalışır?', 'kategori' => 'orta', 'sira' => 70,
+                    'aktif_varsayilan' => true, 'silinebilir' => true, 'aciklama' => 'Süreç adımları.',
+                    'alanlar' => [
+                        'kucuk_baslik' => ['tip' => 'metin', 'label' => 'Küçük Üst Başlık', 'varsayilan' => 'Süreç'],
+                        'ana_baslik' => ['tip' => 'metin', 'label' => 'Ana Başlık', 'varsayilan' => 'İlk seansa kadar süreç'],
+                        'adimlar' => ['tip' => 'ikon_baslik_metin', 'label' => 'Adımlar', 'varsayilan' => [
+                            ['ikon' => '01', 'baslik' => 'Randevu Alın', 'metin' => 'Online takvim.'],
+                            ['ikon' => '02', 'baslik' => 'Ön Görüşme', 'metin' => 'Kısa telefon.'],
+                            ['ikon' => '03', 'baslik' => 'İlk Seans', 'metin' => 'İlk seansımız.'],
+                            ['ikon' => '04', 'baslik' => 'Süreç', 'metin' => 'Düzenli seanslar.'],
+                        ]],
+                    ],
+                ],
+                'cta' => [
+                    'ad' => 'Randevu Bandı', 'kategori' => 'orta', 'sira' => 80,
+                    'aktif_varsayilan' => true, 'silinebilir' => true, 'aciklama' => 'Büyük CTA.',
+                    'alanlar' => [
+                        'baslik' => ['tip' => 'metin', 'label' => 'Ana Mesaj', 'varsayilan' => 'İlk adımı bugün atın'],
+                        'aciklama' => ['tip' => 'uzun_metin', 'label' => 'Alt Açıklama', 'varsayilan' => '30 dakika yeter.'],
+                        'buton_metin' => ['tip' => 'metin', 'label' => 'Buton Metni', 'varsayilan' => 'Randevu Al'],
+                        'arkaplan_resmi' => ['tip' => 'resim', 'label' => 'Arkaplan Resmi', 'varsayilan' => null],
+                    ],
+                ],
+                'testimonial' => [
+                    'ad' => 'Danışan Yorumları', 'kategori' => 'alt', 'sira' => 90,
+                    'aktif_varsayilan' => true, 'silinebilir' => true, 'aciklama' => 'Onaylı yorumlar.',
+                    'alanlar' => [
+                        'kucuk_baslik' => ['tip' => 'metin', 'label' => 'Küçük Üst Başlık', 'varsayilan' => 'Danışan Yorumları'],
+                        'ana_baslik' => ['tip' => 'metin', 'label' => 'Ana Başlık', 'varsayilan' => 'Danışanlarımın hikayeleri'],
+                        'yorum_limiti' => ['tip' => 'sayi', 'label' => 'Yorum Sayısı', 'varsayilan' => 6],
+                        'yorum_kaynagi' => ['tip' => 'db_kaynak', 'label' => 'Kaynak: Yorumlar', 'varsayilan' => 'yorumlar'],
+                    ],
+                ],
+                'faq' => [
+                    'ad' => 'S.S.S.', 'kategori' => 'alt', 'sira' => 100,
+                    'aktif_varsayilan' => true, 'silinebilir' => true, 'aciklama' => 'Accordion.',
+                    'alanlar' => [
+                        'kucuk_baslik' => ['tip' => 'metin', 'label' => 'Küçük Üst Başlık', 'varsayilan' => 'S.S.S'],
+                        'ana_baslik' => ['tip' => 'metin', 'label' => 'Ana Başlık', 'varsayilan' => 'Sıkça sorulan sorular'],
+                        'sss_limiti' => ['tip' => 'sayi', 'label' => 'Soru Sayısı', 'varsayilan' => 6],
+                        'sss_kaynagi' => ['tip' => 'db_kaynak', 'label' => 'Kaynak: S.S.S.', 'varsayilan' => 'sss'],
+                    ],
+                ],
+                'blog' => [
+                    'ad' => 'Son Yazılar', 'kategori' => 'alt', 'sira' => 110,
+                    'aktif_varsayilan' => true, 'silinebilir' => true, 'aciklama' => 'Son yazılar.',
+                    'alanlar' => [
+                        'kucuk_baslik' => ['tip' => 'metin', 'label' => 'Küçük Üst Başlık', 'varsayilan' => 'Blog'],
+                        'ana_baslik' => ['tip' => 'metin', 'label' => 'Ana Başlık', 'varsayilan' => 'Son yazılarım'],
+                        'aciklama' => ['tip' => 'uzun_metin', 'label' => 'Açıklama', 'varsayilan' => null],
+                        'blog_limiti' => ['tip' => 'sayi', 'label' => 'Yazı Sayısı', 'varsayilan' => 3],
+                        'blog_kaynagi' => ['tip' => 'db_kaynak', 'label' => 'Kaynak: Blog', 'varsayilan' => 'bloglar'],
+                    ],
+                ],
+                'appointment' => [
+                    'ad' => 'Randevu Formu', 'kategori' => 'alt', 'sira' => 120,
+                    'aktif_varsayilan' => true, 'silinebilir' => false, 'aciklama' => 'Sayfa altı CTA.',
+                    'alanlar' => [
+                        'kucuk_baslik' => ['tip' => 'metin', 'label' => 'Küçük Üst Başlık', 'varsayilan' => 'Randevu'],
+                        'ana_baslik' => ['tip' => 'metin', 'label' => 'Ana Başlık', 'varsayilan' => 'Hemen randevu alın'],
+                        'aciklama' => ['tip' => 'uzun_metin', 'label' => 'Açıklama', 'varsayilan' => 'Takvimimden size uygun saati seçin.'],
+                    ],
+                ],
+            ],
+        ],
     ],
 ];
