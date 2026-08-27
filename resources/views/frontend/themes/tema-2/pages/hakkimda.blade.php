@@ -20,19 +20,12 @@
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-6">
-                <div class="about-us-images">
+                <div class="about-us-images is-single">
                     <div class="about-img-1">
                         <figure class="image-anime">
                             <img src="{{ $photo ?? asset('vendor/hipno/images/about-img-1.jpg') }}" alt="{{ $doktorAd }}">
                         </figure>
                     </div>
-                    @if(!empty($doktor['profil_resmi2']))
-                    <div class="about-img-2">
-                        <figure class="image-anime">
-                            <img src="{{ $doktor['profil_resmi2'] }}" alt="{{ $doktorAd }}">
-                        </figure>
-                    </div>
-                    @endif
                 </div>
             </div>
             <div class="col-lg-6">
@@ -169,3 +162,13 @@
     </div>
 </div>
 @endsection
+
+@push('head')
+<style>
+.about-us-images.is-single{display:block!important;position:relative}
+.about-us-images.is-single .about-img-1{width:100%!important;max-width:480px}
+.about-us-images.is-single .about-img-1 img{aspect-ratio:3/4;width:100%;object-fit:cover;border-radius:20px}
+.about-us-images.is-single .about-img-2,
+.about-us-images.is-single .about-customer-box{display:none!important}
+</style>
+@endpush

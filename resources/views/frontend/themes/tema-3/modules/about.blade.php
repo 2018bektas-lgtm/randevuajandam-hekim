@@ -1,4 +1,4 @@
-{{-- Hakkımda — Hipno about-us --}}
+{{-- Hakkımda — tek foto --}}
 @php
     $doktorAd = trim(($doktor['unvan'] ?? '').' '.($doktor['ad_soyad'] ?? 'Hekim'));
     $coz = static function ($path) {
@@ -9,8 +9,9 @@
 
         return filled($url) ? $url : (string) $path;
     };
-    $img1 = $coz($ayar['resim_1'] ?? null) ?: $coz($doktor['profil_resmi'] ?? null) ?: $coz($doktor['foto'] ?? null);
-    $img2 = $coz($ayar['resim_2'] ?? null);
+    $img = $coz($ayar['resim_1'] ?? null)
+        ?: $coz($doktor['profil_resmi'] ?? null)
+        ?: $coz($doktor['foto'] ?? null);
     $misyonMadde = collect(preg_split("/\r\n|\n|\r/", (string) ($ayar['misyon_maddeler'] ?? '')))->map(fn ($s) => trim($s))->filter()->values();
 @endphp
 
@@ -18,18 +19,15 @@
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-6">
-                <div class="about-us-images">
-                    <div class="about-img-1">
-                        <figure class="image-anime">
-                            <img src="{{ $img1 ?: asset('vendor/hipno/images/about-img-1.jpg') }}" alt="{{ $doktorAd }}">
-                        </figure>
+                @if($img)
+                    <div class="about-us-images is-single">
+                        <div class="about-img-1">
+                            <figure class="image-anime">
+                                <img src="{{ $img }}" alt="{{ $doktorAd }}">
+                            </figure>
+                        </div>
                     </div>
-                    <div class="about-img-2">
-                        <figure class="image-anime">
-                            <img src="{{ $img2 ?: $img1 ?: asset('vendor/hipno/images/about-img-2.jpg') }}" alt="{{ $doktorAd }}">
-                        </figure>
-                    </div>
-                </div>
+                @endif
             </div>
             <div class="col-lg-6">
                 <div class="about-us-content">
@@ -71,3 +69,13 @@
         </div>
     </div>
 </div>
+
+@push('head')
+<style>
+.about-us-images.is-single{display:block!important;position:relative;flex-wrap:nowrap}
+.about-us-images.is-single .about-img-1{width:100%!important;max-width:480px}
+.about-us-images.is-single .about-img-1 img{aspect-ratio:3/4;width:100%;object-fit:cover;border-radius:20px}
+.about-us-images.is-single .about-img-2,
+.about-us-images.is-single .about-customer-box{display:none!important}
+</style>
+@endpush

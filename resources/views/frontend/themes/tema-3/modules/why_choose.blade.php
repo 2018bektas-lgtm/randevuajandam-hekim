@@ -23,9 +23,6 @@
                         <figure class="image-anime reveal">
                             <img src="{{ $foto1 }}" alt="">
                         </figure>
-                        <div class="contact-circle-img">
-                            <img src="{{ asset('vendor/hipno/images/contact-circle-img.svg') }}" alt="">
-                        </div>
                     </div>
                     <div class="why-choose-content">
                         <div class="section-title">
@@ -79,5 +76,6 @@
 <style>
 .why-choose-item .icon-box i{position:relative;z-index:1;font-size:16px;color:#fff;line-height:1}
 .why-choose-item:hover .icon-box i{color:#fff}
+.why-choose-image .contact-circle-img{display:none!important}
 </style>
 @endpush

@@ -45,6 +45,7 @@ Route::prefix('site-api/booking')
         Route::get('/status', [BookingProxyController::class, 'status'])->name('status');
         Route::get('/services', [BookingProxyController::class, 'services'])->name('services');
         Route::get('/slots', [BookingProxyController::class, 'slots'])->name('slots');
+        Route::get('/availability', [BookingProxyController::class, 'availability'])->name('availability');
         Route::post('/otp/send', [BookingProxyController::class, 'sendOtp'])
             ->middleware('throttle:8,1')
             ->name('otp.send');

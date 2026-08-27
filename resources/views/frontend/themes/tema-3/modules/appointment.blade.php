@@ -1,4 +1,4 @@
-{{-- Randevu — Hipno our-appointment kutusu + sihirbaz --}}
+{{-- Randevu — Hipno our-appointment kutusu + sihirbaz (tam genişlik) --}}
 @php
     $tel = $doktor['telefon'] ?? null;
     $telRaw = $doktor['telefon_raw'] ?? preg_replace('/[^0-9+]/', '', (string) $tel);
@@ -8,10 +8,7 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
-                <div class="our-appointment-box">
-                    <div class="appointment-form ra-wizard-embed-wrap">
-                        @include('frontend.partials.randevu-wizard', ['raEmbed' => true, 'ayar' => []])
-                    </div>
+                <div class="our-appointment-box is-wizard">
                     <div class="our-appointment-content">
                         <div class="section-title">
                             <h3 class="wow fadeInUp">{{ $ayar['kucuk_baslik'] ?? 'Randevu' }}</h3>
@@ -43,6 +40,9 @@
                             </div>
                         </div>
                     </div>
+                    <div class="appointment-form ra-wizard-embed-wrap">
+                        @include('frontend.partials.randevu-wizard', ['raEmbed' => true, 'ayar' => []])
+                    </div>
                 </div>
             </div>
         </div>
@@ -51,11 +51,19 @@
 
 @push('head')
 <style>
+.our-appointment-box.is-wizard{flex-direction:column;align-items:stretch;gap:28px;padding:56px 48px;overflow:visible}
+.our-appointment-box.is-wizard .appointment-form,
+.our-appointment-box.is-wizard .our-appointment-content{width:100%}
+.our-appointment-box.is-wizard .our-appointment-content{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:24px}
+.our-appointment-box.is-wizard .our-appointment-content .section-title{margin-bottom:0;max-width:520px}
+.our-appointment-box.is-wizard .appointment-content-body{display:flex;flex-wrap:wrap;gap:24px 36px}
+.our-appointment-box.is-wizard .appointment-item{border-bottom:none;margin:0;padding:0}
 .our-appointment-box .ra-wizard-section{padding:0;background:transparent}
-.our-appointment-box .ra-wizard-card{max-width:none;margin:0;padding:0;box-shadow:none;border-radius:0}
+.our-appointment-box .ra-wizard-card{max-width:none;margin:0;padding:0;box-shadow:none;border-radius:0;overflow:visible}
 .our-appointment-box .ra-progress{margin-bottom:28px;padding:0}
+.our-appointment-box .ra-days{grid-template-columns:repeat(7,minmax(0,1fr))}
 @media (max-width: 991px){
-    .our-appointment-box{padding:40px 24px}
+    .our-appointment-box.is-wizard{padding:32px 20px}
     .our-appointment-content,.appointment-form{width:100%}
 }
 </style>

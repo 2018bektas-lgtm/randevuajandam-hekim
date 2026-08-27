@@ -5,7 +5,7 @@
     <div class="container">
         <div class="ra-wizard-card wow fadeInUp">
 @else
-<div id="randevu-al">
+<div id="randevu-al" class="ra-wizard-card">
 @endif
             @if(!empty($ayar['ana_baslik']) || !empty($ayar['kucuk_baslik']))
             <div class="section-title text-center" style="margin-bottom:2rem">
@@ -213,7 +213,7 @@
 .ra-nav-btn:hover:not(:disabled){background:var(--accent-color);border-color:var(--accent-color);color:#fff}
 .ra-nav-btn:disabled{opacity:.4;cursor:not-allowed}
 .ra-week-label{font-family:var(--display);font-size:1.05rem;color:var(--primary-color);font-weight:600}
-.ra-days{display:grid;grid-template-columns:repeat(7,1fr);gap:.5rem}
+.ra-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:.5rem}
 .ra-day{padding:.75rem .3rem;border:1.5px solid #e5e7eb;background:#fff;border-radius:.75rem;text-align:center;cursor:pointer;transition:all .25s;font-family:var(--font);display:flex;flex-direction:column;gap:.15rem}
 .ra-day-wday{font-size:.68rem;color:#9ca3af;text-transform:uppercase;letter-spacing:.05em;font-weight:700}
 .ra-day-num{font-family:var(--display);font-size:1.35rem;font-weight:600;color:var(--primary-color)}
@@ -295,15 +295,23 @@
     const routes = {
         services: @json(route('frontend.booking.services')),
         slots: @json(route('frontend.booking.slots')),
+        availability: @json(route('frontend.booking.availability')),
         create: @json(route('frontend.booking.appointments')),
     };
     const csrf = document.querySelector('meta[name=csrf-token]')?.content;
 
-    const state = { adim: 1, hizmet: null, tarih: null, saat: null, tarihGoster: '', haftaStart: null };
+    const state = { adim: 1, hizmet: null, tarih: null, saat: null, tarihGoster: '', haftaStart: null, musaitGunler: null };
 
     const hataEl = document.getElementById('ra-hata');
-    function hataGoster(msg){ hataEl.textContent = msg; hataEl.classList.remove('d-none'); document.querySelector('.ra-wizard-card').scrollIntoView({behavior:'smooth', block:'start'}); }
-    function hataGizle(){ hataEl.classList.add('d-none'); }
+    function raRoot(){ return document.getElementById('randevu-al'); }
+    function raScroll(){ raRoot()?.scrollIntoView({behavior:'smooth', block:'start'}); }
+    function hataGoster(msg){
+        if (!hataEl) return;
+        hataEl.textContent = msg;
+        hataEl.classList.remove('d-none');
+        raScroll();
+    }
+    function hataGizle(){ hataEl?.classList.add('d-none'); }
 
     function stepGoster(n){
         state.adim = n;
@@ -316,10 +324,15 @@
             else if (s === n) el.classList.add('is-active');
         });
         const dolu = n <= 1 ? 0 : n >= 4 ? 100 : ((n-1)/3)*100;
-        document.querySelector('.ra-progress-line-fill').style.width = dolu + '%';
-        document.querySelector('.ra-wizard-card').scrollIntoView({behavior:'smooth', block:'start'});
+        const fill = document.querySelector('.ra-progress-line-fill');
+        if (fill) fill.style.width = dolu + '%';
+        raScroll();
     }
     window.raStepGo = stepGoster;
+
+    function ymd(d){
+        return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+    }
 
     /* --- Adım 1: Hizmet --- */
     async function hizmetleriYukle(){
@@ -327,23 +340,28 @@
             const r = await fetch(routes.services, { headers: {'Accept':'application/json'} });
             const j = await r.json();
             const cont = document.getElementById('ra-hizmetler');
-            const items = j.data || j.services || [];
+            const raw = j.data;
+            const items = Array.isArray(raw) ? raw : (Array.isArray(raw?.data) ? raw.data : (j.services || []));
             if (!items.length){ cont.innerHTML = '<div class="ra-empty">Şu an aktif hizmet bulunmuyor.</div>'; return; }
-            cont.innerHTML = items.map(h => `
-                <button type="button" class="ra-service-card" data-hizmet='${JSON.stringify({id:h.id, ad:h.ad||h.baslik||'Hizmet', sure:h.sure||30}).replace(/'/g,"&#39;")}'>
-                    <div class="ra-service-name">${h.ad || h.baslik || 'Hizmet'}</div>
+            cont.innerHTML = items.map(h => {
+                const ad = h.ad || h.baslik || 'Hizmet';
+                const sure = h.sure || 30;
+                const desc = h.aciklama ? String(h.aciklama).substring(0,140) + (String(h.aciklama).length>140?'…':'') : '';
+                return `<button type="button" class="ra-service-card" data-id="${h.id}" data-ad="${String(ad).replace(/"/g,'&quot;')}" data-sure="${sure}">
+                    <div class="ra-service-name">${ad}</div>
                     <div class="ra-service-meta">
-                        <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> ${h.sure || 30} dk</span>
+                        <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> ${sure} dk</span>
                     </div>
-                    ${h.aciklama ? `<div class="ra-service-desc">${String(h.aciklama).substring(0,140)}${h.aciklama.length>140?'…':''}</div>` : ''}
-                </button>`).join('');
+                    ${desc ? `<div class="ra-service-desc">${desc}</div>` : ''}
+                </button>`;
+            }).join('');
             cont.querySelectorAll('.ra-service-card').forEach(b => {
                 b.addEventListener('click', () => {
-                    state.hizmet = JSON.parse(b.dataset.hizmet.replace(/&#39;/g,"'"));
+                    state.hizmet = { id: parseInt(b.dataset.id, 10), ad: b.dataset.ad, sure: parseInt(b.dataset.sure, 10) || 30 };
                     document.getElementById('ra-secili-hizmet-ozet').textContent = `Seçilen hizmet: ${state.hizmet.ad} (${state.hizmet.sure} dk)`;
                     haftaBaslat();
                     stepGoster(2);
-                    gunleriRender();
+                    musaitGunleriYukle();
                 });
             });
         } catch { hataGoster('Hizmetler yüklenemedi. Sayfayı yenileyip tekrar deneyin.'); }
@@ -353,8 +371,27 @@
     const gunAdlari = ['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'];
     const aylar = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
     function haftaBaslat(){ const b=new Date(); b.setHours(0,0,0,0); state.haftaStart=b; }
+    async function musaitGunleriYukle(){
+        const w = state.haftaStart;
+        const from = ymd(w);
+        const to = ymd(new Date(w.getTime()+6*86400000));
+        state.musaitGunler = 'loading';
+        gunleriRender();
+        try {
+            const qs = new URLSearchParams({ from, to });
+            if (state.hizmet?.id) qs.set('hizmet_id', String(state.hizmet.id));
+            const r = await fetch(`${routes.availability}?${qs.toString()}`, { headers:{'Accept':'application/json'} });
+            const j = await r.json();
+            const dates = Array.isArray(j.data?.dates) ? j.data.dates : (Array.isArray(j.dates) ? j.dates : []);
+            state.musaitGunler = new Set(dates);
+        } catch {
+            state.musaitGunler = null;
+        }
+        gunleriRender();
+    }
     function gunleriRender(){
         const w = state.haftaStart;
+        if (!w) return;
         const son = new Date(w.getTime()+6*86400000);
         document.getElementById('ra-week-label').textContent = `${w.getDate()} ${aylar[w.getMonth()]} - ${son.getDate()} ${aylar[son.getMonth()]}`;
         const bugun = new Date(); bugun.setHours(0,0,0,0);
@@ -366,13 +403,16 @@
         for (let i=0; i<7; i++){
             const g = new Date(w.getTime()+i*86400000);
             const gecmis = g < bugun;
-            const iso = g.toISOString().slice(0,10);
+            const iso = ymd(g);
+            const yukleniyor = state.musaitGunler === 'loading';
+            const musaitBiliniyor = state.musaitGunler instanceof Set;
+            const kapali = gecmis || yukleniyor || (musaitBiliniyor && !state.musaitGunler.has(iso));
             const btn = document.createElement('button');
             btn.type = 'button';
-            btn.className = 'ra-day' + (gecmis ? ' is-disabled' : '');
-            btn.disabled = gecmis;
+            btn.className = 'ra-day' + (kapali ? ' is-disabled' : '');
+            btn.disabled = kapali;
             btn.innerHTML = `<span class="ra-day-wday">${gunAdlari[g.getDay()]}</span><span class="ra-day-num">${g.getDate()}</span><span class="ra-day-mon">${aylar[g.getMonth()]}</span>`;
-            if (!gecmis){
+            if (!kapali){
                 btn.addEventListener('click', () => {
                     gunler.querySelectorAll('.ra-day').forEach(x => x.classList.remove('is-selected'));
                     btn.classList.add('is-selected');
@@ -388,11 +428,11 @@
         const t = new Date(state.haftaStart.getTime()-7*86400000);
         const b = new Date(); b.setHours(0,0,0,0);
         state.haftaStart = t < b ? b : t;
-        gunleriRender();
+        musaitGunleriYukle();
     });
     document.getElementById('ra-next-week').addEventListener('click', () => {
         state.haftaStart = new Date(state.haftaStart.getTime()+7*86400000);
-        gunleriRender();
+        musaitGunleriYukle();
     });
 
     /* --- Adım 3: Saat --- */
@@ -402,11 +442,18 @@
         const saatler = document.getElementById('ra-saatler');
         saatler.innerHTML = '<div class="ra-empty">Saatler yükleniyor…</div>';
         try {
-            const r = await fetch(`${routes.slots}?date=${state.tarih}`, { headers:{'Accept':'application/json'} });
+            const qs = new URLSearchParams({ date: state.tarih });
+            if (state.hizmet?.id) qs.set('hizmet_id', String(state.hizmet.id));
+            const r = await fetch(`${routes.slots}?${qs.toString()}`, { headers:{'Accept':'application/json'} });
             const j = await r.json();
-            const slots = j.data?.slots || j.slots || j.data || [];
-            if (!Array.isArray(slots) || !slots.length){
-                saatler.innerHTML = '<div class="ra-empty">Bu gün için uygun saat bulunamadı. Lütfen başka bir gün seçin.</div>';
+            if (!r.ok) {
+                saatler.innerHTML = `<div class="ra-empty">${j.message || 'Saatler alınamadı. Başka bir gün deneyin.'}</div>`;
+                return;
+            }
+            const slots = Array.isArray(j.data?.slots) ? j.data.slots
+                : (Array.isArray(j.slots) ? j.slots : []);
+            if (!slots.length){
+                saatler.innerHTML = `<div class="ra-empty">${j.data?.message || j.message || 'Bu gün için uygun saat bulunamadı. Lütfen başka bir gün seçin.'}</div>`;
                 return;
             }
             saatler.innerHTML = slots.map(s => {

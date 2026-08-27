@@ -30,7 +30,33 @@ class BookingProxyController extends Controller
             ], 422);
         }
 
-        return $this->forward('GET', '/slots', ['date' => $date]);
+        $query = ['date' => $date];
+        $hizmetId = (int) $request->query('hizmet_id', 0);
+        if ($hizmetId > 0) {
+            $query['hizmet_id'] = $hizmetId;
+        }
+
+        return $this->forward('GET', '/slots', $query);
+    }
+
+    public function availability(Request $request): JsonResponse
+    {
+        $from = (string) $request->query('from', '');
+        $to = (string) $request->query('to', '');
+        if (! preg_match('/^\d{4}-\d{2}-\d{2}$/', $from) || ! preg_match('/^\d{4}-\d{2}-\d{2}$/', $to)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Geçerli bir tarih aralığı (from, to) gerekli.',
+            ], 422);
+        }
+
+        $query = ['from' => $from, 'to' => $to];
+        $hizmetId = (int) $request->query('hizmet_id', 0);
+        if ($hizmetId > 0) {
+            $query['hizmet_id'] = $hizmetId;
+        }
+
+        return $this->forward('GET', '/availability', $query);
     }
 
     public function sendOtp(Request $request): JsonResponse

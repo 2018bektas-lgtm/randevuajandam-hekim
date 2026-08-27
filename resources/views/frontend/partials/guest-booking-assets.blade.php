@@ -148,7 +148,10 @@
             return;
         }
         try {
-            const res = await apiGet('/slots?date=' + encodeURIComponent(date));
+            const hid = hizmetEl?.value;
+            let url = '/slots?date=' + encodeURIComponent(date);
+            if (hid) url += '&hizmet_id=' + encodeURIComponent(hid);
+            const res = await apiGet(url);
             const slots = (res.data && res.data.slots) || [];
             if (!slots.length) {
                 saatEl.innerHTML = '<option value="">Bu tarihte boş slot yok</option>';
@@ -168,6 +171,7 @@
     }
 
     tarihEl?.addEventListener('change', () => { hideAlert(); loadSlots(); });
+    hizmetEl?.addEventListener('change', () => { hideAlert(); if (tarihEl?.value) loadSlots(); });
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
