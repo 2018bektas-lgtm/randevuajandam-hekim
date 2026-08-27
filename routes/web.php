@@ -92,6 +92,16 @@ Route::prefix('yonetim')->name('panel.')->group(function () {
         Route::post('/web-sitesi', [\App\Http\Controllers\Panel\WebSitesiController::class, 'kurulum'])->name('web-sitesi.kurulum');
         Route::post('/web-sitesi/api-anahtari', [\App\Http\Controllers\Panel\WebSitesiController::class, 'apiAnahtari'])->name('web-sitesi.api-anahtari');
 
+        // Sayfa Builder — tema bazlı modüler anasayfa yönetimi
+        Route::prefix('sayfa-builder')->name('sayfa-builder.')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Panel\SayfaBuilderController::class, 'index'])->name('index');
+            Route::post('/sira', [\App\Http\Controllers\Panel\SayfaBuilderController::class, 'siraKaydet'])->name('sira');
+            Route::post('/modul/{kod}', [\App\Http\Controllers\Panel\SayfaBuilderController::class, 'modulKaydet'])
+                ->where('kod', '[a-z_]+')->name('modul.kaydet');
+            Route::post('/tema-sec', [\App\Http\Controllers\Panel\SayfaBuilderController::class, 'temaSec'])->name('tema.sec');
+            Route::post('/palet', [\App\Http\Controllers\Panel\SayfaBuilderController::class, 'paletSec'])->name('palet.sec');
+        });
+
         // Site ayarları — LOCAL SQLite (API bağımsız)
         Route::prefix('site-ayarlari')->name('site-ayarlari.')->group(function () {
             Route::get('/', [SiteAyarlariController::class, 'index'])->name('index');

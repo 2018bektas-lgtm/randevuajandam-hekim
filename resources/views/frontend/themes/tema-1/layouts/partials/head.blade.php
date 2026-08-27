@@ -95,8 +95,23 @@
 <link rel="stylesheet" href="{{ asset('vendor/hipno/css/mousecursor.css') }}">
 <link rel="stylesheet" href="{{ asset('css/themes/'.$temaCssId.'.css') }}?v=1">
 
+@php
+    /** SiteBuilderService'ten canlı renk paleti (hekim panelden değiştirebilir) */
+    try {
+        $aktifPalet = app(\App\Services\SiteBuilderService::class)->aktifPalet();
+    } catch (\Throwable $e) {
+        $aktifPalet = [
+            'primary' => '#262626',
+            'accent' => '#9B9A84',
+            'bg' => '#F9F9F9',
+            'text' => '#333333',
+            'text_light' => '#FFFFFF',
+        ];
+    }
+@endphp
 <style>
 :root {
+  /* Legacy brand-scale (eski hipno CSS uyumu icin) */
   --brand-50: {{ $palette['50'] }};
   --brand-100: {{ $palette['100'] }};
   --brand-200: {{ $palette['200'] }};
@@ -106,8 +121,19 @@
   --brand-700: {{ $palette['700'] }};
   --brand-800: {{ $palette['800'] }};
   --brand-900: {{ $palette['900'] }};
+
+  /* Modül renk sistemi (SiteBuilderService::aktifPalet) */
+  --primary-color:   {{ $aktifPalet['primary'] }};
+  --accent-color:    {{ $aktifPalet['accent'] }};
+  --secondary-color: {{ $aktifPalet['bg'] }};
+  --text-color:      {{ $aktifPalet['text'] }};
+  --text-light:      {{ $aktifPalet['text_light'] }};
+  --divider-color:   rgba(0,0,0,.08);
+
   --font: "{{ $temaMeta['font_sans'] ?? 'Sora' }}", system-ui, sans-serif;
   --display: "{{ $temaMeta['font_display'] ?? 'Marcellus' }}", "Times New Roman", serif;
+  --primary-font: var(--display);
+  --accent-font: var(--display);
 }
 </style>
 
