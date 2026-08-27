@@ -5,20 +5,20 @@
  *
  * Klinik temaları ayrı uygulamadadır (randevuajandam-klinik); buraya karışmaz.
  *
- * Hekim için aktif katalog (yalnızca bu ikisi):
- *   - tema-1  → Hipno
- *   - delogis → Delogis Klinik
+ * Aktif katalog (numaralı):
+ *   - tema-1  → Hipno Klasik (statik hero)
+ *   - tema-2  → Hipno Slider (swiper hero)
+ *   - tema-3  → Hipno Video  (fullscreen video hero)
+ *   - (tema-4..9 sonraki sprint'lerde: Delogis Home 01..05 + Home Boxed)
  *
- * Her tema klasörü (layout anahtarı = klasör adı):
- *   resources/views/frontend/themes/{pack}/
+ * Her tema klasörü:
+ *   resources/views/frontend/themes/{tema-N}/
  *     layouts/app.blade.php
  *     layouts/partials/head|header|footer|script.blade.php
+ *     modules/*.blade.php   ← modüler builder (bkz. config/tema_modulleri.php)
  *     pages/anasayfa.blade.php  (ve diğer sayfalar)
  *
  * public/css/themes/{id}.css
- * public/themes/{pack}/          ← asset paketleri (delogis vb.)
- *
- * PHP: theme_layout() | theme_view('pages.x') | theme_pack_id()
  */
 return [
     'default' => 'tema-1',
@@ -31,8 +31,8 @@ return [
 
     'catalog' => [
         'tema-1' => [
-            'ad' => 'Hipno',
-            'aciklama' => 'Psikoloji ve danışmanlık için premium tasarım. Koyu zemin, altın vurgu, serif başlıklar.',
+            'ad' => 'tema-1 · Hipno Klasik',
+            'aciklama' => 'Psikoloji ve danışmanlık için premium tasarım. Statik hero + parallax arka plan.',
             'renk' => '#9B9A84',
             'font_sans' => 'Sora',
             'font_display' => 'Marcellus',
@@ -42,16 +42,28 @@ return [
             'layout' => 'tema-1',
             'audience' => 'hekim',
         ],
-        'delogis' => [
-            'ad' => 'Delogis',
-            'aciklama' => 'Delogis Home 3 (index3): orijinal palet #976147 / #1a1414. Klinik dilde modern vitrin.',
-            'renk' => '#976147',
-            'font_sans' => 'Lexend',
-            'font_display' => 'Castoro',
-            'google_fonts' => 'Lexend:wght@300;400;500;600;700;800&family=Castoro:ital@0;1',
-            'preview' => ['#976147', '#f2edea', '#1a1414'],
-            'premium' => true,
-            'layout' => 'delogis',
+        'tema-2' => [
+            'ad' => 'tema-2 · Hipno Slider',
+            'aciklama' => 'Hero bölümünde swiper slider — 2-5 slayt arası çoklu tanıtım.',
+            'renk' => '#9B9A84',
+            'font_sans' => 'Sora',
+            'font_display' => 'Marcellus',
+            'google_fonts' => 'Marcellus&family=Sora:wght@100..800',
+            'preview' => ['#262626', '#9B9A84', '#F9F9F9'],
+            'premium' => false,
+            'layout' => 'tema-2',
+            'audience' => 'hekim',
+        ],
+        'tema-3' => [
+            'ad' => 'tema-3 · Hipno Video',
+            'aciklama' => 'Hero bölümünde tam ekran arka plan videosu — sinemasal, dikkat çekici.',
+            'renk' => '#9B9A84',
+            'font_sans' => 'Sora',
+            'font_display' => 'Marcellus',
+            'google_fonts' => 'Marcellus&family=Sora:wght@100..800',
+            'preview' => ['#262626', '#9B9A84', '#F9F9F9'],
+            'premium' => false,
+            'layout' => 'tema-3',
             'audience' => 'hekim',
         ],
     ],

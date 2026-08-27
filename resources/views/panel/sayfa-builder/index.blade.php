@@ -230,6 +230,12 @@ function alanElement(kod, alan, val) {
     label.textContent = alan.label || kod;
     wrap.appendChild(label);
 
+    // Ozel: ikon+baslik+metin tekrarli form (JSON degil)
+    if (alan.tip === 'ikon_baslik_metin') {
+        wrap.appendChild(ikonBaslikMetinRepeater(kod, val));
+        return wrap;
+    }
+
     let input;
     switch (alan.tip) {
         case 'uzun_metin':
@@ -242,12 +248,6 @@ function alanElement(kod, alan, val) {
             input = document.createElement('input');
             input.type = 'number';
             input.value = val ?? 0;
-            break;
-        case 'ikon_baslik_metin':
-            input = document.createElement('textarea');
-            input.rows = 6;
-            input.value = JSON.stringify(val ?? [], null, 2);
-            input.dataset.json = '1';
             break;
         case 'db_kaynak':
             input = document.createElement('input');
@@ -265,6 +265,92 @@ function alanElement(kod, alan, val) {
     input.className = (input.className || '') + ' w-full rounded-xl border border-[#E5E7EB] px-3 py-2 text-xs';
     wrap.appendChild(input);
     return wrap;
+}
+
+/**
+ * Tekrarlanabilir ogeler (ikon + baslik + metin) icin form UI.
+ * Her satirin sag ustunde "sil" butonu, altta "+ Yeni Oge" butonu.
+ * Kaydederken JSON'a ceviririz (data-json).
+ */
+function ikonBaslikMetinRepeater(kod, val) {
+    const cont = document.createElement('div');
+    cont.className = 'space-y-2 p-2 rounded-xl bg-slate-50 border border-slate-200';
+
+    const hidden = document.createElement('textarea');
+    hidden.name = kod;
+    hidden.dataset.json = '1';
+    hidden.style.display = 'none';
+    cont.appendChild(hidden);
+
+    const liste = document.createElement('div');
+    liste.className = 'space-y-2';
+    cont.appendChild(liste);
+
+    const oturumu = Array.isArray(val) ? val : [];
+    oturumu.forEach(item => liste.appendChild(ogeSatiri(item, () => guncelleJson(liste, hidden))));
+
+    const yeniBtn = document.createElement('button');
+    yeniBtn.type = 'button';
+    yeniBtn.textContent = '+ Yeni Öğe';
+    yeniBtn.className = 'w-full py-2 rounded-lg bg-white border border-dashed border-slate-300 hover:border-[#C96A2B] hover:bg-[#FFF7ED]/50 text-[11px] font-bold text-slate-600 transition';
+    yeniBtn.addEventListener('click', () => {
+        liste.appendChild(ogeSatiri({ ikon: '', baslik: '', metin: '' }, () => guncelleJson(liste, hidden)));
+        guncelleJson(liste, hidden);
+    });
+    cont.appendChild(yeniBtn);
+
+    guncelleJson(liste, hidden);
+    return cont;
+}
+
+function ogeSatiri(item, onChange) {
+    const row = document.createElement('div');
+    row.className = 'grid grid-cols-12 gap-2 p-2 rounded-lg bg-white border border-slate-200';
+
+    const ikonInput = document.createElement('input');
+    ikonInput.type = 'text';
+    ikonInput.value = item.ikon ?? '';
+    ikonInput.placeholder = 'ikon (örn: fa-heart) veya "01"';
+    ikonInput.className = 'col-span-3 rounded-lg border border-slate-200 px-2 py-1.5 text-[11px]';
+    ikonInput.dataset.field = 'ikon';
+
+    const baslikInput = document.createElement('input');
+    baslikInput.type = 'text';
+    baslikInput.value = item.baslik ?? '';
+    baslikInput.placeholder = 'Başlık';
+    baslikInput.className = 'col-span-4 rounded-lg border border-slate-200 px-2 py-1.5 text-[11px] font-semibold';
+    baslikInput.dataset.field = 'baslik';
+
+    const metinInput = document.createElement('input');
+    metinInput.type = 'text';
+    metinInput.value = item.metin ?? '';
+    metinInput.placeholder = 'Kısa açıklama';
+    metinInput.className = 'col-span-4 rounded-lg border border-slate-200 px-2 py-1.5 text-[11px]';
+    metinInput.dataset.field = 'metin';
+
+    const silBtn = document.createElement('button');
+    silBtn.type = 'button';
+    silBtn.innerHTML = '&times;';
+    silBtn.title = 'Öğeyi sil';
+    silBtn.className = 'col-span-1 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 text-sm font-bold transition';
+    silBtn.addEventListener('click', () => { row.remove(); onChange(); });
+
+    [ikonInput, baslikInput, metinInput].forEach(el => el.addEventListener('input', onChange));
+
+    row.appendChild(ikonInput);
+    row.appendChild(baslikInput);
+    row.appendChild(metinInput);
+    row.appendChild(silBtn);
+    return row;
+}
+
+function guncelleJson(liste, hidden) {
+    const items = [...liste.querySelectorAll(':scope > div')].map(row => ({
+        ikon: row.querySelector('[data-field=ikon]').value.trim(),
+        baslik: row.querySelector('[data-field=baslik]').value.trim(),
+        metin: row.querySelector('[data-field=metin]').value.trim(),
+    })).filter(x => x.baslik || x.metin || x.ikon);
+    hidden.value = JSON.stringify(items);
 }
 function modulDuzenleKapat() {
     const m = document.getElementById('modulModal');

@@ -25,7 +25,7 @@
         <div class="sa-card-head">
             <div>
                 <h3>Hekim site temaları</h3>
-                <p class="sa-hint">Bireysel hekim sitesi için: <strong>Hipno</strong> ve <strong>Delogis</strong>. Tema değişince header, anasayfa, kartlar ve footer tamamen değişir. Klinik temaları ayrıdır. Premium temalar web sitesi paketinde yer alır.</p>
+                <p class="sa-hint">Bireysel hekim sitesi için: <strong>tema-1..tema-3</strong> (Hipno üç varyantı; sonraki güncellemeyle tema-4..tema-9 gelecek). Tema değişince header, anasayfa, kartlar ve footer tamamen değişir. Modül düzenleme ve renk paleti için <a href="{{ route('panel.sayfa-builder.index') }}" style="color:#C96A2B;font-weight:bold">Modüller</a> sayfasına gidin.</p>
             </div>
             <span class="sa-badge">{{ count($temalar) }} tema</span>
         </div>
