@@ -48,14 +48,9 @@
                         @if(!empty($hizmet['kisa']))
                         <p style="color:var(--text-color);font-size:.95rem;margin-top:.5rem">{{ $hizmet['kisa'] }}</p>
                         @endif
-                        @if(!empty($hizmet['sure']) || !empty($hizmet['fiyat']))
+                        @if(!empty($hizmet['sure']))
                         <div style="display:flex;gap:.5rem;margin-top:.5rem;flex-wrap:wrap">
-                            @if(!empty($hizmet['sure']))
                             <span style="font-size:.8rem;padding:.2rem .6rem;background:var(--secondary-color);border-radius:3px">{{ $hizmet['sure'] }}</span>
-                            @endif
-                            @if(!empty($hizmet['fiyat']))
-                            <span style="font-size:.8rem;padding:.2rem .6rem;background:var(--accent-color);color:#fff;border-radius:3px">{{ $hizmet['fiyat'] }}</span>
-                            @endif
                         </div>
                         @endif
                     </div>

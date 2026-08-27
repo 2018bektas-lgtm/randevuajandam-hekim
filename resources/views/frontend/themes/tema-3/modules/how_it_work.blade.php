@@ -17,7 +17,7 @@
             </div>
             <div class="col-lg-6">
                 <div class="section-btn wow fadeInUp" data-wow-delay="0.2s">
-                    <a href="{{ route('frontend.randevu') }}" class="btn-default">Randevu Al</a>
+                    <a href="{{ route('frontend.anasayfa') }}#randevu-al" class="btn-default">Randevu Al</a>
                 </div>
             </div>
         </div>

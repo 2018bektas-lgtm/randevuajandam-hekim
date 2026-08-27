@@ -68,20 +68,12 @@
                     <h2 class="text-anime-style-2" data-cursor="-opaque">{{ $hizmet['baslik'] ?? '' }}</h2>
                 </div>
 
-                @if(!empty($hizmet['sure']) || !empty($hizmet['fiyat']))
+                @if(!empty($hizmet['sure']))
                 <div class="wow fadeInUp" style="display:flex;gap:1rem;margin-bottom:2rem;flex-wrap:wrap">
-                    @if(!empty($hizmet['sure']))
                     <div style="background:var(--secondary-color);padding:.75rem 1.25rem;border-radius:.5rem">
                         <span style="font-size:.8rem;color:var(--text-color);display:block;margin-bottom:.2rem">Süre</span>
                         <strong style="color:var(--primary-color)">{{ $hizmet['sure'] }}</strong>
                     </div>
-                    @endif
-                    @if(!empty($hizmet['fiyat']))
-                    <div style="background:var(--accent-color);padding:.75rem 1.25rem;border-radius:.5rem">
-                        <span style="font-size:.8rem;color:rgba(255,255,255,.8);display:block;margin-bottom:.2rem">Ücret</span>
-                        <strong style="color:#fff">{{ $hizmet['fiyat'] }}</strong>
-                    </div>
-                    @endif
                 </div>
                 @endif
 
