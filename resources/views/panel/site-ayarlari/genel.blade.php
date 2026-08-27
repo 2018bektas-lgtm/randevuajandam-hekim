@@ -118,15 +118,15 @@
                 </div>
                 <div class="sa-card-body">
                     <div class="sa-color-wrap">
-                        <input type="color" id="tema_renk_picker" value="{{ $ayarlar['tema_renk'] ?: '#0d9488' }}"
+                        <input type="color" id="tema_renk_picker" value="{{ $ayarlar['tema_renk'] ?: '#9B9A84' }}"
                                oninput="document.getElementById('tema_renk_text').value=this.value; document.getElementById('tema_renk_hidden').value=this.value">
-                        <input type="text" id="tema_renk_text" value="{{ $ayarlar['tema_renk'] ?: '#0d9488' }}"
+                        <input type="text" id="tema_renk_text" value="{{ $ayarlar['tema_renk'] ?: '#9B9A84' }}"
                                maxlength="7" pattern="^#[0-9A-Fa-f]{6}$"
                                oninput="if(/^#[0-9A-Fa-f]{6}$/.test(this.value)){document.getElementById('tema_renk_picker').value=this.value;document.getElementById('tema_renk_hidden').value=this.value}">
-                        <input type="hidden" name="tema_renk" id="tema_renk_hidden" value="{{ $ayarlar['tema_renk'] ?: '#0d9488' }}">
+                        <input type="hidden" name="tema_renk" id="tema_renk_hidden" value="{{ $ayarlar['tema_renk'] ?: '#9B9A84' }}">
                     </div>
                     <div class="mt-4 flex gap-2">
-                        @foreach(['#0d9488','#C96A2B','#2563EB','#7C3AED','#DC2626','#059669'] as $c)
+                        @foreach(['#9B9A84','#C96A2B','#2563EB','#7C3AED','#0d9488','#059669'] as $c)
                             <button type="button" title="{{ $c }}"
                                     onclick="document.getElementById('tema_renk_picker').value='{{ $c }}';document.getElementById('tema_renk_text').value='{{ $c }}';document.getElementById('tema_renk_hidden').value='{{ $c }}'"
                                     class="w-8 h-8 rounded-lg border border-black/5 shadow-sm hover:scale-110 transition"

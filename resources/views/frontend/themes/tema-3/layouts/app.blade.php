@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    @include('frontend.themes.tema-1.layouts.partials.head')
+    @include('frontend.themes.tema-3.layouts.partials.head')
 </head>
 @php
     $bodyTema = current_theme_id($doktor ?? null);
     $nav = site_nav(is_array($doktor ?? null) ? $doktor : null);
 @endphp
-<body class="theme-{{ $bodyTema }} layout-tema-1">
+<body class="theme-{{ $bodyTema }} layout-tema-3">
     @include('frontend.layouts.partials.tracking-body')
 
     <div class="preloader">
@@ -19,13 +19,13 @@
         </div>
     </div>
 
-    @include('frontend.themes.tema-1.layouts.partials.header', ['doktor' => $doktor ?? [], 'nav' => $nav])
+    @include('frontend.themes.tema-3.layouts.partials.header', ['doktor' => $doktor ?? [], 'nav' => $nav])
 
     <main>
         @yield('icerik')
     </main>
 
-    @include('frontend.themes.tema-1.layouts.partials.footer', ['doktor' => $doktor ?? [], 'nav' => $nav])
-    @include('frontend.themes.tema-1.layouts.partials.script', ['doktor' => $doktor ?? []])
+    @include('frontend.themes.tema-3.layouts.partials.footer', ['doktor' => $doktor ?? [], 'nav' => $nav])
+    @include('frontend.themes.tema-3.layouts.partials.script', ['doktor' => $doktor ?? []])
 </body>
 </html>

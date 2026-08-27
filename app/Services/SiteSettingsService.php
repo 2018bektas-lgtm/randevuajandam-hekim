@@ -163,7 +163,7 @@ class SiteSettingsService
                     'site_baslik_ek' => $this->option('site_baslik_ek', ''),
                     'slogan_override' => $this->option('slogan_override', ''),
                     'footer_metin' => $this->option('footer_metin', ''),
-                    'tema_renk' => $this->option('tema_renk', '#0d9488'),
+                    'tema_renk' => $this->option('tema_renk', (string) (resolve_site_theme()['renk'] ?? '#9B9A84')),
                     'tema_id' => $this->option('tema_id', (string) config('themes.default', 'tema-1')),
                     'vitrin_badge' => $this->option('vitrin_badge', ''),
                     'logo' => $this->option('site_logo', ''),

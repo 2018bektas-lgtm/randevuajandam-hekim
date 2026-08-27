@@ -25,7 +25,7 @@
         <div class="sa-card-head">
             <div>
                 <h3>Hekim site temaları</h3>
-                <p class="sa-hint">Bireysel hekim sitesi için: <strong>tema-1..tema-3</strong> (Hipno üç varyantı; sonraki güncellemeyle tema-4..tema-9 gelecek). Tema değişince header, anasayfa, kartlar ve footer tamamen değişir. Modül düzenleme ve renk paleti için <a href="{{ route('panel.sayfa-builder.index') }}" style="color:#C96A2B;font-weight:bold">Modüller</a> sayfasına gidin.</p>
+                <p class="sa-hint">Üç Hipno varyantı: klasik hero, slider, video. Kaydettikten sonra o temanın anasayfa modüllerine yönlendirilirsiniz — her temanın modülleri ayrı durur, tema değiştirmek diğer temanın ayarlarını silmez.</p>
             </div>
             <span class="sa-badge">{{ count($temalar) }} tema</span>
         </div>
@@ -121,13 +121,10 @@
 <script>
 const temaRenkleri = @json(collect($temalar)->mapWithKeys(fn ($t, $id) => [$id => $t['renk'] ?? '#0d9488']));
 function onTemaPick(id, renk) {
-    if (document.getElementById('renk_temadan').checked || true) {
-        // Yeni tema seçilince varsayılan rengi öner
-        document.getElementById('tema_renk_picker').value = renk;
-        document.getElementById('tema_renk_text').value = renk;
-        document.getElementById('tema_renk_hidden').value = renk;
-        document.getElementById('renk_temadan').checked = true;
-    }
+    document.getElementById('tema_renk_picker').value = renk;
+    document.getElementById('tema_renk_text').value = renk;
+    document.getElementById('tema_renk_hidden').value = renk;
+    document.getElementById('renk_temadan').checked = true;
 }
 </script>
 @endsection

@@ -8,13 +8,17 @@ use App\Models\SiteHomepageSection;
 use App\Models\SiteMenuItem;
 use App\Models\SitePage;
 use App\Models\SiteSliderSlide;
+use App\Services\SiteBuilderService;
 use App\Services\SiteSettingsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class SiteAyarlariController extends Controller
 {
-    public function __construct(protected SiteSettingsService $settings) {}
+    public function __construct(
+        protected SiteSettingsService $settings,
+        protected SiteBuilderService $builder,
+    ) {}
 
     public function index()
     {
@@ -32,8 +36,8 @@ class SiteAyarlariController extends Controller
                 'site_baslik_ek' => $this->settings->option('site_baslik_ek', ''),
                 'slogan_override' => $this->settings->option('slogan_override', ''),
                 'footer_metin' => $this->settings->option('footer_metin', ''),
-                'tema_renk' => $this->settings->option('tema_renk', '#0d9488'),
-                'tema_id' => $this->settings->option('tema_id', (string) config('themes.default', 'klasik')),
+                'tema_renk' => $this->settings->option('tema_renk', (string) (resolve_site_theme()['renk'] ?? '#9B9A84')),
+                'tema_id' => $this->settings->option('tema_id', (string) config('themes.default', 'tema-1')),
                 'vitrin_badge' => $this->settings->option('vitrin_badge', ''),
                 'logo' => $logo,
                 'logo_url' => $this->settings->mediaUrl($logo),
@@ -81,39 +85,12 @@ class SiteAyarlariController extends Controller
 
     public function slider()
     {
-        $slides = $this->settings->sliderSlides()->map(function (SiteSliderSlide $s) {
-            $meta = is_array($s->meta) ? $s->meta : [];
-            $imageUrl = $this->settings->mediaUrl($s->image) ?: $s->image;
-
-            // Panel JS için ek alanlar (JSON'a girsin)
-            $s->setAttribute('image_url', $imageUrl);
-            $s->setAttribute('cta_link_type', $meta['cta_link_type'] ?? $this->guessLinkType($s->cta_url));
-            $s->setAttribute('cta_route', $meta['cta_route'] ?? $this->guessRoute($s->cta_url));
-            $s->setAttribute('cta2_link_type', $meta['cta2_link_type'] ?? $this->guessLinkType($s->cta2_url));
-            $s->setAttribute('cta2_route', $meta['cta2_route'] ?? $this->guessRoute($s->cta2_url));
-            $s->setAttribute('baslik_vurgulu', $meta['baslik_vurgulu'] ?? '');
-            $s->setAttribute('float_1_baslik', $meta['float_1_baslik'] ?? '');
-            $s->setAttribute('float_1_aciklama', $meta['float_1_aciklama'] ?? '');
-            $s->setAttribute('float_2_baslik', $meta['float_2_baslik'] ?? '');
-            $s->setAttribute('float_2_aciklama', $meta['float_2_aciklama'] ?? '');
-            $s->setAttribute('istatistikler', $meta['istatistikler'] ?? []);
-
-            return $s;
-        });
-
-        return view('panel.site-ayarlari.slider', [
-            'group' => 'slider',
-            'slides' => $slides,
-            'pageOptions' => $this->internalPageOptions(),
-        ]);
+        return redirect()->route('panel.sayfa-builder.index');
     }
 
     public function anasayfa()
     {
-        return view('panel.site-ayarlari.anasayfa', [
-            'group' => 'anasayfa',
-            'sections' => $this->settings->homepageSections(),
-        ]);
+        return redirect()->route('panel.sayfa-builder.index');
     }
 
     public function seo()
@@ -350,7 +327,7 @@ class SiteAyarlariController extends Controller
             'group' => 'temalar',
             'temalar' => site_themes(),
             'aktif_tema' => $resolved['id'],
-            'tema_renk' => $renk !== '' ? $renk : ($resolved['renk'] ?? '#0d9488'),
+            'tema_renk' => $renk !== '' ? $renk : ($resolved['renk'] ?? '#9B9A84'),
             'premium_unlocked' => themes_premium_unlocked(),
         ]);
     }
@@ -371,15 +348,29 @@ class SiteAyarlariController extends Controller
         $tema = resolve_site_theme($data['tema_id']);
         $renk = $data['tema_renk'] ?? null;
         if ($request->boolean('renk_temadan') || ! is_string($renk) || ! preg_match('/^#[0-9A-Fa-f]{6}$/', (string) $renk)) {
-            $renk = $tema['renk'] ?? '#0d9488';
+            $renk = $tema['renk'] ?? '#9B9A84';
         }
 
-        $this->settings->setOptions([
-            'tema_id' => $tema['id'],
-            'tema_renk' => $renk,
-        ]);
+        try {
+            $this->builder->temaSec($tema['id']);
+        } catch (\InvalidArgumentException $e) {
+            return back()->with('hata', $e->getMessage());
+        }
 
-        return back()->with('basari', 'Tema uygulandı: '.$tema['ad']);
+        if ($request->boolean('renk_temadan')) {
+            $paletKod = (string) config('tema_modulleri.temalar.'.$tema['id'].'.varsayilan_palet', 'koyu-altin');
+            try {
+                $this->builder->paletSec($paletKod);
+            } catch (\InvalidArgumentException) {
+                $this->builder->vurguRenginiAyarla($renk);
+            }
+        } else {
+            $this->builder->vurguRenginiAyarla($renk);
+        }
+
+        return redirect()
+            ->route('panel.sayfa-builder.index')
+            ->with('basari', 'Tema uygulandı: '.$tema['ad'].'. Bu temanın anasayfa modüllerini aşağıdan düzenleyebilirsiniz.');
     }
 
     public function kaydetGenel(Request $request)
@@ -391,23 +382,26 @@ class SiteAyarlariController extends Controller
             'tema_id' => ['nullable', 'string', 'max:40'],
         ]);
 
-        $temaId = (string) $request->input('tema_id', config('themes.default', 'tema-1'));
-        $tema = resolve_site_theme($temaId);
         $temaRenk = $request->input('tema_renk');
         if (! is_string($temaRenk) || ! preg_match('/^#[0-9A-Fa-f]{6}$/', $temaRenk)) {
-            $temaRenk = $tema['renk'] ?? '#0d9488';
+            $temaRenk = (string) ($this->settings->option('tema_renk') ?: (resolve_site_theme()['renk'] ?? '#9B9A84'));
         }
 
-        $this->settings->setOptions([
+        $genel = [
             'site_baslik_ek' => $request->input('site_baslik_ek', ''),
             'slogan_override' => $request->input('slogan_override', ''),
             'footer_metin' => $request->input('footer_metin', ''),
             'tema_renk' => $temaRenk,
-            'tema_id' => $tema['id'],
             'vitrin_badge' => $request->input('vitrin_badge', ''),
             'whatsapp_goster' => $request->boolean('whatsapp_goster'),
             'hekim_girisi_goster' => $request->boolean('hekim_girisi_goster'),
-        ]);
+        ];
+        // tema_id bu formda yok — Genel kaydı aktif temayı sıfırlamasın
+        if ($request->filled('tema_id')) {
+            $genel['tema_id'] = resolve_site_theme((string) $request->input('tema_id'))['id'];
+        }
+        $this->settings->setOptions($genel);
+        $this->builder->vurguRenginiAyarla($temaRenk);
 
         // Logo
         if ($request->boolean('logo_sil')) {

@@ -8,7 +8,7 @@
   --primary-color: #262626;
   --secondary-color: #F9F9F9;
   --text-color: #838383;
-  --accent-color: var(--brand-500, #9B9A84);
+  --accent-color: var(--brand-600, #9B9A84);
   --white-color: #FFFFFF;
   --divider-color: #EEEDED;
   --dark-divider-color: #FFFFFF1A;
@@ -68,7 +68,7 @@
 	--primary-color			: #262626;
 	--secondary-color		: #F9F9F9;
 	--text-color			: #838383;
-	--accent-color			: #9B9A84;
+	--accent-color			: var(--brand-600, #9B9A84);
 	--white-color			: #FFFFFF;
 	--divider-color			: #EEEDED;
 	--dark-divider-color	: #FFFFFF1A;

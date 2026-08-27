@@ -19,9 +19,20 @@
     $pageTitle = trim($decodeEntities($__env->yieldContent('baslik'))) ?: ($seoTitle !== '' ? $seoTitle : $defaultTitle);
     $pageDesc  = trim($decodeEntities($__env->yieldContent('meta_aciklama'))) ?: ($seoDesc !== '' ? $seoDesc : $decodeEntities($doktor['kisa_bio'] ?? ''));
     $temaMeta  = resolve_site_theme($doktor['tema_id'] ?? ($doktor['tema']['id'] ?? null));
-    $theme     = $doktor['tema_renk'] ?? ($temaMeta['renk'] ?? '#9B9A84');
+    try {
+        $aktifPalet = app(\App\Services\SiteBuilderService::class)->aktifPalet();
+    } catch (\Throwable $e) {
+        $aktifPalet = [
+            'primary' => '#262626',
+            'accent' => $temaMeta['renk'] ?? '#9B9A84',
+            'bg' => '#F9F9F9',
+            'text' => '#333333',
+            'text_light' => '#FFFFFF',
+        ];
+    }
+    $theme     = $aktifPalet['accent'] ?? ($doktor['tema_renk'] ?? ($temaMeta['renk'] ?? '#9B9A84'));
     $palette   = theme_palette($theme);
-    $temaCssId = $temaMeta['id'] ?? 'tema-1';
+    $temaCssId = $temaMeta['id'] ?? 'tema-2';
     $googleFonts = $temaMeta['google_fonts'] ?? 'Marcellus&family=Sora:wght@100..800';
     $ogImage   = $doktor['logo'] ?? $doktor['profil_resmi'] ?? ($doktor['slider'][0]['image'] ?? null);
     $canonical = url()->current();
@@ -93,22 +104,7 @@
 <link rel="stylesheet" href="{{ asset('vendor/hipno/css/animate.css') }}">
 <link rel="stylesheet" href="{{ asset('vendor/hipno/css/magnific-popup.css') }}">
 <link rel="stylesheet" href="{{ asset('vendor/hipno/css/mousecursor.css') }}">
-<link rel="stylesheet" href="{{ asset('css/themes/'.$temaCssId.'.css') }}?v=1">
-
-@php
-    /** SiteBuilderService'ten canlı renk paleti (hekim panelden değiştirebilir) */
-    try {
-        $aktifPalet = app(\App\Services\SiteBuilderService::class)->aktifPalet();
-    } catch (\Throwable $e) {
-        $aktifPalet = [
-            'primary' => '#262626',
-            'accent' => '#9B9A84',
-            'bg' => '#F9F9F9',
-            'text' => '#333333',
-            'text_light' => '#FFFFFF',
-        ];
-    }
-@endphp
+<link rel="stylesheet" href="{{ asset('css/themes/'.$temaCssId.'.css') }}?v=2">
 <style>
 :root {
   /* Legacy brand-scale (eski hipno CSS uyumu icin) */

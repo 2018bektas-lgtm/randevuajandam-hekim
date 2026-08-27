@@ -18,7 +18,9 @@
     <div class="swiper heroSwiper">
         <div class="swiper-wrapper">
             @foreach($slaytlar as $s)
-                @php $bg = !empty($s['ikon']) ? $s['ikon'] : $fallbackImg; @endphp
+                @php
+                    $bg = filled($s['resim'] ?? null) ? $s['resim'] : (filled($s['ikon'] ?? null) ? $s['ikon'] : $fallbackImg);
+                @endphp
                 <div class="swiper-slide">
                     <div class="hero-slide">
                         @if($bg)
@@ -54,12 +56,7 @@
     </div>
 </div>
 
-@push('head')
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
-@endpush
-
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
 new Swiper('.heroSwiper', {
     loop: {{ $slaytlar->count() > 1 ? 'true' : 'false' }},

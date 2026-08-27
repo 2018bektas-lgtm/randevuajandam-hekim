@@ -8,7 +8,8 @@
 
 @section('icerik')
     @php
-        $modulListesi = app(\App\Services\SiteBuilderService::class)->renderIcinModuller('tema-2');
+        $temaId = current_theme_id(is_array($doktor ?? null) ? $doktor : null);
+        $modulListesi = app(\App\Services\SiteBuilderService::class)->renderIcinModuller($temaId);
     @endphp
 
     @foreach($modulListesi as $modul)

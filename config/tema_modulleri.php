@@ -10,8 +10,8 @@
  * Kaynak HTML paketleri: /html-hekim-tema/tema-{N}/
  * Blade karşılıkları: resources/views/frontend/themes/tema-{N}/modules/{kod}.blade.php
  *
- * Tema-1 (Hipno Klasik): index.html karşılığı — MVP tema.
- * Tema-2..9 sonraki sprint'lerde eklenecek (Hipno slider/video + Delogis 6 varyant).
+ * Tema-1 Hipno Klasik (statik hero), tema-2 Hipno Slider, tema-3 Hipno Video.
+ * Her temanın modül seti ayrıdır; hekim tema seçince o set seed edilir ve düzenlenir.
  */
 
 return [
@@ -37,6 +37,7 @@ return [
         'resim' => 'Resim yükle (dosya)',
         'liste' => 'Sıralı liste (satır satır)',
         'ikon_baslik_metin' => 'İkon + Başlık + Metin (kart listesi)',
+        'resim_baslik_metin' => 'Resim yükle + Başlık + Metin (slayt/kart listesi)',
         'renk' => 'Renk seçici',
         'db_kaynak' => 'DB kaynağı (blog/yorum/hizmet vs. — hekim panelinde ayrı düzenlenir)',
     ],
@@ -331,12 +332,12 @@ return [
                     'sira' => 10,
                     'aktif_varsayilan' => true,
                     'silinebilir' => false,
-                    'aciklama' => 'Swiper ile 2-5 slaytlık çoklu tanıtım. Her slayt kendi başlık/görsel/CTA sahibidir.',
+                    'aciklama' => 'Swiper ile 2-5 slaytlık çoklu tanıtım. Her slayt kendi arkaplan görselini + başlık + metin sahibidir.',
                     'alanlar' => [
-                        'slaytlar' => ['tip' => 'ikon_baslik_metin', 'label' => 'Slaytlar (max 5) — {ikon: resim_url, baslik, metin}', 'varsayilan' => [
-                            ['ikon' => '', 'baslik' => 'Ruh sağlığı yolculuğunuzda yanınızdayım', 'metin' => 'Bireysel danışmanlık ile hayatınıza değişim başlatın.'],
-                            ['ikon' => '', 'baslik' => 'Çift ve aile terapisinde uzman destek', 'metin' => 'İlişkilerinizde yeni bir dönem başlatmak için buradayım.'],
-                            ['ikon' => '', 'baslik' => 'Çocuk ve ergen danışmanlığı', 'metin' => 'Genç danışanlarınızın gelişimine güvenilir bir yol arkadaşı.'],
+                        'slaytlar' => ['tip' => 'resim_baslik_metin', 'label' => 'Slaytlar (max 5) — Görsel + Başlık + Alt metin', 'varsayilan' => [
+                            ['resim' => '', 'baslik' => 'Ruh sağlığı yolculuğunuzda yanınızdayım', 'metin' => 'Bireysel danışmanlık ile hayatınıza değişim başlatın.'],
+                            ['resim' => '', 'baslik' => 'Çift ve aile terapisinde uzman destek', 'metin' => 'İlişkilerinizde yeni bir dönem başlatmak için buradayım.'],
+                            ['resim' => '', 'baslik' => 'Çocuk ve ergen danışmanlığı', 'metin' => 'Genç danışanlarınızın gelişimine güvenilir bir yol arkadaşı.'],
                         ]],
                         'ust_baslik' => ['tip' => 'metin', 'label' => 'Slaytlar Üstü Küçük Başlık', 'varsayilan' => 'Hoş Geldiniz'],
                         'cta_metin' => ['tip' => 'metin', 'label' => 'Buton Metni', 'varsayilan' => 'Randevu Al'],

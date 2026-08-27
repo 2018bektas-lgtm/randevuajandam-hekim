@@ -7,7 +7,7 @@
     $bodyTema = current_theme_id($doktor ?? null);
     $nav = site_nav(is_array($doktor ?? null) ? $doktor : null);
 @endphp
-<body class="theme-{{ $bodyTema }} layout-tema-1">
+<body class="theme-{{ $bodyTema }} layout-{{ theme_pack_id($bodyTema) }}">
     @include('frontend.layouts.partials.tracking-body')
 
     <div class="preloader">

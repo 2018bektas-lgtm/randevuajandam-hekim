@@ -24,18 +24,6 @@
             'desc' => 'Alt linkler',
             'icon' => '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>',
         ],
-        'slider' => [
-            'route' => 'panel.site-ayarlari.slider',
-            'label' => 'Slider',
-            'desc' => 'Hero slaytlar',
-            'icon' => '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>',
-        ],
-        'anasayfa' => [
-            'route' => 'panel.site-ayarlari.anasayfa',
-            'label' => 'Ana Sayfa',
-            'desc' => 'Bölüm sırası',
-            'icon' => '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1h-2z"/></svg>',
-        ],
         'seo' => [
             'route' => 'panel.site-ayarlari.seo',
             'label' => 'SEO',
@@ -76,7 +64,7 @@
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
             </a>
         </div>
-        <div class="p-3 sm:p-3.5 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-9 gap-2">
+        <div class="p-3 sm:p-3.5 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-2">
             @foreach($tabs as $key => $tab)
                 @php $active = ($group ?? '') === $key; @endphp
                 <a href="{{ route($tab['route']) }}"

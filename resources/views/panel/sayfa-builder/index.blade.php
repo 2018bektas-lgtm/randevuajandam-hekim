@@ -12,8 +12,9 @@
             <div>
                 <h3 class="text-base font-bold font-display text-[#111827]">Modüler Anasayfa</h3>
                 <p class="text-xs text-[#6B7280] mt-1 max-w-xl">
-                    Aktif temanız <strong class="text-[#C96A2B]">{{ $tema['ad'] ?? $temaId }}</strong>.
-                    Modülleri sürükleyerek sıralayabilir, aç/kapat toggle'ı ile gizleyebilir, ⚙ butonundan içeriğini düzenleyebilirsiniz.
+                    Aktif temanız <strong class="text-[#C96A2B]">{{ $tema['ad'] ?? $temaId }}</strong>
+                    — bu temanın anasayfa modülleri. Tema değişince o temanın kendi modül seti gelir (diğer temanın ayarları silinmez).
+                    Sürükleyerek sıralayın, toggle ile aç/kapatın, ⚙ ile içeriği düzenleyin.
                 </p>
             </div>
             <div class="flex items-center gap-2">
@@ -230,9 +231,12 @@ function alanElement(kod, alan, val) {
     label.textContent = alan.label || kod;
     wrap.appendChild(label);
 
-    // Ozel: ikon+baslik+metin tekrarli form (JSON degil)
     if (alan.tip === 'ikon_baslik_metin') {
         wrap.appendChild(ikonBaslikMetinRepeater(kod, val));
+        return wrap;
+    }
+    if (alan.tip === 'resim_baslik_metin') {
+        wrap.appendChild(resimBaslikMetinRepeater(kod, val));
         return wrap;
     }
 
@@ -352,10 +356,95 @@ function ogeSatiri(item, onChange) {
 
 function guncelleJson(liste, hidden) {
     const items = [...liste.querySelectorAll(':scope > div')].map(row => ({
-        ikon: row.querySelector('[data-field=ikon]').value.trim(),
-        baslik: row.querySelector('[data-field=baslik]').value.trim(),
-        metin: row.querySelector('[data-field=metin]').value.trim(),
+        ikon: row.querySelector('[data-field=ikon]')?.value.trim() || '',
+        baslik: row.querySelector('[data-field=baslik]')?.value.trim() || '',
+        metin: row.querySelector('[data-field=metin]')?.value.trim() || '',
     })).filter(x => x.baslik || x.metin || x.ikon);
+    hidden.value = JSON.stringify(items);
+}
+
+function resimBaslikMetinRepeater(kod, val) {
+    const cont = document.createElement('div');
+    cont.className = 'space-y-2 p-2 rounded-xl bg-slate-50 border border-slate-200';
+
+    const hidden = document.createElement('textarea');
+    hidden.name = kod;
+    hidden.dataset.json = '1';
+    hidden.style.display = 'none';
+    cont.appendChild(hidden);
+
+    const liste = document.createElement('div');
+    liste.className = 'space-y-2';
+    cont.appendChild(liste);
+
+    const oturumu = Array.isArray(val) ? val : [];
+    oturumu.forEach(item => liste.appendChild(slaytSatiri(item, () => guncelleSlaytJson(liste, hidden))));
+
+    const yeniBtn = document.createElement('button');
+    yeniBtn.type = 'button';
+    yeniBtn.textContent = '+ Yeni slayt';
+    yeniBtn.className = 'w-full py-2 rounded-lg bg-white border border-dashed border-slate-300 hover:border-[#C96A2B] hover:bg-[#FFF7ED]/50 text-[11px] font-bold text-slate-600 transition';
+    yeniBtn.addEventListener('click', () => {
+        if (liste.children.length >= 5) { alert('En fazla 5 slayt.'); return; }
+        liste.appendChild(slaytSatiri({ resim: '', baslik: '', metin: '' }, () => guncelleSlaytJson(liste, hidden)));
+        guncelleSlaytJson(liste, hidden);
+    });
+    cont.appendChild(yeniBtn);
+
+    guncelleSlaytJson(liste, hidden);
+    return cont;
+}
+
+function slaytSatiri(item, onChange) {
+    const row = document.createElement('div');
+    row.className = 'grid grid-cols-12 gap-2 p-2 rounded-lg bg-white border border-slate-200 items-start';
+
+    const resimWrap = document.createElement('div');
+    resimWrap.className = 'col-span-12 sm:col-span-3';
+    const widget = resimUploadWidget('__slide_img', item.resim || '');
+    const innerHidden = widget.querySelector('input[type=hidden]');
+    innerHidden.removeAttribute('name');
+    innerHidden.dataset.field = 'resim';
+    innerHidden.addEventListener('input', onChange);
+    innerHidden.addEventListener('change', onChange);
+    resimWrap.appendChild(widget);
+
+    const baslikInput = document.createElement('input');
+    baslikInput.type = 'text';
+    baslikInput.value = item.baslik ?? '';
+    baslikInput.placeholder = 'Başlık';
+    baslikInput.className = 'col-span-12 sm:col-span-4 rounded-lg border border-slate-200 px-2 py-1.5 text-[11px] font-semibold';
+    baslikInput.dataset.field = 'baslik';
+
+    const metinInput = document.createElement('input');
+    metinInput.type = 'text';
+    metinInput.value = item.metin ?? '';
+    metinInput.placeholder = 'Alt metin';
+    metinInput.className = 'col-span-11 sm:col-span-4 rounded-lg border border-slate-200 px-2 py-1.5 text-[11px]';
+    metinInput.dataset.field = 'metin';
+
+    const silBtn = document.createElement('button');
+    silBtn.type = 'button';
+    silBtn.innerHTML = '&times;';
+    silBtn.title = 'Slaytı sil';
+    silBtn.className = 'col-span-1 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 text-sm font-bold transition h-8';
+    silBtn.addEventListener('click', () => { row.remove(); onChange(); });
+
+    [baslikInput, metinInput].forEach(el => el.addEventListener('input', onChange));
+
+    row.appendChild(resimWrap);
+    row.appendChild(baslikInput);
+    row.appendChild(metinInput);
+    row.appendChild(silBtn);
+    return row;
+}
+
+function guncelleSlaytJson(liste, hidden) {
+    const items = [...liste.querySelectorAll(':scope > div')].map(row => ({
+        resim: row.querySelector('[data-field=resim]')?.value.trim() || '',
+        baslik: row.querySelector('[data-field=baslik]')?.value.trim() || '',
+        metin: row.querySelector('[data-field=metin]')?.value.trim() || '',
+    })).filter(x => x.baslik || x.metin || x.resim);
     hidden.value = JSON.stringify(items);
 }
 
@@ -398,6 +487,7 @@ function resimUploadWidget(kod, val) {
     silBtn.style.display = val ? '' : 'none';
     silBtn.addEventListener('click', () => {
         hidden.value = '';
+        hidden.dispatchEvent(new Event('input', { bubbles: true }));
         preview.innerHTML = '<svg class="w-6 h-6 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159"/></svg>';
         silBtn.style.display = 'none';
     });
@@ -422,6 +512,7 @@ function resimUploadWidget(kod, val) {
             const j = await r.json();
             if (r.ok && j.success && j.url) {
                 hidden.value = j.url;
+                hidden.dispatchEvent(new Event('input', { bubbles: true }));
                 preview.innerHTML = `<img src="${j.url}" alt="" class="w-full h-full object-cover">`;
                 silBtn.style.display = '';
             } else {

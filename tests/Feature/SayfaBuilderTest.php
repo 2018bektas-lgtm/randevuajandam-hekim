@@ -166,4 +166,30 @@ class SayfaBuilderTest extends TestCase
         $this->assertEquals(12, SiteHomepageSection::where('tema_id', 'tema-1')->count());
         $this->assertEquals(12, SiteHomepageSection::where('tema_id', 'tema-2')->count());
     }
+
+    public function test_render_aktif_temayi_kullanir(): void
+    {
+        $this->builder->temaSec('tema-2');
+        $sonuc = $this->builder->renderIcinModuller();
+
+        $this->assertTrue($sonuc->contains(fn ($m) => $m['kod'] === 'hero_slider'));
+        $this->assertFalse($sonuc->contains(fn ($m) => $m['kod'] === 'hero_static'));
+    }
+
+    public function test_palet_vurgu_rengini_tema_renk_ile_senkronlar(): void
+    {
+        $this->builder->paletSec('acik-mavi');
+
+        $this->assertEquals('#7BA7CF', app(SiteSettingsService::class)->option('tema_renk'));
+    }
+
+    public function test_vurgu_rengi_palet_accent_yazar(): void
+    {
+        $this->builder->vurguRenginiAyarla('#112233');
+
+        $palet = $this->builder->aktifPalet();
+        $this->assertEquals('ozel', $palet['kod']);
+        $this->assertEquals('#112233', $palet['accent']);
+        $this->assertEquals('#112233', app(SiteSettingsService::class)->option('tema_renk'));
+    }
 }

@@ -21,10 +21,7 @@ class SayfaBuilderController extends Controller
 
     public function index(Request $request)
     {
-        $temaId = (string) $request->query('tema', $this->builder->aktifTemaId());
-        if (! $this->builder->temaVarMi($temaId)) {
-            $temaId = $this->builder->aktifTemaId();
-        }
+        $temaId = $this->builder->aktifTemaId();
 
         $tema = (array) config("tema_modulleri.temalar.$temaId");
         $moduller = $this->builder->builderIcinModuller($temaId);
@@ -86,7 +83,7 @@ class SayfaBuilderController extends Controller
                     $ayar[$alanKod] = (int) $val;
                     break;
                 case 'ikon_baslik_metin':
-                    // JSON string olarak da gelebilir
+                case 'resim_baslik_metin':
                     if (is_string($val)) {
                         $dec = json_decode($val, true);
                         $ayar[$alanKod] = is_array($dec) ? array_values($dec) : [];
@@ -134,8 +131,8 @@ class SayfaBuilderController extends Controller
         }
 
         return redirect()
-            ->route('panel.sayfa-builder.index', ['tema' => $data['tema_id']])
-            ->with('basarili', 'Tema değiştirildi: '.$data['tema_id']);
+            ->route('panel.sayfa-builder.index')
+            ->with('basari', 'Tema değiştirildi. Bu temanın anasayfa modüllerini düzenleyebilirsiniz.');
     }
 
     /**

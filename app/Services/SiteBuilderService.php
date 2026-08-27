@@ -269,6 +269,7 @@ class SiteBuilderService
         if ($paletKod === 'ozel' && is_array($ozelDegerler)) {
             $this->settings->setOption('renk_palet_kod', 'ozel');
             $this->settings->setOption('renk_palet_ozel', json_encode($ozelDegerler, JSON_UNESCAPED_UNICODE));
+            $this->senkronVurguRengi($ozelDegerler['accent'] ?? null);
             return;
         }
 
@@ -277,5 +278,34 @@ class SiteBuilderService
         }
         $this->settings->setOption('renk_palet_kod', $paletKod);
         $this->settings->setOption('renk_palet_ozel', '');
+        $this->senkronVurguRengi($paletler[$paletKod]['accent'] ?? null);
+    }
+
+    /**
+     * Site Ayarları "vurgu rengi" ile palet accent'ini tek kaynağa indir.
+     */
+    public function vurguRenginiAyarla(string $hex): void
+    {
+        $hex = strtoupper(trim($hex));
+        if (! preg_match('/^#[0-9A-F]{6}$/', $hex)) {
+            return;
+        }
+
+        $mevcut = $this->aktifPalet();
+        $this->paletSec('ozel', [
+            'primary' => $mevcut['primary'] ?? '#262626',
+            'accent' => $hex,
+            'bg' => $mevcut['bg'] ?? '#F9F9F9',
+            'text' => $mevcut['text'] ?? '#333333',
+            'text_light' => $mevcut['text_light'] ?? '#FFFFFF',
+        ]);
+    }
+
+    protected function senkronVurguRengi(?string $accent): void
+    {
+        $accent = is_string($accent) ? trim($accent) : '';
+        if (preg_match('/^#[0-9A-Fa-f]{6}$/', $accent)) {
+            $this->settings->setOption('tema_renk', $accent);
+        }
     }
 }
