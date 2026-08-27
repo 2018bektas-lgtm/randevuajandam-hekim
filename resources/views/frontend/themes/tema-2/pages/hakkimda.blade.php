@@ -9,23 +9,11 @@
     $doktorAd = trim(($doktor['unvan'] ?? '').' '.($doktor['ad_soyad'] ?? 'Hekim'));
 @endphp
 
-<div class="page-header parallaxie"@if($photo) style="background-image:url('{{ $photo }}')"@endif>
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-12">
-                <div class="page-header-box">
-                    <h1 class="text-anime-style-2" data-cursor="-opaque">Hakkımda</h1>
-                    <nav class="wow fadeInUp" data-wow-delay="0.25s">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{ route('frontend.anasayfa') }}">Anasayfa</a></li>
-                            <li class="breadcrumb-item active">Hakkımda</li>
-                        </ol>
-                    </nav>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+@include('frontend.themes.tema-2.partials.page-banner', [
+    'kod' => 'hakkimda',
+    'baslik' => 'Hakkımda',
+    'breadcrumb' => [['label' => 'Hakkımda', 'aktif' => true]],
+])
 
 {{-- About Section --}}
 <div class="about-us">

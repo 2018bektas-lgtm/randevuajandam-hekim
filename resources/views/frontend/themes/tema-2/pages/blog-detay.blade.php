@@ -12,24 +12,15 @@
         ->values();
 @endphp
 
-<div class="page-header parallaxie"@if(!empty($yazi['image'])) style="background-image:url('{{ $yazi['image'] }}')"@elseif($photo) style="background-image:url('{{ $photo }}')"@endif>
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-12">
-                <div class="page-header-box">
-                    <h1 class="text-anime-style-2" data-cursor="-opaque">{{ $yazi['baslik'] ?? 'Blog' }}</h1>
-                    <nav class="wow fadeInUp" data-wow-delay="0.25s">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{ route('frontend.anasayfa') }}">Anasayfa</a></li>
-                            <li class="breadcrumb-item"><a href="{{ route('frontend.blog') }}">Blog</a></li>
-                            <li class="breadcrumb-item active">{{ Str::limit($yazi['baslik'] ?? '', 40) }}</li>
-                        </ol>
-                    </nav>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+@include('frontend.themes.tema-2.partials.page-banner', [
+    'kod' => 'blog-detay',
+    'baslik' => $yazi['baslik'] ?? 'Blog',
+    'bgOverride' => $yazi['image'] ?? null,
+    'breadcrumb' => [
+        ['label' => 'Blog', 'href' => route('frontend.blog')],
+        ['label' => Str::limit($yazi['baslik'] ?? '', 40), 'aktif' => true],
+    ],
+])
 
 <div class="our-services">
     <div class="container">

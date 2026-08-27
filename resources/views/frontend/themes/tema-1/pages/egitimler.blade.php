@@ -5,23 +5,11 @@
 @section('icerik')
 @php $photo = $doktor['profil_resmi'] ?? null; @endphp
 
-<div class="page-header parallaxie"@if($photo) style="background-image:url('{{ $photo }}')"@endif>
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-12">
-                <div class="page-header-box">
-                    <h1 class="text-anime-style-2" data-cursor="-opaque">Eğitimler</h1>
-                    <nav class="wow fadeInUp" data-wow-delay="0.25s">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{ route('frontend.anasayfa') }}">Anasayfa</a></li>
-                            <li class="breadcrumb-item active">Eğitimler</li>
-                        </ol>
-                    </nav>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+@include('frontend.themes.tema-1.partials.page-banner', [
+    'kod' => 'egitimler',
+    'baslik' => 'Eğitimler',
+    'breadcrumb' => [['label' => 'Eğitimler', 'aktif' => true]],
+])
 
 <div class="our-blog">
     <div class="container">

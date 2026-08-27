@@ -92,6 +92,13 @@ Route::prefix('yonetim')->name('panel.')->group(function () {
         Route::post('/web-sitesi', [\App\Http\Controllers\Panel\WebSitesiController::class, 'kurulum'])->name('web-sitesi.kurulum');
         Route::post('/web-sitesi/api-anahtari', [\App\Http\Controllers\Panel\WebSitesiController::class, 'apiAnahtari'])->name('web-sitesi.api-anahtari');
 
+        // Sayfa Başlıkları & Bannerlar — banner metin/görsel yönetimi (10 sayfa)
+        Route::prefix('sayfa-icerikleri')->name('sayfa-icerikleri.')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Panel\SayfaIcerikController::class, 'index'])->name('index');
+            Route::post('/{sayfa}', [\App\Http\Controllers\Panel\SayfaIcerikController::class, 'kaydet'])
+                ->where('sayfa', '[a-z0-9\-]+')->name('kaydet');
+        });
+
         // Sayfa Builder — tema bazlı modüler anasayfa yönetimi
         Route::prefix('sayfa-builder')->name('sayfa-builder.')->group(function () {
             Route::get('/', [\App\Http\Controllers\Panel\SayfaBuilderController::class, 'index'])->name('index');
