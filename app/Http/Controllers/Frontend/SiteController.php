@@ -166,6 +166,15 @@ class SiteController extends Controller
         return $this->themePage('iletisim');
     }
 
+    /**
+     * Randevu wizard — Hizmet → Gün → Saat → Bilgiler.
+     * Wizard AJAX ile /site-api/booking/* endpoint'lerini kullanir (proxy).
+     */
+    public function randevu(): View
+    {
+        return $this->themePage('randevu');
+    }
+
     public function sitemap(): Response
     {
         $doktor = $this->doktor();

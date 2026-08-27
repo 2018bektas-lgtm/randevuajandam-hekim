@@ -32,7 +32,7 @@ Route::controller(SiteController::class)->group(function () {
     Route::get('/egitimler/{slug}', 'egitimDetay')->name('frontend.egitim.detay');
     Route::get('/sss', 'sss')->name('frontend.sss');
     Route::get('/iletisim', 'iletisim')->name('frontend.iletisim');
-    Route::get('/randevu', 'iletisim')->name('frontend.randevu');
+    Route::get('/randevu', 'randevu')->name('frontend.randevu');
     Route::get('/sayfa/{slug}', 'sayfa')->name('frontend.sayfa')->where('slug', '[a-z0-9\-]+');
     Route::get('/sitemap.xml', 'sitemap')->name('frontend.sitemap');
 });
