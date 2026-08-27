@@ -35,7 +35,7 @@
                         @endif
                         <div class="service-content">
                             <h2>
-                                <a href="{{ !empty($h['slug']) ? route('frontend.hizmet-detay', $h['slug']) : '#' }}">
+                                <a href="{{ !empty($h['slug']) ? route('frontend.hizmet.detay', $h['slug']) : '#' }}">
                                     {{ $h['baslik'] ?? $h['ad'] ?? 'Hizmet' }}
                                 </a>
                             </h2>
@@ -43,7 +43,7 @@
                                 <p>{{ \Illuminate\Support\Str::limit($h['ozet'] ?? $h['aciklama'], 120) }}</p>
                             @endif
                             @if(!empty($h['slug']))
-                                <a href="{{ route('frontend.hizmet-detay', $h['slug']) }}" class="readmore-btn">
+                                <a href="{{ route('frontend.hizmet.detay', $h['slug']) }}" class="readmore-btn">
                                     Detayları gör <i class="fa-solid fa-arrow-right"></i>
                                 </a>
                             @endif
