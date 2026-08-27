@@ -236,6 +236,12 @@ function alanElement(kod, alan, val) {
         return wrap;
     }
 
+    // Ozel: resim -> file upload widget
+    if (alan.tip === 'resim') {
+        wrap.appendChild(resimUploadWidget(kod, val));
+        return wrap;
+    }
+
     let input;
     switch (alan.tip) {
         case 'uzun_metin':
@@ -351,6 +357,92 @@ function guncelleJson(liste, hidden) {
         metin: row.querySelector('[data-field=metin]').value.trim(),
     })).filter(x => x.baslik || x.metin || x.ikon);
     hidden.value = JSON.stringify(items);
+}
+
+/* Resim yükleme widget (URL değil dosya) */
+function resimUploadWidget(kod, val) {
+    const wrap = document.createElement('div');
+    wrap.className = 'space-y-2';
+
+    const hidden = document.createElement('input');
+    hidden.type = 'hidden';
+    hidden.name = kod;
+    hidden.value = val || '';
+    wrap.appendChild(hidden);
+
+    const row = document.createElement('div');
+    row.className = 'flex items-center gap-3';
+
+    const preview = document.createElement('div');
+    preview.className = 'w-24 h-16 rounded-lg border border-slate-200 bg-slate-50 overflow-hidden flex items-center justify-center shrink-0';
+    if (val) preview.innerHTML = `<img src="${val}" alt="" class="w-full h-full object-cover">`;
+    else preview.innerHTML = '<svg class="w-6 h-6 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159"/></svg>';
+
+    const btnGrup = document.createElement('div');
+    btnGrup.className = 'flex-1 flex items-center gap-2 flex-wrap';
+
+    const uploadLabel = document.createElement('label');
+    uploadLabel.className = 'cursor-pointer inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-slate-800 hover:bg-black text-white text-[11px] font-bold transition';
+    uploadLabel.innerHTML = '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5-5m0 0l5 5m-5-5v12"/></svg> Görsel Yükle';
+    const inp = document.createElement('input');
+    inp.type = 'file';
+    inp.accept = 'image/*';
+    inp.className = 'hidden';
+    uploadLabel.appendChild(inp);
+    btnGrup.appendChild(uploadLabel);
+
+    const silBtn = document.createElement('button');
+    silBtn.type = 'button';
+    silBtn.textContent = 'Kaldır';
+    silBtn.className = 'px-3 py-2 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 text-[11px] font-bold transition';
+    silBtn.style.display = val ? '' : 'none';
+    silBtn.addEventListener('click', () => {
+        hidden.value = '';
+        preview.innerHTML = '<svg class="w-6 h-6 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159"/></svg>';
+        silBtn.style.display = 'none';
+    });
+    btnGrup.appendChild(silBtn);
+
+    const hata = document.createElement('p');
+    hata.className = 'text-[10px] text-red-600 hidden';
+
+    inp.addEventListener('change', async () => {
+        const file = inp.files[0];
+        if (!file) return;
+        hata.classList.add('hidden');
+        const fd = new FormData();
+        fd.append('file', file);
+        preview.innerHTML = '<div class="text-[10px] text-slate-500">Yükleniyor…</div>';
+
+        try {
+            const r = await fetch(@json(route('panel.upload.image')), {
+                method: 'POST', body: fd,
+                headers: { 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json' },
+            });
+            const j = await r.json();
+            if (r.ok && j.success && j.url) {
+                hidden.value = j.url;
+                preview.innerHTML = `<img src="${j.url}" alt="" class="w-full h-full object-cover">`;
+                silBtn.style.display = '';
+            } else {
+                hata.textContent = j.message || 'Yükleme başarısız';
+                hata.classList.remove('hidden');
+                preview.innerHTML = hidden.value
+                    ? `<img src="${hidden.value}" alt="" class="w-full h-full object-cover">`
+                    : '<svg class="w-6 h-6 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159"/></svg>';
+            }
+        } catch {
+            hata.textContent = 'Sunucuya ulaşılamadı';
+            hata.classList.remove('hidden');
+        }
+        inp.value = '';
+    });
+
+    row.appendChild(preview);
+    row.appendChild(btnGrup);
+    wrap.appendChild(row);
+    wrap.appendChild(hata);
+    return wrap;
 }
 function modulDuzenleKapat() {
     const m = document.getElementById('modulModal');

@@ -92,6 +92,9 @@ Route::prefix('yonetim')->name('panel.')->group(function () {
         Route::post('/web-sitesi', [\App\Http\Controllers\Panel\WebSitesiController::class, 'kurulum'])->name('web-sitesi.kurulum');
         Route::post('/web-sitesi/api-anahtari', [\App\Http\Controllers\Panel\WebSitesiController::class, 'apiAnahtari'])->name('web-sitesi.api-anahtari');
 
+        // Ortak panel görsel yükleme (banner, modul resimleri vb.)
+        Route::post('/upload/image', [\App\Http\Controllers\Panel\UploadController::class, 'image'])->name('upload.image');
+
         // Sayfa Başlıkları & Bannerlar — banner metin/görsel yönetimi (10 sayfa)
         Route::prefix('sayfa-icerikleri')->name('sayfa-icerikleri.')->group(function () {
             Route::get('/', [\App\Http\Controllers\Panel\SayfaIcerikController::class, 'index'])->name('index');
