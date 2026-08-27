@@ -1,6 +1,4 @@
-{{--
-    Hakkımda — tema-1
---}}
+{{-- Hakkımda — Hipno about-us --}}
 @php
     $doktorAd = trim(($doktor['unvan'] ?? '').' '.($doktor['ad_soyad'] ?? 'Hekim'));
     $coz = static function ($path) {
@@ -11,35 +9,28 @@
 
         return filled($url) ? $url : (string) $path;
     };
-    $img1 = $coz($ayar['resim_1'] ?? null)
-        ?: $coz($doktor['profil_resmi'] ?? null)
-        ?: $coz($doktor['foto'] ?? null)
-        ?: $coz($doktor['avatar'] ?? null);
+    $img1 = $coz($ayar['resim_1'] ?? null) ?: $coz($doktor['profil_resmi'] ?? null) ?: $coz($doktor['foto'] ?? null);
     $img2 = $coz($ayar['resim_2'] ?? null);
+    $misyonMadde = collect(preg_split("/\r\n|\n|\r/", (string) ($ayar['misyon_maddeler'] ?? '')))->map(fn ($s) => trim($s))->filter()->values();
 @endphp
 
 <div class="about-us">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-6">
-                <div class="about-us-images {{ $img2 ? '' : 'is-single' }}">
-                    @if($img1)
-                        <div class="about-img-1">
-                            <figure class="image-anime reveal">
-                                <img src="{{ $img1 }}" alt="{{ $doktorAd }}">
-                            </figure>
-                        </div>
-                    @endif
-                    @if($img2)
-                        <div class="about-img-2">
-                            <figure class="image-anime reveal">
-                                <img src="{{ $img2 }}" alt="{{ $doktorAd }}">
-                            </figure>
-                        </div>
-                    @endif
+                <div class="about-us-images">
+                    <div class="about-img-1">
+                        <figure class="image-anime">
+                            <img src="{{ $img1 ?: asset('vendor/hipno/images/about-img-1.jpg') }}" alt="{{ $doktorAd }}">
+                        </figure>
+                    </div>
+                    <div class="about-img-2">
+                        <figure class="image-anime">
+                            <img src="{{ $img2 ?: $img1 ?: asset('vendor/hipno/images/about-img-2.jpg') }}" alt="{{ $doktorAd }}">
+                        </figure>
+                    </div>
                 </div>
             </div>
-
             <div class="col-lg-6">
                 <div class="about-us-content">
                     <div class="section-title">
@@ -50,29 +41,33 @@
                         @endif
                     </div>
                     <div class="about-vision-mission">
-                        @if(!empty($ayar['misyon_metin']))
-                            <div class="vision-mission-item wow fadeInUp" data-wow-delay="0.4s">
-                                <h4>{{ $ayar['misyon_baslik'] ?? 'Misyonum' }}</h4>
-                                <p>{{ $ayar['misyon_metin'] }}</p>
-                            </div>
-                        @endif
                         @if(!empty($ayar['vizyon_metin']))
-                            <div class="vision-mission-item wow fadeInUp" data-wow-delay="0.6s">
-                                <h4>{{ $ayar['vizyon_baslik'] ?? 'Vizyonum' }}</h4>
+                            <div class="vision-mission-content wow fadeInUp" data-wow-delay="0.4s">
+                                <h3>{{ $ayar['vizyon_baslik'] ?? 'Vizyonum' }}</h3>
                                 <p>{{ $ayar['vizyon_metin'] }}</p>
                             </div>
                         @endif
+                        @if(!empty($ayar['misyon_metin']) || $misyonMadde->isNotEmpty())
+                            <div class="vision-mission-content wow fadeInUp" data-wow-delay="0.4s">
+                                <h3>{{ $ayar['misyon_baslik'] ?? 'Misyonum' }}</h3>
+                                @if($misyonMadde->isNotEmpty())
+                                    <ul>
+                                        @foreach($misyonMadde as $m)
+                                            <li>{{ $m }}</li>
+                                        @endforeach
+                                    </ul>
+                                @elseif(!empty($ayar['misyon_metin']))
+                                    <p>{{ $ayar['misyon_metin'] }}</p>
+                                @endif
+                            </div>
+                        @endif
+                    </div>
+                    <div class="about-us-content-btn wow fadeInUp" data-wow-delay="0.6s">
+                        <a href="{{ route('frontend.hakkimda') }}" class="btn-default">{{ $ayar['buton_1'] ?? 'Daha fazla' }}</a>
+                        <a href="{{ route('frontend.iletisim') }}" class="btn-default btn-highlighted">{{ $ayar['buton_2'] ?? 'İletişim' }}</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-@push('head')
-<style>
-.about-us-images.is-single { display:block; }
-.about-us-images.is-single .about-img-1 { width:100%; max-width:420px; }
-.about-us-images.is-single .about-img-1 img { aspect-ratio: 3 / 4; width:100%; object-fit:cover; border-radius:20px; }
-</style>
-@endpush

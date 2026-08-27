@@ -31,8 +31,20 @@
                         </div>
                         @if(!empty($ayar['sosyal_kanit_goster']) && !empty($ayar['sosyal_kanit_sayi']))
                             <div class="hero-client-box">
+                                <div class="customer-images">
+                                    @foreach(['customer-img-1.jpg','customer-img-2.jpg'] as $ci)
+                                        <div class="customer-img">
+                                            <figure class="image-anime reveal">
+                                                <img src="{{ asset('vendor/hipno/images/'.$ci) }}" alt="">
+                                            </figure>
+                                        </div>
+                                    @endforeach
+                                    <div class="customer-img add-more">
+                                        <p><span class="counter">{{ (int) $ayar['sosyal_kanit_sayi'] }}</span></p>
+                                    </div>
+                                </div>
                                 <div class="hero-client-content">
-                                    <p><span class="counter">{{ (int) $ayar['sosyal_kanit_sayi'] }}</span>+ <span>{{ $ayar['sosyal_kanit_metin'] ?? 'Danışan' }}</span></p>
+                                    <p>{{ $ayar['sosyal_kanit_metin'] ?? 'Mutlu danışan' }}</p>
                                 </div>
                             </div>
                         @endif

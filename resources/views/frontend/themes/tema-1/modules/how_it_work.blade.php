@@ -8,7 +8,7 @@
 @if($adimlar->isNotEmpty())
 <div class="how-it-work">
     <div class="container">
-        <div class="row section-row">
+        <div class="row section-row align-items-center">
             <div class="col-lg-6">
                 <div class="section-title">
                     <h3 class="wow fadeInUp">{{ $ayar['kucuk_baslik'] ?? 'Süreç' }}</h3>

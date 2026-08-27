@@ -1,6 +1,4 @@
-{{--
-    Neden Ben? — tema-1
---}}
+{{-- Neden Ben — Hipno why-choose-us --}}
 @php
     $sebepler = collect($ayar['sebepler'] ?? [])->filter(fn ($s) => is_array($s) && ! empty($s['baslik']))->take(4)->values();
     $coz = static function ($path) {
@@ -11,7 +9,8 @@
 
         return filled($url) ? $url : (string) $path;
     };
-    $foto = $coz($doktor['profil_resmi'] ?? null) ?: $coz($doktor['foto'] ?? null);
+    $foto1 = $coz($ayar['resim'] ?? null) ?: $coz($doktor['profil_resmi'] ?? null) ?: asset('vendor/hipno/images/why-choose-img-1.jpg');
+    $foto2 = $coz($ayar['resim_2'] ?? null) ?: asset('vendor/hipno/images/why-choose-img-2.jpg');
 @endphp
 
 @if($sebepler->isNotEmpty())
@@ -20,14 +19,15 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="why-choose-us-box">
-                    @if($foto)
-                        <div class="why-choose-image">
-                            <figure class="image-anime reveal">
-                                <img src="{{ $foto }}" alt="{{ trim(($doktor['unvan'] ?? '').' '.($doktor['ad_soyad'] ?? 'Hekim')) }}">
-                            </figure>
+                    <div class="why-choose-image">
+                        <figure class="image-anime reveal">
+                            <img src="{{ $foto1 }}" alt="">
+                        </figure>
+                        <div class="contact-circle-img">
+                            <img src="{{ asset('vendor/hipno/images/contact-circle-img.svg') }}" alt="">
                         </div>
-                    @endif
-                    <div class="why-choose-content" @if(! $foto) style="width:100%" @endif>
+                    </div>
+                    <div class="why-choose-content">
                         <div class="section-title">
                             <h3 class="wow fadeInUp">{{ $ayar['kucuk_baslik'] ?? 'Neden Ben?' }}</h3>
                             <h2 class="text-anime-style-2" data-cursor="-opaque">{{ $ayar['ana_baslik'] ?? 'Farkımı yaratan yaklaşımlar' }}</h2>
@@ -43,18 +43,29 @@
                                         $fa = 'fa-star';
                                     }
                                 @endphp
-                                <div class="why-choose-item wow fadeInUp" data-wow-delay="{{ $loop->index * 0.15 }}s">
+                                <div class="why-choose-item wow fadeInUp" data-wow-delay="{{ $loop->index * 0.2 }}s">
                                     <div class="icon-box">
                                         <i class="fa-solid {{ $fa }}"></i>
                                     </div>
                                     <div class="why-choose-item-content">
                                         <h3>{{ $s['baslik'] }}</h3>
-                                        @if(!empty($s['metin']))
-                                            <p>{{ $s['metin'] }}</p>
-                                        @endif
                                     </div>
                                 </div>
                             @endforeach
+                        </div>
+                        <div class="why-choose-body">
+                            <div class="why-choose-body-image">
+                                <figure class="image-anime reveal">
+                                    <img src="{{ $foto2 }}" alt="">
+                                </figure>
+                            </div>
+                            <div class="why-choose-body-content wow fadeInUp">
+                                <h3>{{ $ayar['govde_baslik'] ?? 'Ruh sağlığınız için yanınızdayım' }}</h3>
+                                @if(!empty($ayar['govde_metin']))
+                                    <p>{{ $ayar['govde_metin'] }}</p>
+                                @endif
+                                <a href="{{ route('frontend.iletisim') }}" class="btn-default">{{ $ayar['buton_metin'] ?? 'İletişim' }}</a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -66,14 +77,7 @@
 
 @push('head')
 <style>
-.why-choose-item .icon-box i{
-    position: relative;
-    z-index: 1;
-    font-size: 16px;
-    color: #fff;
-    line-height: 1;
-}
-.why-choose-item:hover .icon-box i{ color:#fff; }
-.why-choose-item-content p{ margin:0; font-size:14px; }
+.why-choose-item .icon-box i{position:relative;z-index:1;font-size:16px;color:#fff;line-height:1}
+.why-choose-item:hover .icon-box i{color:#fff}
 </style>
 @endpush

@@ -1,7 +1,4 @@
-{{--
-    Hizmetler — tema-1
-    Kaynak: $doktor['hizmetler'] (API'den gelen kart listesi)
---}}
+{{-- Hizmetler — Hipno our-services --}}
 @php
     $limit = max(1, (int) ($ayar['hizmet_limiti'] ?? 6));
     $hizmetler = collect($doktor['hizmetler'] ?? [])->take($limit);
@@ -10,65 +7,52 @@
 @if($hizmetler->isNotEmpty())
 <div class="our-services">
     <div class="container">
-        <div class="row section-row">
-            <div class="col-lg-12">
+        <div class="row section-row align-items-center">
+            <div class="col-lg-6 col-md-9">
                 <div class="section-title">
-                    <h3 class="wow fadeInUp">{{ $ayar['kucuk_baslik'] ?? 'Hizmetlerim' }}</h3>
+                    <h3 class="wow fadeInUp">{{ $ayar['kucuk_baslik'] ?? 'Hizmetler' }}</h3>
                     <h2 class="text-anime-style-2" data-cursor="-opaque">{{ $ayar['bolum_baslik'] ?? 'Sunduğum Hizmetler' }}</h2>
-                    @if(!empty($ayar['aciklama']))
-                        <p class="wow fadeInUp" data-wow-delay="0.2s">{{ $ayar['aciklama'] }}</p>
-                    @endif
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-3">
+                <div class="section-btn wow fadeInUp" data-wow-delay="0.2s">
+                    <a href="{{ route('frontend.hizmetler') }}" class="btn-default">{{ $ayar['buton_metin'] ?? 'Tüm hizmetler' }}</a>
                 </div>
             </div>
         </div>
-
         <div class="row">
             @foreach($hizmetler as $h)
                 @php
                     $baslik = $h['baslik'] ?? $h['ad'] ?? 'Hizmet';
                     $gorsel = $h['image'] ?? $h['gorsel'] ?? null;
-                    $href = ! empty($h['slug']) ? route('frontend.hizmet.detay', $h['slug']) : '#';
+                    $href = ! empty($h['slug']) ? route('frontend.hizmet.detay', $h['slug']) : route('frontend.hizmetler');
                 @endphp
                 <div class="col-lg-4 col-md-6">
-                    <div class="service-item wow fadeInUp" data-wow-delay="{{ 0.2 + $loop->index * 0.15 }}s">
+                    <div class="service-item wow fadeInUp" data-wow-delay="{{ $loop->index * 0.2 }}s">
                         <div class="service-image">
                             <a href="{{ $href }}" data-cursor-text="İncele">
-                                @if($gorsel)
-                                    <figure class="image-anime">
-                                        <img src="{{ $gorsel }}" alt="{{ $baslik }}">
-                                    </figure>
-                                @else
-                                    <span class="service-image-fallback" aria-hidden="true"></span>
-                                @endif
+                                <figure class="image-anime">
+                                    <img src="{{ $gorsel ?: asset('vendor/hipno/images/service-image-'.(($loop->index % 6) + 1).'.jpg') }}" alt="{{ $baslik }}">
+                                </figure>
                             </a>
                         </div>
                         <div class="service-content">
                             <h3>{{ $baslik }}</h3>
                         </div>
-                        @if(!empty($h['slug']))
-                            <div class="service-btn">
-                                <a href="{{ $href }}" class="readmore-btn">Detayları gör</a>
-                            </div>
-                        @endif
+                        <div class="service-btn">
+                            <a href="{{ $href }}" class="readmore-btn">Detaylar</a>
+                        </div>
                     </div>
                 </div>
             @endforeach
+            @if(!empty($ayar['alt_cta']))
+                <div class="col-lg-12">
+                    <div class="service-get-quote-text wow fadeInUp">
+                        <p>{!! $ayar['alt_cta'] !!}</p>
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
 </div>
 @endif
-
-@push('head')
-<style>
-.service-content h2,
-.service-content h3 { color: var(--white-color); }
-.service-content h2 a,
-.service-content h3 a { color: var(--white-color); text-decoration: none; }
-.service-image-fallback {
-    display: block;
-    aspect-ratio: 1 / 0.97;
-    border-radius: 20px;
-    background: linear-gradient(160deg, var(--primary-color) 0%, var(--accent-color) 100%);
-}
-</style>
-@endpush

@@ -1,7 +1,4 @@
-{{--
-    Son Blog Yazıları — tema-1
-    Kaynak: $doktor['bloglar']
---}}
+{{-- Blog — Hipno our-blog / post-item --}}
 @php
     $limit = max(1, (int) ($ayar['blog_limiti'] ?? 3));
     $yazilar = collect($doktor['bloglar'] ?? [])->take($limit);
@@ -10,45 +7,38 @@
 @if($yazilar->isNotEmpty())
 <div class="our-blog">
     <div class="container">
-        <div class="row section-row">
-            <div class="col-lg-12">
+        <div class="row section-row align-items-center">
+            <div class="col-lg-6">
                 <div class="section-title">
                     <h3 class="wow fadeInUp">{{ $ayar['kucuk_baslik'] ?? 'Blog' }}</h3>
                     <h2 class="text-anime-style-2" data-cursor="-opaque">{{ $ayar['ana_baslik'] ?? 'Son yazılarım' }}</h2>
-                    @if(!empty($ayar['aciklama']))
-                        <p class="wow fadeInUp" data-wow-delay="0.2s">{{ $ayar['aciklama'] }}</p>
-                    @endif
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="section-btn wow fadeInUp" data-wow-delay="0.2s">
+                    <a href="{{ route('frontend.blog') }}" class="btn-default">{{ $ayar['buton_metin'] ?? 'Tüm yazılar' }}</a>
                 </div>
             </div>
         </div>
-
         <div class="row">
             @foreach($yazilar as $y)
+                @php $href = ! empty($y['slug']) ? route('frontend.blog.detay', $y['slug']) : route('frontend.blog'); @endphp
                 <div class="col-lg-4 col-md-6">
-                    <div class="blog-item wow fadeInUp" data-wow-delay="{{ 0.2 + $loop->index * 0.15 }}s">
-                        @if(!empty($y['image']))
-                            <div class="blog-image">
-                                <figure class="image-anime">
-                                    <a href="{{ !empty($y['slug']) ? route('frontend.blog.detay', $y['slug']) : '#' }}">
-                                        <img src="{{ $y['image'] }}" alt="{{ $y['baslik'] ?? '' }}">
-                                    </a>
-                                </figure>
-                            </div>
-                        @endif
-                        <div class="blog-content">
-                            @if(!empty($y['tarih']))
-                                <div class="blog-meta">
-                                    <span><i class="fa-regular fa-calendar"></i> {{ $y['tarih'] }}</span>
-                                </div>
-                            @endif
-                            <h3>
-                                <a href="{{ !empty($y['slug']) ? route('frontend.blog.detay', $y['slug']) : '#' }}">
-                                    {{ $y['baslik'] ?? 'Yazı' }}
+                    <div class="post-item wow fadeInUp" data-wow-delay="{{ $loop->index * 0.2 }}s">
+                        <div class="post-featured-image">
+                            <figure>
+                                <a href="{{ $href }}" class="image-anime" data-cursor-text="İncele">
+                                    <img src="{{ $y['image'] ?? asset('vendor/hipno/images/post-'.(($loop->index % 6) + 1).'.jpg') }}" alt="{{ $y['baslik'] ?? '' }}">
                                 </a>
-                            </h3>
-                            @if(!empty($y['ozet']))
-                                <p>{{ \Illuminate\Support\Str::limit($y['ozet'], 100) }}</p>
-                            @endif
+                            </figure>
+                        </div>
+                        <div class="post-item-body">
+                            <div class="post-item-content">
+                                <h3><a href="{{ $href }}">{{ $y['baslik'] ?? 'Yazı' }}</a></h3>
+                            </div>
+                            <div class="post-item-btn">
+                                <a href="{{ $href }}" class="readmore-btn">Devamını oku</a>
+                            </div>
                         </div>
                     </div>
                 </div>

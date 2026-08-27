@@ -1,7 +1,12 @@
 {{-- Ortak online randevu sihirbazı (anasayfa + /randevu). Fiyat gösterilmez. --}}
+@php $raEmbed = ! empty($raEmbed); @endphp
+@if(! $raEmbed)
 <section class="ra-wizard-section" id="randevu-al">
     <div class="container">
         <div class="ra-wizard-card wow fadeInUp">
+@else
+<div id="randevu-al">
+@endif
             @if(!empty($ayar['ana_baslik']) || !empty($ayar['kucuk_baslik']))
             <div class="section-title text-center" style="margin-bottom:2rem">
                 @if(!empty($ayar['kucuk_baslik']))
@@ -146,9 +151,13 @@
                     </div>
                 </div>
             </div>
+@if(! $raEmbed)
         </div>
     </div>
 </section>
+@else
+</div>
+@endif
 
 @push('head')
 <style>

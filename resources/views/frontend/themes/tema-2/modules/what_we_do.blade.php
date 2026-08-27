@@ -1,44 +1,77 @@
-{{--
-    Ne Yapıyorum? / Yaklaşımım — tema-1
---}}
+{{-- Ne Yapıyorum — Hipno intro-video-box + sayaçlar --}}
 @php
-    $ogeler = collect($ayar['ogeler'] ?? [])->filter(fn ($s) => is_array($s) && !empty($s['baslik']))->take(4)->values();
+    $videoUrl = trim((string) ($ayar['video_url'] ?? ''));
+    $youtubeId = trim((string) ($ayar['youtube_id'] ?? ''));
+    $poster = filled($ayar['poster'] ?? null)
+        ? (function_exists('media_url') ? media_url($ayar['poster']) : $ayar['poster'])
+        : asset('vendor/hipno/images/hero-bg.jpg');
+    $varsayilanVideo = asset('vendor/hipno/videos/intro-bg-video.mp4');
+    $sayaclar = [
+        ['sayi' => $ayar['sayac_1_sayi'] ?? '200', 'ek' => $ayar['sayac_1_ek'] ?? 'k', 'etiket' => $ayar['sayac_1_etiket'] ?? 'mutlu danışan'],
+        ['sayi' => $ayar['sayac_2_sayi'] ?? '97', 'ek' => $ayar['sayac_2_ek'] ?? '%', 'etiket' => $ayar['sayac_2_etiket'] ?? 'memnuniyet'],
+        ['sayi' => $ayar['sayac_3_sayi'] ?? '12', 'ek' => $ayar['sayac_3_ek'] ?? '+', 'etiket' => $ayar['sayac_3_etiket'] ?? 'yıllık deneyim'],
+        ['sayi' => $ayar['sayac_4_sayi'] ?? '40', 'ek' => $ayar['sayac_4_ek'] ?? '+', 'etiket' => $ayar['sayac_4_etiket'] ?? 'tedavi programı'],
+    ];
 @endphp
 
-@if($ogeler->isNotEmpty())
 <div class="what-we-do">
     <div class="container">
-        <div class="row section-row">
-            <div class="col-lg-12">
+        <div class="row section-row align-items-center">
+            <div class="col-lg-6">
                 <div class="section-title">
                     <h3 class="wow fadeInUp">{{ $ayar['kucuk_baslik'] ?? 'Yaklaşımım' }}</h3>
                     <h2 class="text-anime-style-2" data-cursor="-opaque">{{ $ayar['ana_baslik'] ?? 'Danışanlarıma sunduğum destek' }}</h2>
-                    @if(!empty($ayar['aciklama']))
-                        <p class="wow fadeInUp" data-wow-delay="0.2s">{{ $ayar['aciklama'] }}</p>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                @if(!empty($ayar['aciklama']))
+                    <div class="section-title-content wow fadeInUp" data-wow-delay="0.2s">
+                        <p>{{ $ayar['aciklama'] }}</p>
+                    </div>
+                @endif
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="intro-video-box">
+                    <div class="intro-bg-video">
+                        @if($videoUrl !== '')
+                            <video autoplay muted loop playsinline poster="{{ $poster }}">
+                                <source src="{{ $videoUrl }}" type="video/mp4">
+                            </video>
+                        @elseif($youtubeId !== '')
+                            <iframe src="https://www.youtube.com/embed/{{ $youtubeId }}?autoplay=1&mute=1&loop=1&playlist={{ $youtubeId }}&controls=0&showinfo=0"
+                                    allow="autoplay; encrypted-media" style="position:absolute;inset:0;width:100%;height:100%;border:0;pointer-events:none"></iframe>
+                        @else
+                            <video autoplay muted loop playsinline poster="{{ $poster }}">
+                                <source src="{{ $varsayilanVideo }}" type="video/mp4">
+                            </video>
+                        @endif
+                    </div>
+                    @if($youtubeId !== '' || $videoUrl !== '')
+                        <div class="video-play-button">
+                            <a href="{{ $youtubeId !== '' ? 'https://www.youtube.com/watch?v='.$youtubeId : $videoUrl }}" class="popup-video" data-cursor-text="Oynat">
+                                <i class="fa-solid fa-play"></i>
+                            </a>
+                        </div>
                     @endif
+                    <div class="intro-video-counter">
+                        @foreach($sayaclar as $s)
+                            <div class="video-counter-item">
+                                <h2><span class="counter">{{ $s['sayi'] }}</span>{{ $s['ek'] }}</h2>
+                                <p>{{ $s['etiket'] }}</p>
+                            </div>
+                        @endforeach
+                    </div>
                 </div>
             </div>
         </div>
-
-        <div class="row">
-            @foreach($ogeler as $o)
-                <div class="col-lg-{{ 12 / max(1, $ogeler->count()) }} col-md-6">
-                    <div class="what-we-do-item wow fadeInUp" data-wow-delay="{{ 0.2 + $loop->index * 0.15 }}s">
-                        <div class="icon-box">
-                            @php
-                                $fa = (string) ($o['ikon'] ?? 'fa-check');
-                                if (! str_starts_with($fa, 'fa-')) {
-                                    $fa = 'fa-check';
-                                }
-                            @endphp
-                            <i class="fa-solid {{ $fa }}" style="font-size:1.8rem;color:var(--accent-color)"></i>
-                        </div>
-                        <h3>{{ $o['baslik'] }}</h3>
-                        <p>{{ $o['metin'] ?? '' }}</p>
-                    </div>
-                </div>
-            @endforeach
-        </div>
     </div>
 </div>
-@endif
+
+@push('head')
+<style>
+.intro-bg-video{position:relative;overflow:hidden}
+.intro-bg-video video,.intro-bg-video iframe{width:100%;height:100%;object-fit:cover}
+</style>
+@endpush
