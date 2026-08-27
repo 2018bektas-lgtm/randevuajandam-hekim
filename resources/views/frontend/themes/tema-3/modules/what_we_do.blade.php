@@ -25,7 +25,13 @@
                 <div class="col-lg-{{ 12 / max(1, $ogeler->count()) }} col-md-6">
                     <div class="what-we-do-item wow fadeInUp" data-wow-delay="{{ 0.2 + $loop->index * 0.15 }}s">
                         <div class="icon-box">
-                            <i class="fa-solid {{ $o['ikon'] ?? 'fa-check' }}" style="font-size:1.8rem;color:var(--accent-color)"></i>
+                            @php
+                                $fa = (string) ($o['ikon'] ?? 'fa-check');
+                                if (! str_starts_with($fa, 'fa-')) {
+                                    $fa = 'fa-check';
+                                }
+                            @endphp
+                            <i class="fa-solid {{ $fa }}" style="font-size:1.8rem;color:var(--accent-color)"></i>
                         </div>
                         <h3>{{ $o['baslik'] }}</h3>
                         <p>{{ $o['metin'] ?? '' }}</p>

@@ -126,8 +126,7 @@ return [
                         'vizyon_baslik' => ['tip' => 'metin', 'label' => 'Vizyon Başlığı', 'varsayilan' => 'Vizyonumuz'],
                         'vizyon_metin' => ['tip' => 'uzun_metin', 'label' => 'Vizyon Metni', 'varsayilan' => 'Ruh sağlığı hizmetine erişimi kolaylaştırmak.'],
                         'resim_1' => ['tip' => 'resim', 'label' => 'Fotoğraf 1', 'varsayilan' => null],
-                        'resim_2' => ['tip' => 'resim', 'label' => 'Fotoğraf 2', 'varsayilan' => null],
-                        'danisan_puani' => ['tip' => 'sayi', 'label' => 'Danışan Puanı (0-5)', 'varsayilan' => 5],
+                        'resim_2' => ['tip' => 'resim', 'label' => 'Fotoğraf 2 (opsiyonel)', 'varsayilan' => null],
                     ],
                 ],
 
@@ -360,8 +359,7 @@ return [
                         'vizyon_baslik' => ['tip' => 'metin', 'label' => 'Vizyon Başlığı', 'varsayilan' => 'Vizyonum'],
                         'vizyon_metin' => ['tip' => 'uzun_metin', 'label' => 'Vizyon Metni', 'varsayilan' => 'Ruh sağlığı hizmetine erişimi kolaylaştırmak.'],
                         'resim_1' => ['tip' => 'resim', 'label' => 'Fotoğraf 1', 'varsayilan' => null],
-                        'resim_2' => ['tip' => 'resim', 'label' => 'Fotoğraf 2', 'varsayilan' => null],
-                        'danisan_puani' => ['tip' => 'sayi', 'label' => 'Danışan Puanı (0-5)', 'varsayilan' => 5],
+                        'resim_2' => ['tip' => 'resim', 'label' => 'Fotoğraf 2 (opsiyonel)', 'varsayilan' => null],
                     ],
                 ],
                 'services' => [
@@ -555,8 +553,7 @@ return [
                         'vizyon_baslik' => ['tip' => 'metin', 'label' => 'Vizyon Başlığı', 'varsayilan' => 'Vizyonum'],
                         'vizyon_metin' => ['tip' => 'uzun_metin', 'label' => 'Vizyon Metni', 'varsayilan' => 'Ruh sağlığı hizmetine erişimi kolaylaştırmak.'],
                         'resim_1' => ['tip' => 'resim', 'label' => 'Fotoğraf 1', 'varsayilan' => null],
-                        'resim_2' => ['tip' => 'resim', 'label' => 'Fotoğraf 2', 'varsayilan' => null],
-                        'danisan_puani' => ['tip' => 'sayi', 'label' => 'Danışan Puanı (0-5)', 'varsayilan' => 5],
+                        'resim_2' => ['tip' => 'resim', 'label' => 'Fotoğraf 2 (opsiyonel)', 'varsayilan' => null],
                     ],
                 ],
                 'services' => [

@@ -25,7 +25,13 @@
                 <div class="col-lg-3 col-md-6">
                     <div class="why-choose-item wow fadeInUp" data-wow-delay="{{ 0.2 + $loop->index * 0.15 }}s">
                         <div class="icon-box">
-                            <i class="fa-solid {{ $s['ikon'] ?? 'fa-star' }}" style="font-size:2rem;color:var(--accent-color)"></i>
+                            @php
+                                $fa = (string) ($s['ikon'] ?? 'fa-star');
+                                if (! str_starts_with($fa, 'fa-')) {
+                                    $fa = 'fa-star';
+                                }
+                            @endphp
+                            <i class="fa-solid {{ $fa }}" style="font-size:2rem;color:var(--accent-color)"></i>
                         </div>
                         <div class="why-choose-content">
                             <h3>{{ $s['baslik'] }}</h3>

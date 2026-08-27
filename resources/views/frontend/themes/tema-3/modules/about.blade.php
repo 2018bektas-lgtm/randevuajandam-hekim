@@ -3,16 +3,26 @@
 --}}
 @php
     $doktorAd = trim(($doktor['unvan'] ?? '').' '.($doktor['ad_soyad'] ?? 'Hekim'));
-    $img1 = $ayar['resim_1'] ?: ($doktor['profil_resmi'] ?? null);
-    $img2 = $ayar['resim_2'] ?? null;
-    $puan = max(1, min(5, (int) ($ayar['danisan_puani'] ?? 5)));
+    $coz = static function ($path) {
+        if (! filled($path)) {
+            return null;
+        }
+        $url = function_exists('media_url') ? media_url((string) $path) : (string) $path;
+
+        return filled($url) ? $url : (string) $path;
+    };
+    $img1 = $coz($ayar['resim_1'] ?? null)
+        ?: $coz($doktor['profil_resmi'] ?? null)
+        ?: $coz($doktor['foto'] ?? null)
+        ?: $coz($doktor['avatar'] ?? null);
+    $img2 = $coz($ayar['resim_2'] ?? null);
 @endphp
 
 <div class="about-us">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-6">
-                <div class="about-us-images">
+                <div class="about-us-images {{ $img2 ? '' : 'is-single' }}">
                     @if($img1)
                         <div class="about-img-1">
                             <figure class="image-anime reveal">
@@ -27,16 +37,6 @@
                             </figure>
                         </div>
                     @endif
-                    <div class="about-customer-box">
-                        <div class="about-customer-rating">
-                            @for($i = 0; $i < $puan; $i++)
-                                <i class="fa-solid fa-star"></i>
-                            @endfor
-                        </div>
-                        <div class="about-customer-content">
-                            <p>Danışan Memnuniyeti</p>
-                        </div>
-                    </div>
                 </div>
             </div>
 
@@ -68,3 +68,11 @@
         </div>
     </div>
 </div>
+
+@push('head')
+<style>
+.about-us-images.is-single { display:block; }
+.about-us-images.is-single .about-img-1 { width:100%; max-width:420px; }
+.about-us-images.is-single .about-img-1 img { aspect-ratio: 3 / 4; width:100%; object-fit:cover; border-radius:20px; }
+</style>
+@endpush

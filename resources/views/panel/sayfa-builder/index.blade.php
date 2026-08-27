@@ -160,6 +160,35 @@
     </div>
 </div>
 
+{{-- İkon seçici --}}
+<div id="ikonModal" class="fixed inset-0 z-[60] items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm hidden">
+    <div class="bg-white rounded-2xl border border-[#E5E7EB] shadow-2xl max-w-2xl w-full overflow-hidden flex flex-col max-h-[88vh]">
+        <div class="p-4 border-b border-[#E5E7EB] flex items-center justify-between gap-3 shrink-0">
+            <h3 class="text-base font-bold font-display text-[#111827]">İkon seç</h3>
+            <button type="button" onclick="ikonSeciciKapat()" class="text-[#6B7280] hover:text-[#111827] p-1">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <div class="p-4 border-b border-[#E5E7EB] shrink-0">
+            <input type="search" id="ikonAra" placeholder="İkon ara (ör. kalp, kullanıcı, kalkan)"
+                   class="w-full rounded-xl border border-[#E5E7EB] px-3 py-2 text-xs"
+                   oninput="ikonListele(this.value)">
+        </div>
+        <div id="ikonGrid" class="p-4 overflow-y-auto flex-1 grid grid-cols-4 sm:grid-cols-6 gap-2"></div>
+    </div>
+</div>
+
+@push('styles')
+<link rel="stylesheet" href="{{ asset('vendor/hipno/css/all.min.css') }}">
+<style>
+.ikon-btn { min-height: 40px; }
+.ikon-cell { display:flex; flex-direction:column; align-items:center; gap:6px; padding:10px 6px; border:1px solid #E5E7EB; border-radius:12px; background:#fff; cursor:pointer; transition:all .15s; }
+.ikon-cell:hover, .ikon-cell.is-on { border-color:#C96A2B; background:#FFF7ED; }
+.ikon-cell i { font-size:18px; color:#111827; }
+.ikon-cell span { font-size:9px; color:#6B7280; text-align:center; line-height:1.2; word-break:break-word; }
+</style>
+@endpush
+
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 <script>
@@ -277,6 +306,69 @@ function alanElement(kod, alan, val) {
     return wrap;
 }
 
+const IKONLAR = [
+    { kod:'fa-heart', ad:'Kalp' }, { kod:'fa-heart-pulse', ad:'Nabız' }, { kod:'fa-hand-holding-heart', ad:'Şefkat' },
+    { kod:'fa-user-doctor', ad:'Hekim' }, { kod:'fa-stethoscope', ad:'Stetoskop' }, { kod:'fa-user-nurse', ad:'Hemşire' },
+    { kod:'fa-brain', ad:'Beyin' }, { kod:'fa-head-side-virus', ad:'Zihin' }, { kod:'fa-comments', ad:'Konuşma' },
+    { kod:'fa-comment-dots', ad:'Sohbet' }, { kod:'fa-handshake', ad:'El sıkışma' }, { kod:'fa-hands-holding', ad:'Destek' },
+    { kod:'fa-shield-halved', ad:'Kalkan' }, { kod:'fa-lock', ad:'Kilit' }, { kod:'fa-user-shield', ad:'Gizlilik' },
+    { kod:'fa-clock', ad:'Saat' }, { kod:'fa-calendar-check', ad:'Takvim' }, { kod:'fa-calendar-days', ad:'Günler' },
+    { kod:'fa-phone', ad:'Telefon' }, { kod:'fa-envelope', ad:'E-posta' }, { kod:'fa-location-dot', ad:'Konum' },
+    { kod:'fa-star', ad:'Yıldız' }, { kod:'fa-award', ad:'Ödül' }, { kod:'fa-certificate', ad:'Sertifika' },
+    { kod:'fa-check', ad:'Onay' }, { kod:'fa-circle-check', ad:'Onaylı' }, { kod:'fa-thumbs-up', ad:'Beğeni' },
+    { kod:'fa-leaf', ad:'Yaprak' }, { kod:'fa-seedling', ad:'Fide' }, { kod:'fa-spa', ad:'Spa' },
+    { kod:'fa-sun', ad:'Güneş' }, { kod:'fa-moon', ad:'Ay' }, { kod:'fa-feather', ad:'Tüy' },
+    { kod:'fa-users', ad:'Kişiler' }, { kod:'fa-user-group', ad:'Grup' }, { kod:'fa-children', ad:'Çocuklar' },
+    { kod:'fa-house', ad:'Ev' }, { kod:'fa-house-chimney', ad:'Aile' }, { kod:'fa-baby', ad:'Bebek' },
+    { kod:'fa-book', ad:'Kitap' }, { kod:'fa-lightbulb', ad:'Fikir' }, { kod:'fa-compass', ad:'Pusula' },
+    { kod:'fa-route', ad:'Yol' }, { kod:'fa-road', ad:'Süreç' }, { kod:'fa-flag', ad:'Hedef' },
+    { kod:'fa-clipboard-list', ad:'Liste' }, { kod:'fa-notes-medical', ad:'Not' }, { kod:'fa-file-medical', ad:'Dosya' },
+    { kod:'fa-pills', ad:'İlaç' }, { kod:'fa-kit-medical', ad:'Çanta' }, { kod:'fa-hospital', ad:'Hastane' },
+    { kod:'fa-eye', ad:'Göz' }, { kod:'fa-ear-listen', ad:'Dinleme' }, { kod:'fa-hand', ad:'El' },
+    { kod:'fa-scale-balanced', ad:'Denge' }, { kod:'fa-puzzle-piece', ad:'Parça' }, { kod:'fa-key', ad:'Anahtar' },
+    { kod:'fa-bolt', ad:'Enerji' }, { kod:'fa-fire', ad:'Ateş' }, { kod:'fa-droplet', ad:'Damla' },
+    { kod:'fa-globe', ad:'Dünya' }, { kod:'fa-wifi', ad:'Online' }, { kod:'fa-video', ad:'Video' },
+    { kod:'fa-laptop', ad:'Bilgisayar' }, { kod:'fa-mobile-screen', ad:'Mobil' }, { kod:'fa-headset', ad:'Kulaklık' },
+    { kod:'fa-smile', ad:'Gülümseme' }, { kod:'fa-face-smile', ad:'Mutlu' }, { kod:'fa-peace', ad:'Huzur' },
+    { kod:'fa-dove', ad:'Güvercin' }, { kod:'fa-infinity', ad:'Süreklilik' }, { kod:'fa-recycle', ad:'Döngü' },
+    { kod:'fa-chart-line', ad:'Gelişim' }, { kod:'fa-arrow-trend-up', ad:'Yükseliş' }, { kod:'fa-bullseye', ad:'Odak' },
+    { kod:'fa-gem', ad:'Değer' }, { kod:'fa-crown', ad:'Uzman' }, { kod:'fa-medal', ad:'Madalya' },
+];
+let ikonHedef = null;
+function ikonSeciciAc(hidden, boya, onChange) {
+    ikonHedef = { hidden, boya, onChange };
+    const m = document.getElementById('ikonModal');
+    m.classList.remove('hidden'); m.classList.add('flex');
+    document.getElementById('ikonAra').value = '';
+    ikonListele('');
+    document.getElementById('ikonAra').focus();
+}
+function ikonSeciciKapat() {
+    const m = document.getElementById('ikonModal');
+    m.classList.add('hidden'); m.classList.remove('flex');
+    ikonHedef = null;
+}
+function ikonListele(q) {
+    const grid = document.getElementById('ikonGrid');
+    const s = (q || '').toLocaleLowerCase('tr');
+    const aktif = ikonHedef?.hidden.value.trim();
+    grid.innerHTML = '';
+    IKONLAR.filter(i => !s || i.ad.toLocaleLowerCase('tr').includes(s) || i.kod.includes(s)).forEach(i => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'ikon-cell' + (aktif === i.kod ? ' is-on' : '');
+        b.innerHTML = `<i class="fa-solid ${i.kod}"></i><span>${i.ad}</span>`;
+        b.addEventListener('click', () => {
+            if (!ikonHedef) return;
+            ikonHedef.hidden.value = i.kod;
+            ikonHedef.boya();
+            ikonHedef.onChange();
+            ikonSeciciKapat();
+        });
+        grid.appendChild(b);
+    });
+}
+
 /**
  * Tekrarlanabilir ogeler (ikon + baslik + metin) icin form UI.
  * Her satirin sag ustunde "sil" butonu, altta "+ Yeni Oge" butonu.
@@ -317,12 +409,31 @@ function ogeSatiri(item, onChange) {
     const row = document.createElement('div');
     row.className = 'grid grid-cols-12 gap-2 p-2 rounded-lg bg-white border border-slate-200';
 
-    const ikonInput = document.createElement('input');
-    ikonInput.type = 'text';
-    ikonInput.value = item.ikon ?? '';
-    ikonInput.placeholder = 'ikon (örn: fa-heart) veya "01"';
-    ikonInput.className = 'col-span-3 rounded-lg border border-slate-200 px-2 py-1.5 text-[11px]';
-    ikonInput.dataset.field = 'ikon';
+    const ikonHidden = document.createElement('input');
+    ikonHidden.type = 'hidden';
+    ikonHidden.value = item.ikon ?? '';
+    ikonHidden.dataset.field = 'ikon';
+
+    const ikonWrap = document.createElement('div');
+    ikonWrap.className = 'col-span-3';
+    ikonWrap.appendChild(ikonHidden);
+
+    const ikonBtn = document.createElement('button');
+    ikonBtn.type = 'button';
+    ikonBtn.className = 'ikon-btn w-full rounded-lg border border-slate-200 px-2 py-1.5 text-[11px] font-semibold bg-white hover:border-[#C96A2B] flex items-center justify-center gap-2';
+    ikonBtn.title = 'İkon seç';
+    const boyaIkonBtn = () => {
+        const v = ikonHidden.value.trim();
+        if (v.startsWith('fa-')) {
+            ikonBtn.innerHTML = `<i class="fa-solid ${v}" style="font-size:16px;color:#111827"></i><span class="truncate">${v.replace(/^fa-/,'')}</span>`;
+        } else if (v) {
+            ikonBtn.textContent = v;
+        } else {
+            ikonBtn.textContent = 'İkon seç';
+        }
+    };
+    boyaIkonBtn();
+    ikonBtn.addEventListener('click', () => ikonSeciciAc(ikonHidden, boyaIkonBtn, onChange));
 
     const baslikInput = document.createElement('input');
     baslikInput.type = 'text';
@@ -345,9 +456,10 @@ function ogeSatiri(item, onChange) {
     silBtn.className = 'col-span-1 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 text-sm font-bold transition';
     silBtn.addEventListener('click', () => { row.remove(); onChange(); });
 
-    [ikonInput, baslikInput, metinInput].forEach(el => el.addEventListener('input', onChange));
+    [baslikInput, metinInput].forEach(el => el.addEventListener('input', onChange));
 
-    row.appendChild(ikonInput);
+    ikonWrap.appendChild(ikonBtn);
+    row.appendChild(ikonWrap);
     row.appendChild(baslikInput);
     row.appendChild(metinInput);
     row.appendChild(silBtn);
