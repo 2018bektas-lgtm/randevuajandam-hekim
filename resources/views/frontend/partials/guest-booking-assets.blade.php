@@ -152,15 +152,20 @@
             let url = '/slots?date=' + encodeURIComponent(date);
             if (hid) url += '&hizmet_id=' + encodeURIComponent(hid);
             const res = await apiGet(url);
-            const slots = (res.data && res.data.slots) || [];
+            const raw = (res.data && (res.data.musait || res.data.slots)) || [];
+            const slots = (Array.isArray(raw) ? raw : []).filter(s => {
+                if (typeof s === 'string') return true;
+                const durum = s.durum || '';
+                return s.musait !== false && durum !== 'dolu' && durum !== 'izin' && durum !== 'gecmis';
+            });
             if (!slots.length) {
                 saatEl.innerHTML = '<option value="">Bu tarihte boş slot yok</option>';
                 return;
             }
             saatEl.innerHTML = '<option value="">Saat seçin</option>' +
                 slots.map(s => {
-                    const saat = s.saat || s;
-                    const bitis = s.saat_bitis ? ' – ' + s.saat_bitis : '';
+                    const saat = typeof s === 'string' ? s : (s.saat || s);
+                    const bitis = (typeof s === 'object' && s.saat_bitis) ? ' – ' + s.saat_bitis : '';
                     return `<option value="${saat}">${saat}${bitis}</option>`;
                 }).join('');
             saatEl.disabled = false;

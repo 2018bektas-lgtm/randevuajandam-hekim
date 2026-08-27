@@ -226,7 +226,8 @@
 /* Slots */
 .ra-slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:.65rem;max-width:640px;margin:0 auto}
 .ra-slot{padding:.85rem .5rem;border:1.5px solid #e5e7eb;background:#fff;border-radius:.6rem;font-family:var(--font);font-weight:600;color:var(--primary-color);cursor:pointer;transition:all .2s;font-size:.95rem;letter-spacing:.02em}
-.ra-slot:hover{background:var(--accent-color);border-color:var(--accent-color);color:#fff;transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.06)}
+.ra-slot:hover:not(:disabled):not(.is-busy){background:var(--accent-color);border-color:var(--accent-color);color:#fff;transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.06)}
+.ra-slot.is-busy{opacity:.45;cursor:not-allowed;text-decoration:line-through;background:#f9fafb;color:#9ca3af}
 
 /* Summary */
 .ra-summary{background:var(--secondary-color);border:1px solid #eee;border-radius:.75rem;padding:1.25rem 1.5rem;margin-bottom:2rem;font-family:var(--font)}
@@ -450,17 +451,25 @@
                 saatler.innerHTML = `<div class="ra-empty">${j.message || 'Saatler alınamadı. Başka bir gün deneyin.'}</div>`;
                 return;
             }
-            const slots = Array.isArray(j.data?.slots) ? j.data.slots
-                : (Array.isArray(j.slots) ? j.slots : []);
-            if (!slots.length){
+            const raw = Array.isArray(j.data?.slots) ? j.data.slots
+                : (Array.isArray(j.data?.musait) ? j.data.musait
+                : (Array.isArray(j.slots) ? j.slots : []));
+            const slots = raw.map(s => {
+                if (typeof s === 'string') return { saat: s, musait: true };
+                const t = s.saat || s.time || '';
+                const durum = s.durum || '';
+                const musait = s.musait !== false && durum !== 'dolu' && durum !== 'izin' && durum !== 'gecmis' && durum !== 'ogle';
+                return { saat: t, musait };
+            }).filter(s => s.saat);
+            const free = slots.filter(s => s.musait);
+            if (!slots.length || !free.length){
                 saatler.innerHTML = `<div class="ra-empty">${j.data?.message || j.message || 'Bu gün için uygun saat bulunamadı. Lütfen başka bir gün seçin.'}</div>`;
                 return;
             }
             saatler.innerHTML = slots.map(s => {
-                const t = typeof s === 'string' ? s : (s.saat || s.time || '');
-                return `<button type="button" class="ra-slot" data-saat="${t}">${t}</button>`;
+                return `<button type="button" class="ra-slot${s.musait ? '' : ' is-busy'}" data-saat="${s.saat}" ${s.musait ? '' : 'disabled'}>${s.saat}</button>`;
             }).join('');
-            saatler.querySelectorAll('.ra-slot').forEach(b => b.addEventListener('click', () => {
+            saatler.querySelectorAll('.ra-slot:not(.is-busy)').forEach(b => b.addEventListener('click', () => {
                 state.saat = b.dataset.saat;
                 ozetGoster();
                 stepGoster(4);
