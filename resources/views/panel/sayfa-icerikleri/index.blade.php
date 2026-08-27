@@ -85,7 +85,6 @@
                                             <p class="resim-hata mt-2 text-[10px] text-red-600 hidden"></p>
                                         </div>
                                         <p class="mt-1 text-[10px] text-[#6B7280]">JPG, PNG, WEBP — max 5 MB. Boş bırakırsanız hekimin profil resmi kullanılır.</p>
-                                    @endif
                                     @elseif(($alan['tip'] ?? 'metin') === 'sayi')
                                         <input type="number" name="{{ $alanKod }}" value="{{ $val }}"
                                                class="w-full rounded-xl border border-[#E5E7EB] px-3 py-2 text-xs">
