@@ -11,6 +11,7 @@
  * Blade karşılıkları: resources/views/frontend/themes/tema-{N}/modules/{kod}.blade.php
  *
  * Tema-1 Hipno Klasik (statik hero), tema-2 Hipno Slider, tema-3 Hipno Video.
+ * Tema-4..9 Delogis Home 1–5 + Home Boxed (layout paketi: delogis).
  * Her temanın modül seti ayrıdır; hekim tema seçince o set seed edilir ve düzenlenir.
  */
 
@@ -738,5 +739,5 @@ return [
                 ],
             ],
         ],
-    ],
+    ] + require __DIR__.'/delogis_tema.php',
 ];

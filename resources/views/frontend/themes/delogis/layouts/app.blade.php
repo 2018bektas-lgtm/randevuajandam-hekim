@@ -12,8 +12,11 @@
     $eposta = $doktor['e_posta'] ?? null;
     $logo = $doktor['logo'] ?? null;
     $sosyal = array_filter($doktor['sosyal'] ?? [], fn ($u) => filled($u));
+    $temaIdNow = current_theme_id(is_array($doktor ?? null) ? $doktor : null);
+    $homeV = function_exists('delogis_home_variant') ? delogis_home_variant($temaIdNow) : 1;
+    $boxedClass = function_exists('delogis_is_boxed') && delogis_is_boxed($temaIdNow) ? 'boxed-wrapper' : '';
 @endphp
-<body class="custom-cursor theme-delogis layout-delogis theme-pack-delogis {{ request()->routeIs('frontend.anasayfa') ? 'dg-home' : 'dg-inner' }}">
+<body class="custom-cursor theme-delogis layout-delogis theme-pack-delogis dg-home-{{ $homeV }} {{ $boxedClass }} {{ request()->routeIs('frontend.anasayfa') ? 'dg-home' : 'dg-inner' }}">
     @include('frontend.layouts.partials.tracking-body')
 
     <div class="custom-cursor__cursor"></div>

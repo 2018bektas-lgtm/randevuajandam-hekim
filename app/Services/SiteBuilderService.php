@@ -159,12 +159,16 @@ class SiteBuilderService
                 $varsayilan[$alanKod] = $alan['varsayilan'] ?? null;
             }
             $ayar = array_merge($varsayilan, (array) $kayit->ozel_ayarlar);
+            $blade = $this->modulBlade($temaId, $kod);
+            if (! view()->exists($blade)) {
+                continue;
+            }
 
             $out->push([
                 'kod' => $kod,
                 'ad' => $tanim['ad'] ?? $kod,
                 'sira' => (int) $kayit->sira,
-                'blade' => "frontend.themes.$temaId.modules.$kod",
+                'blade' => $blade,
                 'ayar' => $ayar,
             ]);
         }
@@ -307,5 +311,24 @@ class SiteBuilderService
         if (preg_match('/^#[0-9A-Fa-f]{6}$/', $accent)) {
             $this->settings->setOption('tema_renk', $accent);
         }
+    }
+
+    /**
+     * Modül blade yolu: önce layout paketi (delogis), yoksa tema-id klasörü.
+     */
+    protected function modulBlade(string $temaId, string $kod): string
+    {
+        $pack = function_exists('theme_pack_id') ? theme_pack_id($temaId) : $temaId;
+        $candidates = [
+            "frontend.themes.{$pack}.modules.{$kod}",
+            "frontend.themes.{$temaId}.modules.{$kod}",
+        ];
+        foreach (array_unique($candidates) as $name) {
+            if (view()->exists($name)) {
+                return $name;
+            }
+        }
+
+        return $candidates[0];
     }
 }

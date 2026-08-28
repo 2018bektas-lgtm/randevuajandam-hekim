@@ -235,6 +235,7 @@ if (! function_exists('resolve_site_theme')) {
             'minimalist' => 'tema-1',
             'minimal' => 'tema-1',
             'custom' => 'tema-1',
+            'delogis' => 'tema-4',
         ];
         if (is_string($id) && isset($aliases[$id]) && ! isset($catalog[$id])) {
             $id = $aliases[$id];
@@ -541,6 +542,127 @@ if (! function_exists('theme_palette')) {
             '800' => $mix($r, $g, $b, 0, 0, 0, 0.32),
             '900' => $mix($r, $g, $b, 0, 0, 0, 0.45),
         ];
+    }
+}
+
+if (! function_exists('hex_to_rgb')) {
+    /**
+     * #RRGGBB → [r, g, b]
+     *
+     * @return array{0: int, 1: int, 2: int}
+     */
+    function hex_to_rgb(?string $hex): array
+    {
+        $hex = ltrim(trim((string) $hex), '#');
+        if (strlen($hex) === 3) {
+            $hex = $hex[0].$hex[0].$hex[1].$hex[1].$hex[2].$hex[2];
+        }
+        if (strlen($hex) !== 6 || ! ctype_xdigit($hex)) {
+            return [151, 97, 71];
+        }
+
+        return [
+            hexdec(substr($hex, 0, 2)),
+            hexdec(substr($hex, 2, 2)),
+            hexdec(substr($hex, 4, 2)),
+        ];
+    }
+}
+
+if (! function_exists('delogis_home_variant')) {
+    /** Delogis Home 1–5. tema-4/9 → 1, tema-5 → 2 … tema-8 → 5. */
+    function delogis_home_variant(?string $temaId = null): int
+    {
+        $temaId = $temaId ?: (function_exists('current_theme_id') ? current_theme_id() : 'tema-4');
+        $meta = function_exists('resolve_site_theme') ? resolve_site_theme($temaId) : [];
+        $fromMeta = (int) ($meta['home_variant'] ?? 0);
+        if ($fromMeta >= 1 && $fromMeta <= 5) {
+            return $fromMeta;
+        }
+
+        return match ($temaId) {
+            'tema-5' => 2,
+            'tema-6' => 3,
+            'tema-7' => 4,
+            'tema-8' => 5,
+            default => 1,
+        };
+    }
+}
+
+if (! function_exists('delogis_is_boxed')) {
+    function delogis_is_boxed(?string $temaId = null): bool
+    {
+        $temaId = $temaId ?: (function_exists('current_theme_id') ? current_theme_id() : '');
+        $meta = function_exists('resolve_site_theme') ? resolve_site_theme($temaId) : [];
+
+        return (bool) ($meta['boxed'] ?? false) || $temaId === 'tema-9';
+    }
+}
+
+if (! function_exists('delogis_modul_ctx')) {
+    /**
+     * Delogis anasayfa modülleri için ortak bağlam.
+     *
+     * @param  array<string, mixed>  $ayar
+     * @param  array<string, mixed>  $doktor
+     * @return array<string, mixed>
+     */
+    function delogis_modul_ctx(array $ayar, array $doktor): array
+    {
+        $dg = rtrim((string) request()->getBasePath(), '/').'/themes/delogis';
+        $ad = trim(($doktor['unvan'] ?? '').' '.($doktor['ad_soyad'] ?? 'Hekim'));
+        $photo = function_exists('doctor_photo')
+            ? doctor_photo($doktor, null)
+            : ($doktor['profil_resmi'] ?? null);
+        $v = function_exists('delogis_home_variant') ? delogis_home_variant() : 1;
+        $tel = $doktor['telefon'] ?? null;
+        $telRaw = $doktor['telefon_raw'] ?? preg_replace('/\D+/', '', (string) $tel);
+        $media = static function ($path) {
+            if (! filled($path)) {
+                return null;
+            }
+            $url = function_exists('media_url') ? media_url((string) $path) : (string) $path;
+
+            return filled($url) ? $url : (string) $path;
+        };
+        $titleHtml = static function (?string $t) {
+            return function_exists('delogis_title_html') ? delogis_title_html($t) : e((string) $t);
+        };
+
+        return [
+            'dg' => $dg,
+            'ad' => $ad,
+            'photo' => $photo,
+            'v' => $v,
+            'icons' => ['icon-heart', 'icon-self-confidence', 'icon-family', 'icon-account', 'icon-mental-health', 'icon-psychology'],
+            'iconsTwo' => ['delogis-icons-two-heart', 'delogis-icons-two-self-confidence', 'delogis-icons-two-family', 'delogis-icons-two-brain', 'delogis-icons-two-psychologist', 'delogis-icons-two-online-business'],
+            'tel' => $tel,
+            'telRaw' => $telRaw,
+            'media' => $media,
+            'titleHtml' => $titleHtml,
+            'ayar' => $ayar,
+            'doktor' => $doktor,
+        ];
+    }
+}
+
+if (! function_exists('delogis_title_html')) {
+    /** Son kelimeyi Delogis <span> vurgusuyla sarmalar. */
+    function delogis_title_html(?string $title): string
+    {
+        $title = function_exists('decode_text') ? decode_text($title) : (string) $title;
+        $title = trim($title);
+        if ($title === '') {
+            return '';
+        }
+        $parts = preg_split('/\s+/u', $title) ?: [];
+        if (count($parts) < 2) {
+            return e($title);
+        }
+        $last = array_pop($parts);
+
+        return e(implode(' ', $parts)).' <span>'.e($last).'</span>';
     }
 }
 

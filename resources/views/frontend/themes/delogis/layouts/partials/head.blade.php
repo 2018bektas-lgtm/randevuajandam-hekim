@@ -22,12 +22,29 @@
     $pageTitle = trim($decodeEntities($__env->yieldContent('baslik'))) ?: ($seoTitle !== '' ? $seoTitle : $defaultTitle);
     $pageDesc = trim($decodeEntities($__env->yieldContent('meta_aciklama'))) ?: ($seoDesc !== '' ? $seoDesc : $decodeEntities($doktor['kisa_bio'] ?? ''));
     $temaMeta = resolve_site_theme($doktor['tema_id'] ?? ($doktor['tema']['id'] ?? 'delogis'));
-    // index3 orijinal vurgu: #976147 (delogis.css --delogis-base)
-    $theme = '#976147';
+    try {
+        $aktifPalet = app(\App\Services\SiteBuilderService::class)->aktifPalet();
+    } catch (\Throwable $e) {
+        $aktifPalet = [
+            'primary' => '#1a1414',
+            'accent' => $temaMeta['renk'] ?? '#976147',
+            'bg' => '#f2edea',
+            'text' => '#1a1414',
+            'text_light' => '#FFFFFF',
+            'black' => '#1a1414',
+            'gray' => '#736b6b',
+            'bdr' => '#ded6d3',
+        ];
+    }
+    $theme = $aktifPalet['accent'] ?? ($temaMeta['renk'] ?? '#976147');
     $palette = function_exists('theme_palette') ? theme_palette($theme) : ['500' => $theme, '600' => '#7a4e39'];
+    $baseRgb = function_exists('hex_to_rgb') ? hex_to_rgb($theme) : [151, 97, 71];
+    $blackHex = $aktifPalet['black'] ?? ($aktifPalet['primary'] ?? '#1a1414');
+    $blackRgb = function_exists('hex_to_rgb') ? hex_to_rgb($blackHex) : [26, 20, 20];
+    $bgHex = $aktifPalet['bg'] ?? '#f2edea';
+    $bgRgb = function_exists('hex_to_rgb') ? hex_to_rgb($bgHex) : [242, 237, 234];
     $ogImage = $doktor['logo'] ?? $doktor['profil_resmi'] ?? ($doktor['slider'][0]['image'] ?? null);
     $canonical = url()->current();
-    $r = 151; $g = 97; $b = 71;
 @endphp
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -68,14 +85,23 @@
 @include('frontend.themes.delogis.layouts.partials.assets-css')
 <link rel="stylesheet" href="{{ rtrim((string) request()->getBasePath(), '/') }}/css/themes/delogis.css?v=19">
 <style>
-/* Orijinal delogis.css ile aynı — panel tema_renk ile bozulmasın */
 :root {
-  --brand-500: #976147;
-  --brand-600: #7a4e39;
-  --delogis-base: #976147;
-  --delogis-base-rgb: 151, 97, 71;
-  --delogis-black: #1a1414;
-  --delogis-primary: #f2edea;
+  --brand-500: {{ $theme }};
+  --brand-600: {{ $palette['700'] ?? '#7a4e39' }};
+  --primary-color: {{ $aktifPalet['primary'] ?? $blackHex }};
+  --accent-color: {{ $theme }};
+  --secondary-color: {{ $bgHex }};
+  --text-color: {{ $aktifPalet['text'] ?? $blackHex }};
+  --text-light: {{ $aktifPalet['text_light'] ?? '#FFFFFF' }};
+  --delogis-base: {{ $theme }};
+  --delogis-base-rgb: {{ implode(', ', $baseRgb) }};
+  --delogis-black: {{ $blackHex }};
+  --delogis-black-rgb: {{ implode(', ', $blackRgb) }};
+  --delogis-primary: {{ $bgHex }};
+  --delogis-primary-rgb: {{ implode(', ', $bgRgb) }};
+  --delogis-gray: {{ $aktifPalet['gray'] ?? '#736b6b' }};
+  --delogis-bdr-color: {{ $aktifPalet['bdr'] ?? '#ded6d3' }};
+  --delogis-extra: {{ $aktifPalet['extra'] ?? $bgHex }};
 }
 </style>
 @stack('head')
