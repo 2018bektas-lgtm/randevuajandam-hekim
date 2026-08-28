@@ -61,6 +61,13 @@ if (! function_exists('media_url')) {
 
         $path = str_replace('\\', '/', trim($path));
 
+        // Panel üzerinden bu uygulamaya yüklenen görseller (UploadController)
+        // her zaman bu uygulamanın kendi "storage" bağlantısında yaşar —
+        // ana site veya API media sunucusuna yönlendirilmemeli.
+        if (preg_match('#uploads/panel/(.+)$#i', $path, $panelMatch)) {
+            return asset('storage/uploads/panel/'.ltrim($panelMatch[1], '/'));
+        }
+
         $sitePublic = rtrim((string) (
             config('randevu_api.site_media_url')
             ?: env('SITE_MEDIA_URL')

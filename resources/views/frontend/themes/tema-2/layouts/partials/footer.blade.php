@@ -32,31 +32,7 @@
     $slogan = $doktor['slogan'] ?? 'Hazır olduğunuzda buradayız';
 @endphp
 
-<div class="footer-cta-box">
-    <div class="container">
-        <div class="row align-items-center gy-3">
-            <div class="col-lg-6">
-                <div class="footer-cta-content">
-                    <div class="section-title">
-                        <h2 class="text-anime-style-2" data-cursor="-opaque">Ücretsiz ön görüşme için yazın</h2>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="footer-cta-btn wow fadeInUp">
-                    @if($telefonGecerli)
-                        <a href="tel:{{ $telefonRaw }}" class="btn-default btn-phone">
-                            <i class="fa-solid fa-phone-volume"></i> {{ $telefon }}
-                        </a>
-                    @endif
-                    <a href="{{ route('frontend.randevu') }}" class="btn-default btn-comment">
-                        <i class="fa-solid fa-calendar-check"></i> Randevu Al
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 <footer class="main-footer">
     <div class="container">

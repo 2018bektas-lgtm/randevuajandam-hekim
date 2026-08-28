@@ -38,7 +38,7 @@
             <div class="col-lg-6">
                 <div class="footer-cta-content">
                     <div class="section-title">
-                        <h2 class="text-anime-style-2" data-cursor="-opaque">Ücretsiz ön görüşme için yazın</h2>
+                        <h2 class="text-anime-style-2" data-cursor="-opaque"></h2>
                     </div>
                 </div>
             </div>
