@@ -39,9 +39,8 @@ class RequirePaketOzellik
             }
 
             return redirect()
-                ->route('panel.dashboard')
-                ->with('hata', $msg)
-                ->with('upgrade_url', PaketOzellik::upgradeUrl());
+                ->away(PaketOzellik::upgradeUrl())
+                ->with('hata', $msg);
         }
 
         return $next($request);

@@ -165,7 +165,10 @@
                 <div class="mb-4 p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-sm">{{ session('uyari') }}</div>
             @endif
             @if(session('hata'))
-                <div class="mb-4 p-3.5 rounded-2xl bg-red-50 border border-red-100 text-red-700 text-sm">{{ session('hata') }}</div>
+                <div class="mb-4 p-3.5 rounded-2xl bg-red-50 border border-red-100 text-red-700 text-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <span>{{ session('hata') }}</span>
+                    <a href="{{ session('upgrade_url', \App\Support\PaketOzellik::upgradeUrl()) }}" class="shrink-0 px-3 py-1.5 rounded-lg bg-[#C96A2B] text-white text-xs font-bold hover:bg-[#B55A20]">Paketi yükselt</a>
+                </div>
             @endif
             @if($errors->any())
                 <div class="mb-4 p-3.5 rounded-2xl bg-red-50 border border-red-100 text-red-700 text-sm">

@@ -5,8 +5,9 @@
  * features oturumda API login/me ile gelir.
  */
 return [
-    /** Ana sitede paket yükseltme (hekim paneli). */
-    'upgrade_url' => env('PLATFORM_PAKET_URL', env('RANDEVU_SITE_URL', 'http://127.0.0.1:8000').'/hekim/paket-sec?degistir=1'),
+    /** Ana sitede paket yükseltme (hekim paneli). Local: 127.0.0.1:8000 */
+    'upgrade_url' => env('PLATFORM_PAKET_URL')
+        ?: (rtrim((string) env('RANDEVU_SITE_URL', 'http://127.0.0.1:8000'), '/').'/hekim/paket-sec?degistir=1'),
 
     /** Public sitede paket yoksa ana platform. */
     'platform_url' => env('RANDEVU_SITE_URL', 'http://127.0.0.1:8000'),

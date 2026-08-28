@@ -35,7 +35,22 @@ class PaketOzellik
 
     public static function upgradeUrl(): string
     {
-        return (string) config('paket.upgrade_url', '/');
+        $path = '/hekim/paket-sec?degistir=1';
+        if (app()->environment('local')) {
+            $base = rtrim((string) config('paket.platform_url', 'http://127.0.0.1:8000'), '/');
+            if ($base === '' || (! str_contains($base, '127.0.0.1') && ! str_contains($base, 'localhost'))) {
+                $base = 'http://127.0.0.1:8000';
+            }
+
+            return $base.$path;
+        }
+
+        $configured = trim((string) config('paket.upgrade_url', ''));
+        if ($configured !== '' && $configured !== '/') {
+            return $configured;
+        }
+
+        return rtrim((string) config('paket.platform_url', 'http://127.0.0.1:8000'), '/').$path;
     }
 
     /**

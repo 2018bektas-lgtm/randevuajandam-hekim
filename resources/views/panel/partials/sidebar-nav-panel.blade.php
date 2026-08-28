@@ -2,10 +2,9 @@
     use App\Support\PaketOzellik;
 
     $has = fn (string ...$codes) => PaketOzellik::has(count($codes) === 1 ? $codes[0] : $codes);
-    $paketUyari = route('panel.dashboard');
-    $r = fn (string $name) => \Illuminate\Support\Facades\Route::has($name) ? route($name) : $paketUyari;
     $upgrade = PaketOzellik::upgradeUrl();
-
+    $paketUyari = $upgrade;
+    $r = fn (string $name) => \Illuminate\Support\Facades\Route::has($name) ? route($name) : $paketUyari;
     $ysbDash = [
         'href' => route('panel.dashboard'),
         'match' => 'panel.dashboard',
