@@ -125,11 +125,14 @@
   --text-color:      {{ $aktifPalet['text'] }};
   --text-light:      {{ $aktifPalet['text_light'] }};
   --divider-color:   rgba(0,0,0,.08);
+  --white-color:     #ffffff;
+  --dark-divider-color: rgba(255,255,255,.12);
 
   --font: "{{ $temaMeta['font_sans'] ?? 'Sora' }}", system-ui, sans-serif;
   --display: "{{ $temaMeta['font_display'] ?? 'Marcellus' }}", "Times New Roman", serif;
   --primary-font: var(--display);
   --accent-font: var(--display);
+  --default-font: var(--font);
 }
 </style>
 
