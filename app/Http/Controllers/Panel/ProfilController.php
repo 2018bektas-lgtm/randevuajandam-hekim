@@ -48,6 +48,8 @@ class ProfilController extends Controller
             'ad_soyad' => ['required', 'string', 'max:255'],
             'unvan' => ['nullable', 'string', 'max:100'],
             'telefon' => ['required', 'string', 'max:40'],
+            'hasta_telefon' => ['nullable', 'string', 'max:40'],
+            'hasta_whatsapp' => ['nullable', 'string', 'max:40'],
             'uzmanlik_alani' => ['nullable', 'string', 'max:255'],
             'biyografi' => ['nullable', 'string', 'max:10000'],
             'adres' => ['nullable', 'string', 'max:500'],
@@ -71,6 +73,8 @@ class ProfilController extends Controller
             'klinik_adi', 'instagram', 'facebook', 'twitter', 'linkedin', 'youtube',
             'web_sitesi', 'enlem', 'boylam', 'il', 'ilce',
         ])->filter(fn ($v) => $v !== null)->all();
+        $payload['hasta_telefon'] = filled($data['hasta_telefon'] ?? null) ? $data['hasta_telefon'] : null;
+        $payload['hasta_whatsapp'] = filled($data['hasta_whatsapp'] ?? null) ? $data['hasta_whatsapp'] : null;
 
         try {
             if ($request->hasFile('profil_resmi')) {
@@ -187,7 +191,7 @@ class ProfilController extends Controller
         }
 
         // Ensure string fields exist
-        foreach (['ad_soyad', 'unvan', 'e_posta', 'telefon', 'adres', 'instagram', 'facebook', 'twitter', 'linkedin', 'youtube', 'web_sitesi', 'uzmanlik_alani', 'biyografi', 'klinik_adi', 'profil_resmi'] as $f) {
+        foreach (['ad_soyad', 'unvan', 'e_posta', 'telefon', 'hasta_telefon', 'hasta_whatsapp', 'adres', 'instagram', 'facebook', 'twitter', 'linkedin', 'youtube', 'web_sitesi', 'uzmanlik_alani', 'biyografi', 'klinik_adi', 'profil_resmi'] as $f) {
             if (! isset($obj->$f)) {
                 $obj->$f = $d[$f] ?? null;
             }

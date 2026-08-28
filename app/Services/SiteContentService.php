@@ -393,7 +393,7 @@ class SiteContentService
         $out['unvan'] = decode_text($profile['unvan'] ?? '');
         $out['uzmanlik'] = decode_text($profile['uzmanlik_alani'] ?? '');
         $out['telefon'] = decode_text($profile['telefon'] ?? '');
-        $out['e_posta'] = decode_text($profile['e_posta'] ?? '');
+        $out['e_posta'] = '';
         $out['adres'] = decode_text($profile['adres'] ?? '');
         $out['klinik_adi'] = decode_text($profile['klinik_adi'] ?? '');
         $out['il'] = decode_text($profile['il'] ?? '');
@@ -416,12 +416,15 @@ class SiteContentService
             $out['bio_uzun'] = array_values(array_filter(array_map('trim', $parts)));
         }
 
-        // Phone / WhatsApp
+        // Phone / WhatsApp — yalnızca hasta iletişim alanları (kayıt telefonu gelmez).
         if ($out['telefon'] !== '') {
-            $raw = preg_replace('/\D+/', '', $out['telefon']) ?: '';
-            $out['telefon_raw'] = $raw;
+            $out['telefon_raw'] = preg_replace('/\D+/', '', $out['telefon']) ?: '';
+        }
+        $waSrc = decode_text($profile['whatsapp'] ?? '');
+        if ($waSrc !== '') {
+            $raw = preg_replace('/\D+/', '', $waSrc) ?: '';
             $wa = ltrim($raw, '0');
-            if (! str_starts_with($wa, '90') && strlen($wa) === 10) {
+            if ($wa !== '' && ! str_starts_with($wa, '90') && strlen($wa) === 10) {
                 $wa = '90'.$wa;
             }
             $out['whatsapp'] = $wa;
