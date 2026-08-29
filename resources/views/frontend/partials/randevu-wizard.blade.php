@@ -1,5 +1,16 @@
 {{-- Ortak online randevu sihirbazı (anasayfa + /randevu). Fiyat gösterilmez. --}}
-@php $raEmbed = ! empty($raEmbed); @endphp
+@php
+    $raEmbed = ! empty($raEmbed);
+    $raDoktor = is_array($doktor ?? null) ? $doktor : [];
+    // Online gorusme paket ozelligi + hekimin randevu ayarlari
+    $raOnlineAcik = ! empty($raDoktor['online_gorusme']) && ($raDoktor['online_randevu_aktif'] ?? true);
+    $raYuzYuzeAcik = (bool) ($raDoktor['yuzyuze_randevu_aktif'] ?? true);
+    if (! $raOnlineAcik && ! $raYuzYuzeAcik) {
+        $raYuzYuzeAcik = true; // ikisi de kapaliysa yuz yuze varsayilan
+    }
+    $raSecimVar = $raOnlineAcik && $raYuzYuzeAcik;
+    $raVarsayilanTip = $raYuzYuzeAcik ? 'yuz_yuze' : 'online';
+@endphp
 @if(! $raEmbed)
 <section class="ra-wizard-section" id="randevu-al">
     <div class="container">
@@ -98,6 +109,39 @@
                 <form id="ra-form" class="ra-form" novalidate>
                     @csrf
                     <input type="text" name="website_url" tabindex="-1" autocomplete="off" aria-hidden="true" class="ra-honeypot">
+                    <input type="hidden" name="gorusme_tipi" id="ra-gorusme-tipi" value="{{ $raVarsayilanTip }}">
+
+                    @if($raSecimVar || $raOnlineAcik)
+                    <div class="ra-gorusme">
+                        <span class="ra-gorusme-label">Görüşme türü</span>
+                        <div class="ra-gorusme-grid{{ $raSecimVar ? '' : ' is-single' }}">
+                            @if($raYuzYuzeAcik)
+                            <button type="button" class="ra-gorusme-card{{ $raVarsayilanTip === 'yuz_yuze' ? ' is-selected' : '' }}" data-value="yuz_yuze" aria-pressed="{{ $raVarsayilanTip === 'yuz_yuze' ? 'true' : 'false' }}">
+                                <span class="ra-gorusme-check" aria-hidden="true"></span>
+                                <span class="ra-gorusme-icon" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6"/></svg>
+                                </span>
+                                <span class="ra-gorusme-body">
+                                    <span class="ra-gorusme-title">Yüz yüze</span>
+                                    <span class="ra-gorusme-meta">Muayenehanede görüşme</span>
+                                </span>
+                            </button>
+                            @endif
+                            @if($raOnlineAcik)
+                            <button type="button" class="ra-gorusme-card{{ $raVarsayilanTip === 'online' ? ' is-selected' : '' }}" data-value="online" aria-pressed="{{ $raVarsayilanTip === 'online' ? 'true' : 'false' }}">
+                                <span class="ra-gorusme-check" aria-hidden="true"></span>
+                                <span class="ra-gorusme-icon" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.5-2.5v9L15 14M4 6h9a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2z"/></svg>
+                                </span>
+                                <span class="ra-gorusme-body">
+                                    <span class="ra-gorusme-title">Online</span>
+                                    <span class="ra-gorusme-meta">Görüntülü görüşme</span>
+                                </span>
+                            </button>
+                            @endif
+                        </div>
+                    </div>
+                    @endif
 
                     <div class="ra-field-grid">
                         <div class="ra-field">
@@ -251,6 +295,23 @@
 .ra-check input{margin-top:.25rem;width:18px;height:18px;accent-color:var(--accent-color);cursor:pointer}
 .ra-link{color:var(--accent-color);text-decoration:underline;text-underline-offset:2px}
 
+/* Gorusme turu */
+.ra-gorusme{margin-bottom:1.5rem}
+.ra-gorusme-label{display:block;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;font-weight:700;color:var(--primary-color);font-family:var(--font);margin-bottom:.5rem}
+.ra-gorusme-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.ra-gorusme-grid.is-single{grid-template-columns:1fr;max-width:320px}
+.ra-gorusme-card{display:flex;align-items:center;gap:.7rem;text-align:left;padding:.9rem 1rem;border:1.5px solid #e5e7eb;border-radius:.75rem;background:#fff;cursor:pointer;font-family:var(--font);transition:all .25s ease}
+.ra-gorusme-card:hover{border-color:var(--accent-color);transform:translateY(-2px);box-shadow:0 10px 26px rgba(0,0,0,.06)}
+.ra-gorusme-card.is-selected{border-color:var(--accent-color);background:var(--secondary-color);box-shadow:0 0 0 1.5px var(--accent-color)}
+.ra-gorusme-check{position:relative;flex:0 0 auto;width:18px;height:18px;border-radius:50%;border:2px solid #d1d5db;transition:all .2s}
+.ra-gorusme-card.is-selected .ra-gorusme-check{border-color:var(--accent-color);background:var(--accent-color)}
+.ra-gorusme-card.is-selected .ra-gorusme-check::after{content:'';position:absolute;left:4px;top:1px;width:5px;height:9px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+.ra-gorusme-icon{flex:0 0 auto;color:var(--accent-color);display:inline-flex}
+.ra-gorusme-icon svg{width:22px;height:22px}
+.ra-gorusme-body{display:flex;flex-direction:column;gap:.1rem;min-width:0}
+.ra-gorusme-title{font-family:var(--display);font-size:1rem;color:var(--primary-color);font-weight:600;line-height:1.25}
+.ra-gorusme-meta{font-size:.75rem;color:#6b7280}
+
 /* Actions & buttons */
 .ra-actions{display:flex;justify-content:center;margin-top:2rem}
 .ra-actions-split{justify-content:space-between;gap:1rem;flex-wrap:wrap}
@@ -277,6 +338,7 @@
     .ra-progress-dot{width:36px;height:36px;font-size:.85rem}
     .ra-progress-label{font-size:.6rem}
     .ra-field-grid{grid-template-columns:1fr}
+    .ra-gorusme-grid{grid-template-columns:1fr}
     .ra-title{font-size:1.35rem}
     .ra-services-grid{grid-template-columns:1fr}
     .ra-day{padding:.55rem .1rem}
@@ -477,12 +539,31 @@
         } catch { hataGoster('Saatler yüklenemedi. Sayfayı yenileyip tekrar deneyin.'); }
     }
 
+    /* --- Görüşme türü (yüz yüze / online) --- */
+    const gorusmeInput = document.getElementById('ra-gorusme-tipi');
+    function gorusmeEtiket(){
+        return gorusmeInput && gorusmeInput.value === 'online' ? 'Online görüşme' : 'Yüz yüze';
+    }
+    document.querySelectorAll('.ra-gorusme-card').forEach(b => {
+        b.addEventListener('click', () => {
+            document.querySelectorAll('.ra-gorusme-card').forEach(x => {
+                x.classList.remove('is-selected');
+                x.setAttribute('aria-pressed', 'false');
+            });
+            b.classList.add('is-selected');
+            b.setAttribute('aria-pressed', 'true');
+            if (gorusmeInput) gorusmeInput.value = b.dataset.value;
+            if (state.saat) ozetGoster();
+        });
+    });
+
     /* --- Adım 4: Bilgiler --- */
     function ozetGoster(){
         document.getElementById('ra-ozet').innerHTML = `
             <div class="ra-summary-row"><span class="ra-summary-label">Hizmet</span><span class="ra-summary-value">${state.hizmet.ad}</span></div>
             <div class="ra-summary-row"><span class="ra-summary-label">Tarih</span><span class="ra-summary-value">${state.tarihGoster}</span></div>
-            <div class="ra-summary-row"><span class="ra-summary-label">Saat</span><span class="ra-summary-value">${state.saat}</span></div>`;
+            <div class="ra-summary-row"><span class="ra-summary-label">Saat</span><span class="ra-summary-value">${state.saat}</span></div>
+            <div class="ra-summary-row"><span class="ra-summary-label">Görüşme</span><span class="ra-summary-value">${gorusmeEtiket()}</span></div>`;
     }
 
     document.getElementById('ra-form').addEventListener('submit', async (e) => {
@@ -506,7 +587,8 @@
             });
             const j = await r.json();
             if (r.ok && (j.success || j.data)){
-                document.getElementById('ra-basari-mesaj').textContent = j.message || `${state.tarihGoster} saat ${state.saat} için randevunuz oluşturuldu. Onay için sizinle iletişime geçeceğiz.`;
+                document.getElementById('ra-basari-mesaj').textContent = j.message
+                    || `${state.tarihGoster} saat ${state.saat} · ${gorusmeEtiket()} randevunuz oluşturuldu. Onay için sizinle iletişime geçeceğiz.`;
                 stepGoster(5);
             } else {
                 hataGoster(j.message || 'Randevu oluşturulamadı. Bilgilerinizi kontrol edin.');
