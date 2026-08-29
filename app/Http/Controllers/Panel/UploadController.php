@@ -31,7 +31,10 @@ class UploadController extends Controller
 
         $file = $request->file('file');
         $klasor = 'uploads/panel/'.now()->format('Y-m');
-        $ad = Str::random(20).'.'.$file->getClientOriginalExtension();
+        // Istemciden gelen uzanti yerine DOGRULANMIS MIME'dan turetilen uzanti;
+        // uzanti/icerik uyusmazligi olusmasin.
+        $uzanti = $file->extension() ?: $file->getClientOriginalExtension();
+        $ad = Str::random(20).'.'.$uzanti;
 
         $path = $file->storeAs($klasor, $ad, 'public');
 
