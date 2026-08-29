@@ -6,7 +6,7 @@
 @section('icerik')
 @php
     $photo = $doktor['profil_resmi']
-        ?? 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=1000&q=80';
+        ?? image_placeholder();
     $mezuniyet = $doktor['mezuniyet'] ?? [];
     $egitim = $doktor['egitim'] ?? [];
 @endphp

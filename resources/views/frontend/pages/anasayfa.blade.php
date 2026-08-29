@@ -7,7 +7,7 @@
 @php
     $slider = $doktor['slider'] ?? [];
     $photo = $doktor['profil_resmi']
-        ?? 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=1000&q=80';
+        ?? image_placeholder();
     $bolum = $doktor['anasayfa_bolumler'] ?? [];
     $basliklar = $doktor['bolum_basliklar'] ?? [];
     $sira = $doktor['anasayfa_sira'] ?? [
