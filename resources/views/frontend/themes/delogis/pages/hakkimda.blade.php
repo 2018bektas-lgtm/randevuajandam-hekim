@@ -24,7 +24,7 @@
             <div class="col-xl-6 col-lg-5">
                 <div class="about-four__left">
                     <div class="about-four__img">
-                        <img src="{{ $photo }}" alt="{{ $ad }}">
+                        <img src="{{ $photo }}" alt="{{ $ad }}" loading="lazy" decoding="async">
                     </div>
                 </div>
             </div>

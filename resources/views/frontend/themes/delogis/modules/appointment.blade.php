@@ -7,10 +7,10 @@
 @endphp
 <section class="contact-one" id="randevu">
     <div class="contact-one__shape-1 float-bob-x">
-        <img src="{{ $dg }}/images/shapes/contact-one-shape-1.png" alt="">
+        <img src="{{ $dg }}/images/shapes/contact-one-shape-1.png" alt="" loading="lazy" decoding="async">
     </div>
     <div class="contact-one__shape-2">
-        <img src="{{ $dg }}/images/shapes/contact-one-shape-2.png" alt="">
+        <img src="{{ $dg }}/images/shapes/contact-one-shape-2.png" alt="" loading="lazy" decoding="async">
     </div>
     <div class="container">
         <div class="row">

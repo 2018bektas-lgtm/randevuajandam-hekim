@@ -28,7 +28,7 @@
                         <div class="post-featured-image">
                             <figure>
                                 <a href="{{ $href }}" class="image-anime" data-cursor-text="İncele">
-                                    <img src="{{ $y['image'] ?? asset('vendor/hipno/images/post-'.(($loop->index % 6) + 1).'.jpg') }}" alt="{{ $y['baslik'] ?? '' }}">
+                                    <img src="{{ $y['image'] ?? asset('vendor/hipno/images/post-'.(($loop->index % 6) + 1).'.jpg') }}" alt="{{ $y['baslik'] ?? '' }}" loading="lazy" decoding="async">
                                 </a>
                             </figure>
                         </div>

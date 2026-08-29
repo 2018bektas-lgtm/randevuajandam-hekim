@@ -28,7 +28,7 @@
                         <div class="case-study-image">
                             <a href="{{ $href }}" data-cursor-text="İncele">
                                 <figure>
-                                    <img src="{{ $y['image'] ?? asset('vendor/hipno/images/case-study-img-'.(($loop->index % 3) + 1).'.jpg') }}" alt="{{ $y['baslik'] ?? '' }}">
+                                    <img src="{{ $y['image'] ?? asset('vendor/hipno/images/case-study-img-'.(($loop->index % 3) + 1).'.jpg') }}" alt="{{ $y['baslik'] ?? '' }}" loading="lazy" decoding="async">
                                 </figure>
                             </a>
                         </div>

@@ -11,7 +11,7 @@
             <div class="col-lg-12">
                 <div class="cta-box">
                     <div class="cta-box-image">
-                        <img src="{{ $resim }}" alt="">
+                        <img src="{{ $resim }}" alt="{{ trim((string) ($doktor['unvan'] ?? '').' '.(string) ($doktor['ad_soyad'] ?? 'Hekim')) }}" loading="lazy" decoding="async">
                     </div>
                     <div class="cta-box-content">
                         <div class="section-title">

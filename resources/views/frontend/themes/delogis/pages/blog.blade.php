@@ -53,7 +53,7 @@
                         <div class="blog-four__single dg-card">
                             <div class="blog-four__single__image dg-card__media">
                                 @if($bImg)
-                                    <img src="{{ $bImg }}" alt="{{ $bTitle }}">
+                                    <img src="{{ $bImg }}" alt="{{ $bTitle }}" loading="lazy" decoding="async">
                                 @else
                                     <div class="dg-card__img--empty" aria-hidden="true"></div>
                                 @endif

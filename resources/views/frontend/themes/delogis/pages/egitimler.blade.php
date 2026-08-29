@@ -32,7 +32,7 @@
                         <div class="services-three__single dg-card">
                             <div class="dg-card__media dg-card__img">
                                 @if($img)
-                                    <img src="{{ $img }}" alt="{{ $ad }}">
+                                    <img src="{{ $img }}" alt="{{ $ad }}" loading="lazy" decoding="async">
                                 @else
                                     <div class="dg-card__img--empty"><span class="icon-help"></span></div>
                                 @endif

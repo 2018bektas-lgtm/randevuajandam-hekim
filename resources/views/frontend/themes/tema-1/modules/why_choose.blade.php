@@ -21,7 +21,7 @@
                 <div class="why-choose-us-box">
                     <div class="why-choose-image">
                         <figure class="image-anime reveal">
-                            <img src="{{ $foto1 }}" alt="">
+                            <img src="{{ $foto1 }}" alt="{{ trim((string) ($doktor['unvan'] ?? '').' '.(string) ($doktor['ad_soyad'] ?? 'Hekim')) }}" loading="lazy" decoding="async">
                         </figure>
                     </div>
                     <div class="why-choose-content">
@@ -53,7 +53,7 @@
                         <div class="why-choose-body">
                             <div class="why-choose-body-image">
                                 <figure class="image-anime reveal">
-                                    <img src="{{ $foto2 }}" alt="">
+                                    <img src="{{ $foto2 }}" alt="{{ trim((string) ($doktor['unvan'] ?? '').' '.(string) ($doktor['ad_soyad'] ?? 'Hekim')) }}" loading="lazy" decoding="async">
                                 </figure>
                             </div>
                             <div class="why-choose-body-content wow fadeInUp">

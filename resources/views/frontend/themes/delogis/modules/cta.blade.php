@@ -32,7 +32,7 @@
 @else
 <section class="cta-one">
     <div class="cta-one__shape-1 float-bob-x">
-        <img src="{{ $dg }}/images/shapes/cta-one-shape-1.png" alt="">
+        <img src="{{ $dg }}/images/shapes/cta-one-shape-1.png" alt="" loading="lazy" decoding="async">
     </div>
     <div class="container">
         <div class="cta-one__inner">

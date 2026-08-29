@@ -59,7 +59,7 @@
             <div class="col-lg-8">
                 @if(!empty($hizmet['image']))
                 <figure class="image-anime" style="margin-bottom:2rem;border-radius:.5rem;overflow:hidden">
-                    <img src="{{ $hizmet['image'] }}" alt="{{ $hizmet['baslik'] }}" style="width:100%;height:400px;object-fit:cover">
+                    <img src="{{ $hizmet['image'] }}" alt="{{ $hizmet['baslik'] }}" style="width:100%;height:400px;object-fit:cover" loading="lazy" decoding="async">
                 </figure>
                 @endif
 

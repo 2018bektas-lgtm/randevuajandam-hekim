@@ -27,7 +27,7 @@
                     <div class="col-xl-4 col-lg-6 col-md-6 wow fadeInUp" data-wow-delay="{{ ($idx % 3 + 1) * 100 }}ms">
                         <div class="gallery-page__single">
                             <div class="gallery-page__img">
-                                <img src="{{ $src }}" alt="{{ $alt }}" style="width:100%;height:260px;object-fit:cover;border-radius:12px">
+                                <img src="{{ $src }}" alt="{{ $alt }}" style="width:100%;height:260px;object-fit:cover;border-radius:12px" loading="lazy" decoding="async">
                                 <div class="gallery-page__icon">
                                     <a class="img-popup" href="{{ $src }}"><span class="icon-plus-1"></span></a>
                                 </div>

@@ -19,13 +19,13 @@
             <div class="col-xl-4 col-lg-5">
                 <div class="about-one__left">
                     <div class="about-one__img">
-                        <img src="{{ $img }}" alt="{{ $ad }}">
+                        <img src="{{ $img }}" alt="{{ $ad }}" loading="lazy" decoding="async">
                         <div class="about-one__curved-circle-box">
                             <div class="curved-circle">
                                 <span class="curved-circle--item">{{ decode_text($doktor['uzmanlik'] ?? 'Danışmanlık') }}</span>
                             </div>
                             <div class="about-one__curved-circle-icon">
-                                <img src="{{ $dg }}/images/icon/about-one-curved-circle-icon.png" alt="">
+                                <img src="{{ $dg }}/images/icon/about-one-curved-circle-icon.png" alt="" loading="lazy" decoding="async">
                             </div>
                         </div>
                     </div>
@@ -91,7 +91,7 @@
             <div class="col-xl-5 col-lg-5">
                 <div class="about-two__left">
                     <div class="about-two__img-box">
-                        <div class="about-two__img"><img src="{{ $img }}" alt="{{ $ad }}"></div>
+                        <div class="about-two__img"><img src="{{ $img }}" alt="{{ $ad }}" loading="lazy" decoding="async"></div>
                     </div>
                 </div>
             </div>
@@ -140,7 +140,7 @@
             </div>
             @if($img)
             <div class="col-lg-6">
-                <div class="about-five__image"><img src="{{ $img }}" alt="{{ $ad }}"></div>
+                <div class="about-five__image"><img src="{{ $img }}" alt="{{ $ad }}" loading="lazy" decoding="async"></div>
             </div>
             @endif
         </div>
@@ -153,7 +153,7 @@
         <div class="row">
             @if($img)
             <div class="col-lg-6">
-                <div class="about-six__image"><img src="{{ $img }}" alt="{{ $ad }}"></div>
+                <div class="about-six__image"><img src="{{ $img }}" alt="{{ $ad }}" loading="lazy" decoding="async"></div>
             </div>
             @endif
             <div class="{{ $img ? 'col-lg-6' : 'col-12' }}">
@@ -222,7 +222,7 @@
                 <div class="col-xl-5">
                     <div class="about-three__right">
                         <div class="about-three__img-box">
-                            <div class="about-three__img"><img src="{{ $img }}" alt="{{ $ad }}"></div>
+                            <div class="about-three__img"><img src="{{ $img }}" alt="{{ $ad }}" loading="lazy" decoding="async"></div>
                         </div>
                     </div>
                 </div>

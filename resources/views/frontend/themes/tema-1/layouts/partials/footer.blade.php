@@ -65,7 +65,7 @@
                 <div class="footer-logo">
                     <a href="{{ route('frontend.anasayfa') }}" class="footer-brand">
                         @if(!empty($doktor['logo']))
-                            <img src="{{ $doktor['logo'] }}" alt="{{ $doktorAd }}">
+                            <img src="{{ $doktor['logo'] }}" alt="{{ $doktorAd }}" loading="lazy" decoding="async">
                         @else
                             <span class="footer-wordmark">
                                 @if($unvan !== '')

@@ -128,7 +128,7 @@
                                                 data-search="{{ e($search) }}">
                                             <span class="mp-book-svc-media {{ $img ? '' : 'is-empty' }}">
                                                 @if($img)
-                                                    <img src="{{ $img }}" alt="" loading="lazy">
+                                                    <img src="{{ $img }}" alt="{{ $ad }}" loading="lazy">
                                                 @else
                                                     <span class="icon-form" aria-hidden="true"></span>
                                                 @endif

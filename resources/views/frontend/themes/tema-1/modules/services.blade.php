@@ -32,7 +32,7 @@
                         <div class="service-image">
                             <a href="{{ $href }}" data-cursor-text="İncele">
                                 <figure class="image-anime">
-                                    <img src="{{ $gorsel ?: asset('vendor/hipno/images/service-image-'.(($loop->index % 6) + 1).'.jpg') }}" alt="{{ $baslik }}">
+                                    <img src="{{ $gorsel ?: asset('vendor/hipno/images/service-image-'.(($loop->index % 6) + 1).'.jpg') }}" alt="{{ $baslik }}" loading="lazy" decoding="async">
                                 </figure>
                             </a>
                         </div>

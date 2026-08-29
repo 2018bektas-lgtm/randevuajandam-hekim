@@ -36,9 +36,9 @@
                             <div class="item">
                                 <div class="testimonial-one__single">
                                     <div class="testimonial-one__img">
-                                        <img src="{{ $y['foto'] ?? $y['avatar'] ?? $dg.'/images/testimonial/testimonial-1-1.jpg' }}" alt="">
+                                        <img src="{{ $y['foto'] ?? $y['avatar'] ?? $dg.'/images/testimonial/testimonial-1-1.jpg' }}" alt="{{ $y['ad'] ?? 'Danisan' }}" loading="lazy" decoding="async">
                                         <div class="testimonial-one__quote">
-                                            <img src="{{ $dg }}/images/icon/icon-quote.png" alt="">
+                                            <img src="{{ $dg }}/images/icon/icon-quote.png" alt="" loading="lazy" decoding="async">
                                         </div>
                                     </div>
                                     <div class="testimonial-one__content">

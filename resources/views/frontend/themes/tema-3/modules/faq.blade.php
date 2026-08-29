@@ -21,7 +21,7 @@
                             @foreach(['customer-img-1.jpg','customer-img-2.jpg','customer-img-3.jpg','customer-img-4.jpg'] as $ci)
                                 <div class="customer-img">
                                     <figure class="image-anime reveal">
-                                        <img src="{{ asset('vendor/hipno/images/'.$ci) }}" alt="">
+                                        <img src="{{ asset('vendor/hipno/images/'.$ci) }}" alt="" aria-hidden="true" loading="lazy" decoding="async">
                                     </figure>
                                 </div>
                             @endforeach

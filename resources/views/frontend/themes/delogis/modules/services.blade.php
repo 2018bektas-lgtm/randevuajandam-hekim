@@ -80,7 +80,7 @@
                 <div class="col-xl-4 col-lg-4 wow fadeInUp" data-wow-delay="{{ ($idx + 1) * 100 }}ms">
                     <div class="services-two__single">
                         <div class="services-two__img-box">
-                            <div class="services-two__img"><img src="{{ $hImg }}" alt="{{ $hAd }}"></div>
+                            <div class="services-two__img"><img src="{{ $hImg }}" alt="{{ $hAd }}" loading="lazy" decoding="async"></div>
                             <div class="services-two__icon"><span class="{{ $ikon }}"></span></div>
                         </div>
                         <div class="services-two__content">
@@ -128,7 +128,7 @@
                             <a href="{{ $href }}" class="services-four__single__rm">İncele</a>
                         </div>
                         <div class="services-four__single__bottom">
-                            <div class="services-four__single__img"><img src="{{ $hImg }}" alt="{{ $hAd }}"></div>
+                            <div class="services-four__single__img"><img src="{{ $hImg }}" alt="{{ $hAd }}" loading="lazy" decoding="async"></div>
                             <a href="{{ $href }}" class="services-four__single__btn"><i class="delogis-icons-two-right-arrow"></i></a>
                         </div>
                     </div>
@@ -169,7 +169,7 @@
                             <p class="services-five__single__text">{{ plain_text($h['aciklama'] ?? $h['ozet'] ?? '', 90) }}</p>
                         </div>
                         <div class="services-five__single__img">
-                            <img src="{{ $hImg }}" alt="{{ $hAd }}">
+                            <img src="{{ $hImg }}" alt="{{ $hAd }}" loading="lazy" decoding="async">
                             <a href="{{ $href }}" class="services-five__single__btn">
                                 <span class="services-five__single__btn__front"><span class="delogis-icons-two-right-arrow"></span></span>
                                 <span class="services-five__single__btn__back"><span class="delogis-icons-two-right-arrow"></span>İncele</span>
@@ -216,7 +216,7 @@
                     <div class="col-xl-3 col-lg-6 col-md-6 wow fadeInUp" data-wow-delay="{{ ($idx + 1) * 100 }}ms">
                         <div class="services-three__single">
                             <div class="services-three__img-box">
-                                <div class="services-three__img"><img src="{{ $hImg }}" alt="{{ $hAd }}"></div>
+                                <div class="services-three__img"><img src="{{ $hImg }}" alt="{{ $hAd }}" loading="lazy" decoding="async"></div>
                                 <div class="services-three__icon"><span class="{{ $ikon }}"></span></div>
                             </div>
                             <div class="services-three__content">

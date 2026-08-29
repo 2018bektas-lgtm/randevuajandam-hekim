@@ -20,7 +20,7 @@
             <div class="container">
                 <a class="navbar-brand" href="{{ route('frontend.anasayfa') }}">
                     @if(!empty($doktor['logo']))
-                        <img src="{{ $doktor['logo'] }}" alt="{{ $doktorAd }}" style="max-height:44px;width:auto">
+                        <img src="{{ $doktor['logo'] }}" alt="{{ $doktorAd }}" style="max-height:44px;width:auto" loading="lazy" decoding="async">
                     @else
                         <span style="font-family:var(--accent-font,'Marcellus',serif);color:#fff;font-size:1.25rem;line-height:1.2">
                             {{ $doktorAd }}

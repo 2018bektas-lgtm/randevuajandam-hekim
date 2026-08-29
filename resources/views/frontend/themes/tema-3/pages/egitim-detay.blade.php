@@ -79,7 +79,7 @@
             <div class="col-lg-8">
                 @if(!empty($egitim['image']))
                 <figure class="image-anime" style="margin-bottom:2rem;border-radius:.5rem;overflow:hidden">
-                    <img src="{{ $egitim['image'] }}" alt="{{ $egitim['baslik'] }}" style="width:100%;max-height:420px;object-fit:cover">
+                    <img src="{{ $egitim['image'] }}" alt="{{ $egitim['baslik'] }}" style="width:100%;max-height:420px;object-fit:cover" loading="lazy" decoding="async">
                 </figure>
                 @endif
 

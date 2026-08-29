@@ -58,7 +58,7 @@
 {{-- index3 site-footer birebir yapı --}}
 <footer class="site-footer">
     <div class="site-footer__shape-1 float-bob-y">
-        <img src="{{ $dg }}/images/shapes/site-footer-shape-1.png" alt="">
+        <img src="{{ $dg }}/images/shapes/site-footer-shape-1.png" alt="" loading="lazy" decoding="async">
     </div>
     <div class="site-footer__top">
         <div class="container">
@@ -77,7 +77,7 @@
                 <div class="site-footer__top-right">
                     @if(file_exists(public_path('themes/delogis/images/shapes/site-footer-social-shape.png')))
                         <div class="site-footer__social-shape-1 float-bob-y">
-                            <img src="{{ $dg }}/images/shapes/site-footer-social-shape.png" alt="" class="zoom-fade">
+                            <img src="{{ $dg }}/images/shapes/site-footer-social-shape.png" alt="" class="zoom-fade" loading="lazy" decoding="async">
                         </div>
                     @endif
                     @if(count($sosyal))
@@ -113,7 +113,7 @@
                         <div class="footer-widget__logo">
                             <a href="{{ route('frontend.anasayfa') }}">
                                 @if($logo)
-                                    <img src="{{ $logo }}" alt="{{ $adSoyad }}">
+                                    <img src="{{ $logo }}" alt="{{ $adSoyad }}" loading="lazy" decoding="async">
                                 @else
                                     <span class="dg-footer-logo-text">{{ $adSoyad }}</span>
                                 @endif

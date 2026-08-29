@@ -18,7 +18,7 @@
             <div class="col-xl-8 col-lg-7">
                 @if(!empty($e['image']))
                     <div class="services-details__img" style="margin-bottom:24px">
-                        <img src="{{ $e['image'] }}" alt="{{ $ad }}">
+                        <img src="{{ $e['image'] }}" alt="{{ $ad }}" loading="lazy" decoding="async">
                     </div>
                 @endif
                 <h3 class="services-details__title-1">{{ $ad }}</h3>

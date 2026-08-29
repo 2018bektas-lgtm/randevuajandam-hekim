@@ -29,12 +29,12 @@
                 <div class="col-xl-4 col-lg-4 wow fadeInUp" data-wow-delay="{{ ($idx + 1) * 100 }}ms">
                     <div class="feature-one__single">
                         <div class="feature-one__img-box">
-                            <div class="feature-one__img"><img src="{{ $kImg }}" alt="{{ $k['baslik'] }}"></div>
+                            <div class="feature-one__img"><img src="{{ $kImg }}" alt="{{ $k['baslik'] }}" loading="lazy" decoding="async"></div>
                             <div class="feature-one__hover-content">
                                 <div class="feature-one__hover-icon"><span class="{{ $ikon }}"></span></div>
                                 <div class="feature-one__hover-content-inner">
                                     <div class="feature-one__shape-1">
-                                        <img src="{{ $dg }}/images/shapes/feature-one-shape-1.png" alt="">
+                                        <img src="{{ $dg }}/images/shapes/feature-one-shape-1.png" alt="" loading="lazy" decoding="async">
                                     </div>
                                     <h3 class="feature-one__hover-title"><a href="{{ $href }}">{{ decode_text($k['baslik']) }}</a></h3>
                                     @if(!empty($k['metin']))
@@ -86,7 +86,7 @@
                 @endphp
                 <div class="col-xl-4 col-lg-4 wow fadeInUp" data-wow-delay="{{ ($idx + 1) * 100 }}ms">
                     <div class="feature-two__single">
-                        <div class="feature-two__img"><img src="{{ $kImg }}" alt="{{ $k['baslik'] }}"></div>
+                        <div class="feature-two__img"><img src="{{ $kImg }}" alt="{{ $k['baslik'] }}" loading="lazy" decoding="async"></div>
                         <div class="feature-two__content">
                             <div class="feature-two__icon"><span class="{{ $ikon }}"></span></div>
                             <h3 class="feature-two__title">{{ decode_text($k['baslik']) }}</h3>

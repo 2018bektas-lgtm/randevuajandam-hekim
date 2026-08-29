@@ -105,6 +105,8 @@
 <link rel="stylesheet" href="{{ asset('vendor/hipno/css/magnific-popup.css') }}">
 <link rel="stylesheet" href="{{ asset('vendor/hipno/css/mousecursor.css') }}">
 <link rel="stylesheet" href="{{ asset('css/themes/'.$temaCssId.'.css') }}?v=2">
+{{-- Kucuk ekran duzeltmeleri: tema CSS'i 767px altinda kirilma noktasi icermiyor --}}
+<link rel="stylesheet" href="{{ asset('css/themes/kucuk-ekran.css') }}?v=1">
 <style>
 :root {
   /* Legacy brand-scale (eski hipno CSS uyumu icin) */
@@ -137,5 +139,23 @@
 </style>
 
 <script type="application/ld+json">{!! json_encode(array_filter($schema, fn ($v) => $v !== null && $v !== ''), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
+
+{{--
+    JS calismazsa gorunmez kalan ogeler icin guvenlik agi.
+
+    Tema CSS'inde `.reveal { visibility: hidden }` var ve gorunurlugu yalnizca
+    GSAP aciyor. JS hatasi, engelleyici eklenti veya CDN/varlik yuklenememesi
+    durumunda hekim fotograflari ve bolum gorselleri KALICI olarak gorunmez
+    kaliyordu. Asagidaki iki katman bunu engelliyor:
+      1) <noscript>: JS tamamen kapaliysa
+      2) script.blade.php icindeki zaman asimi: JS var ama animasyon calismadiysa
+--}}
+<noscript>
+    <style>
+        .reveal { visibility: visible !important; }
+        .image-anime { opacity: 1 !important; clip-path: none !important; }
+        .text-anime-style-2 { opacity: 1 !important; }
+    </style>
+</noscript>
 
 @stack('head')

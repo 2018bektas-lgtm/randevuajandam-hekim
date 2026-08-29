@@ -15,10 +15,36 @@
 <script src="{{ asset('vendor/hipno/js/wow.min.js') }}"></script>
 <script>
 (function($) {
-    // Preloader
-    $(window).on('load', function() {
-        $('.preloader').fadeOut(600);
-    });
+    /*
+     * Preloader.
+     *
+     * Eskiden yalnizca `window.load` bekleniyordu: TUM gorseller ve 15 JS
+     * dosyasi inene kadar sayfa tam ekran ortulu kaliyor, kullanici hazir
+     * icerigi goremiyor ve LCP olcumu bozuluyordu. Ayrica tek bir varlik
+     * yuklenemezse preloader HIC kapanmiyordu.
+     *
+     * Simdi: DOM hazir olunca kisa bir gecikmeyle kapat, `window.load` daha
+     * once gelirse hemen kapat, her kosulda 2.5 sn'lik guvenlik zaman asimi
+     * uygula. Hareket azaltma tercihi varsa animasyonsuz gizle.
+     */
+    var raPreloaderKapandi = false;
+    function raPreloaderKapat() {
+        if (raPreloaderKapandi) { return; }
+        raPreloaderKapandi = true;
+
+        var azaltilmisHareket = window.matchMedia
+            && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        if (azaltilmisHareket) {
+            $('.preloader').hide();
+        } else {
+            $('.preloader').fadeOut(400);
+        }
+    }
+
+    $(document).ready(function() { setTimeout(raPreloaderKapat, 200); });
+    $(window).on('load', raPreloaderKapat);
+    setTimeout(raPreloaderKapat, 2500);   // guvenlik agi
 
     $(document).ready(function() {
         // Mobile nav
@@ -142,6 +168,26 @@
                 );
             });
         }
+
+        /*
+         * Guvenlik agi: GSAP yuklenmediyse ya da animasyon calismadiysa
+         * `.reveal` (CSS'te visibility:hidden) ogeleri kalici gorunmez kalir.
+         * 2.5 sn sonra hala gizliyse zorla goster — icerik kaybolmasin.
+         */
+        setTimeout(function () {
+            document.querySelectorAll('.reveal').forEach(function (el) {
+                if (getComputedStyle(el).visibility === 'hidden') {
+                    el.style.visibility = 'visible';
+                }
+            });
+            document.querySelectorAll('.image-anime').forEach(function (el) {
+                var s = getComputedStyle(el);
+                if (parseFloat(s.opacity) === 0) {
+                    el.style.opacity = '1';
+                    el.style.clipPath = 'none';
+                }
+            });
+        }, 2500);
     });
 })(jQuery);
 </script>

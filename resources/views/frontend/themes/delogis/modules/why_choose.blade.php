@@ -68,7 +68,7 @@
             @if($img)
             <div class="col-xl-6">
                 <div class="why-choose-two__right">
-                    <div class="why-choose-two__img"><img src="{{ $img }}" alt="{{ $ad }}"></div>
+                    <div class="why-choose-two__img"><img src="{{ $img }}" alt="{{ $ad }}" loading="lazy" decoding="async"></div>
                 </div>
             </div>
             @endif
@@ -83,7 +83,7 @@
             @if($img)
             <div class="col-lg-6">
                 <div class="why-choose-five__image wow slideInLeft" data-wow-delay="100ms">
-                    <img src="{{ $img }}" alt="{{ $ad }}">
+                    <img src="{{ $img }}" alt="{{ $ad }}" loading="lazy" decoding="async">
                     @if($tel)
                     <div class="why-choose-five__info wow fadeInUp" data-wow-delay="200ms">
                         <div class="why-choose-five__info__icon"><span class="delogis-icons-two-phone-call"></span></div>
@@ -138,7 +138,7 @@
             </div>
             @if($img)
             <div class="col-lg-6">
-                <img src="{{ $img }}" alt="{{ $ad }}">
+                <img src="{{ $img }}" alt="{{ $ad }}" loading="lazy" decoding="async">
             </div>
             @endif
         </div>
@@ -153,7 +153,7 @@
             <div class="col-xl-6">
                 <div class="why-choose-three__left">
                     <div class="why-choose-three__img-box">
-                        <div class="why-choose-three__img"><img src="{{ $img }}" alt="{{ $ad }}"></div>
+                        <div class="why-choose-three__img"><img src="{{ $img }}" alt="{{ $ad }}" loading="lazy" decoding="async"></div>
                     </div>
                 </div>
             </div>

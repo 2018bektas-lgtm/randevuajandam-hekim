@@ -9,7 +9,7 @@
 <section class="get-one">
     <div class="get-one__bg" style="background-image: url({{ $dg }}/images/backgrounds/get-one-bg.jpg);"></div>
     <div class="get-one__img-box">
-        <div class="get-one__img"><img src="{{ $img }}" alt="{{ $ad }}"></div>
+        <div class="get-one__img"><img src="{{ $img }}" alt="{{ $ad }}" loading="lazy" decoding="async"></div>
         @if($yt !== '')
         <div class="get-one__video-link">
             <a href="https://www.youtube.com/watch?v={{ $yt }}" class="video-popup">
@@ -21,8 +21,8 @@
         </div>
         @endif
     </div>
-    <div class="get-one__shape-1 float-bob-y"><img src="{{ $dg }}/images/shapes/get-one-shape-1.png" alt=""></div>
-    <div class="get-one__shape-2 float-bob-x"><img src="{{ $dg }}/images/shapes/get-one-shape-2.png" alt=""></div>
+    <div class="get-one__shape-1 float-bob-y"><img src="{{ $dg }}/images/shapes/get-one-shape-1.png" alt="" loading="lazy" decoding="async"></div>
+    <div class="get-one__shape-2 float-bob-x"><img src="{{ $dg }}/images/shapes/get-one-shape-2.png" alt="" loading="lazy" decoding="async"></div>
     <div class="container">
         <div class="row">
             <div class="col-xl-6 col-lg-8">

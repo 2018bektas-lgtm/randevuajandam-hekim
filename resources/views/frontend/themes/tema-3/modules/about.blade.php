@@ -23,7 +23,7 @@
                     <div class="about-us-images is-single">
                         <div class="about-img-1">
                             <figure class="image-anime">
-                                <img src="{{ $img }}" alt="{{ $doktorAd }}">
+                                <img src="{{ $img }}" alt="{{ $doktorAd }}" loading="lazy" decoding="async">
                             </figure>
                         </div>
                     </div>

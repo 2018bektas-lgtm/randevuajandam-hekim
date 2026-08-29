@@ -22,7 +22,7 @@
     <div class="container">
         <div class="faq-search-box__inner">
             <div class="faq-search-box__shape float-bob-x">
-                <img src="{{ $dg }}/images/shapes/faq-search-shape-1.png" alt="">
+                <img src="{{ $dg }}/images/shapes/faq-search-shape-1.png" alt="" loading="lazy" decoding="async">
             </div>
             <div class="faq-search-box__left">
                 <h3 class="faq-search-box__title">Sıkça Sorulan Sorular</h3>

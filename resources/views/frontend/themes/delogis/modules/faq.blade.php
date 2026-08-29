@@ -22,7 +22,7 @@
                         <h2 class="section-title__title">{!! $titleHtml($baslik) !!}</h2>
                     </div>
                     <div class="faq-one__img-and-points">
-                        <div class="faq-one__img"><img src="{{ $img }}" alt=""></div>
+                        <div class="faq-one__img"><img src="{{ $img }}" alt="{{ $ad ?? 'Sikca sorulan sorular' }}" loading="lazy" decoding="async"></div>
                         @if(filled($aciklama))
                         <ul class="faq-one__points list-unstyled">
                             <li>

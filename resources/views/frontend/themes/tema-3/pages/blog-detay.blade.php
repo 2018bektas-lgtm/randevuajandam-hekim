@@ -29,7 +29,7 @@
             <div class="col-lg-8">
                 @if(!empty($yazi['image']))
                 <figure class="image-anime" style="margin-bottom:2rem;border-radius:.5rem;overflow:hidden">
-                    <img src="{{ $yazi['image'] }}" alt="{{ $yazi['baslik'] }}" style="width:100%;max-height:450px;object-fit:cover">
+                    <img src="{{ $yazi['image'] }}" alt="{{ $yazi['baslik'] }}" style="width:100%;max-height:450px;object-fit:cover" loading="lazy" decoding="async">
                 </figure>
                 @endif
 
@@ -68,7 +68,7 @@
                 <div class="wow fadeInUp" style="background:var(--secondary-color);padding:2rem;border-radius:.5rem;text-align:center;margin-bottom:2rem">
                     @if($photo)
                     <img src="{{ $photo }}" alt="{{ trim(($doktor['unvan'] ?? '').' '.($doktor['ad_soyad'] ?? '')) }}"
-                         style="width:80px;height:80px;border-radius:50%;object-fit:cover;margin:0 auto 1rem">
+                         style="width:80px;height:80px;border-radius:50%;object-fit:cover;margin:0 auto 1rem" loading="lazy" decoding="async">
                     @endif
                     <h4 style="font-family:var(--accent-font);color:var(--primary-color);margin-bottom:.25rem">
                         {{ trim(($doktor['unvan'] ?? '').' '.($doktor['ad_soyad'] ?? 'Hekim')) }}
@@ -85,7 +85,7 @@
                     <div style="display:flex;gap:1rem;margin-bottom:1.25rem;padding-bottom:1.25rem;border-bottom:1px solid var(--divider-color)">
                         @if(!empty($sy['image']))
                         <img src="{{ $sy['image'] }}" alt="{{ $sy['baslik'] }}"
-                             style="width:70px;height:60px;object-fit:cover;border-radius:.25rem;flex-shrink:0">
+                             style="width:70px;height:60px;object-fit:cover;border-radius:.25rem;flex-shrink:0" loading="lazy" decoding="async">
                         @endif
                         <div>
                             <h4 style="font-size:.88rem;color:var(--primary-color);margin-bottom:.25rem;line-height:1.4">

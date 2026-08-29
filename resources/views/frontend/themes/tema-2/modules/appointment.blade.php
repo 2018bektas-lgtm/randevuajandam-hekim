@@ -21,7 +21,7 @@
                             @if($tel)
                                 <div class="appointment-item wow fadeInUp" data-wow-delay="0.4s">
                                     <div class="icon-box">
-                                        <img src="{{ asset('vendor/hipno/images/icon-appointment-item-1.svg') }}" alt="">
+                                        <img src="{{ asset('vendor/hipno/images/icon-appointment-item-1.svg') }}" alt="" aria-hidden="true" loading="lazy" decoding="async">
                                     </div>
                                     <div class="appointment-item-content">
                                         <h3>Telefon</h3>
@@ -31,7 +31,7 @@
                             @endif
                             <div class="appointment-item wow fadeInUp" data-wow-delay="0.6s">
                                 <div class="icon-box">
-                                    <img src="{{ asset('vendor/hipno/images/icon-appointment-item-2.svg') }}" alt="">
+                                    <img src="{{ asset('vendor/hipno/images/icon-appointment-item-2.svg') }}" alt="" aria-hidden="true" loading="lazy" decoding="async">
                                 </div>
                                 <div class="appointment-item-content">
                                     <h3>{{ $ayar['saat_baslik'] ?? 'Çalışma saatleri' }}</h3>
