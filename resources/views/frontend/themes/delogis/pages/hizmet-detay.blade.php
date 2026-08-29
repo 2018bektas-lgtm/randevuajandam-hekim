@@ -7,7 +7,8 @@
      */
     $h = $hizmet ?? [];
     $hAd = decode_text($h['baslik'] ?? $h['ad'] ?? 'Hizmet');
-    $hDesc = decode_text($h['aciklama'] ?? $h['kisa'] ?? $h['icerik'] ?? '');
+    // {!! $hDesc !!} ile ham basiliyor → safe_html
+    $hDesc = safe_html($h['aciklama'] ?? $h['kisa'] ?? $h['icerik'] ?? '');
     $img = $h['image'] ?? $h['resim'] ?? $h['kapak'] ?? null;
     $sure = decode_text($h['sure'] ?? $h['duration'] ?? null);
     $fiyat = $h['fiyat'] ?? $h['ucret'] ?? null;
@@ -48,7 +49,7 @@
                 <div class="blog-details__left">
                     @if($img)
                         <div class="blog-details__img">
-                            <img src="{{ $img }}" alt="{{ $hAd }}">
+                            <img src="{{ $img }}" alt="{{ $hAd }}" loading="lazy" decoding="async">
                             @if(filled($sure))
                                 <div class="blog-details__date">
                                     <p>
@@ -133,7 +134,7 @@
                                     <li>
                                         @if($pImg)
                                             <div class="sidebar__post-image">
-                                                <img src="{{ $pImg }}" alt="{{ $pTitle }}">
+                                                <img src="{{ $pImg }}" alt="{{ $pTitle }}" loading="lazy" decoding="async">
                                             </div>
                                         @endif
                                         <div class="sidebar__post-content">

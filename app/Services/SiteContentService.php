@@ -230,6 +230,10 @@ class SiteContentService
         if (! empty($genel['vitrin_badge'])) {
             $out['vitrin_badge'] = $genel['vitrin_badge'];
         }
+        // Panelden girilen "Yaklasimim" maddeleri varsayilanlarin yerine gecer
+        if (! empty($genel['yaklasim']) && is_array($genel['yaklasim'])) {
+            $out['ozellikler'] = $genel['yaklasim'];
+        }
         $out['logo'] = $genel['logo_url'] ?? null;
         $out['favicon'] = $genel['favicon_url'] ?? null;
         $out['whatsapp_goster'] = (bool) ($genel['whatsapp_goster'] ?? true);
@@ -376,6 +380,8 @@ class SiteContentService
             'egitim' => [], // özgeçmiş timeline (demo)
             'egitimler' => [], // kurs/webinar ürünleri
             'online_gorusme' => false,
+            'online_randevu_aktif' => true,
+            'yuzyuze_randevu_aktif' => true,
             'features' => [],
             'api_synced' => false,
         ];
@@ -399,6 +405,9 @@ class SiteContentService
         $out['il'] = decode_text($profile['il'] ?? '');
         $out['ilce'] = decode_text($profile['ilce'] ?? '');
         $out['online_gorusme'] = (bool) ($profile['online_gorusme'] ?? false);
+        // Randevu ayarlarindaki gorusme turu anahtarlari — eski API surumlerinde yoksa acik kabul edilir
+        $out['online_randevu_aktif'] = (bool) ($profile['online_randevu_aktif'] ?? true);
+        $out['yuzyuze_randevu_aktif'] = (bool) ($profile['yuzyuze_randevu_aktif'] ?? true);
         $out['randevuya_acik_mi'] = (bool) ($profile['randevuya_acik_mi'] ?? true);
 
         if ($out['klinik_adi'] === '' && $out['ad_soyad'] !== '') {
@@ -407,7 +416,8 @@ class SiteContentService
 
         // Bio
         if (filled($profile['biyografi'] ?? null)) {
-            $bioHtml = decode_text($profile['biyografi']);
+            // {!! !!} ile ham basiliyor → decode + yeniden sanitize (bkz. safe_html)
+            $bioHtml = safe_html($profile['biyografi']);
             $bioText = plain_text($bioHtml);
             $out['bio'] = $bioText;
             $out['bio_html'] = $bioHtml;
@@ -527,7 +537,8 @@ class SiteContentService
         if (! empty($content['bloglar']) && is_array($content['bloglar'])) {
             $out['bloglar'] = collect($content['bloglar'])->map(function ($b) {
                 $b = is_array($b) ? $b : (array) $b;
-                $icerikHtml = decode_text($b['icerik'] ?? '');
+                // Detay sablonlari bunu {!! !!} ile ham basiyor
+                $icerikHtml = safe_html($b['icerik'] ?? '');
                 $plain = plain_text($icerikHtml);
                 $ozet = decode_text($b['ozet'] ?? '');
                 if ($ozet === '') {
@@ -619,13 +630,26 @@ class SiteContentService
             ['adim' => '03', 'baslik' => 'Muayene / değerlendirme', 'aciklama' => 'Şikayetiniz ve öykünüz dinlenir, gerekli tetkikler planlanır.'],
             ['adim' => '04', 'baslik' => 'Tedavi & takip', 'aciklama' => 'Kişiye özel plan ve kontrol randevuları ile süreciniz yönetilir.'],
         ];
-        $out['ozellikler'] = [
+        // Varsayilan "Yaklasimim" maddeleri. Hekim panelden kendi maddelerini
+        // girerse (Site Ayarlari -> Hakkimda) applySiteSettings bunlarin
+        // uzerine yazar; boylece her sitede ayni jenerik metin gorunmez.
+        $out['ozellikler'] = $this->varsayilanYaklasim();
+
+        return $out;
+    }
+
+    /**
+     * Hekim panelden girmediyse kullanilan varsayilan "Yaklasimim" maddeleri.
+     *
+     * @return array<int, array{baslik: string, aciklama: string}>
+     */
+    protected function varsayilanYaklasim(): array
+    {
+        return [
             ['baslik' => 'Güvenli ve gizli görüşme', 'aciklama' => 'Danışan bilgileriniz gizli tutulur; süreç profesyonel etik kurallara uygun yürütülür.'],
             ['baslik' => 'Kişiye özel yaklaşım', 'aciklama' => 'Her danışanın ihtiyaçlarına göre planlanan, yaş ve şikayete uygun değerlendirme.'],
             ['baslik' => 'Kolay randevu', 'aciklama' => 'Size uygun gün ve saati seçerek hızlıca randevu talebi oluşturabilirsiniz.'],
         ];
-
-        return $out;
     }
 
     /**
@@ -816,11 +840,11 @@ class SiteContentService
         $uz = $out['uzmanlik'] ?? 'Hekimlik';
         $il = trim(($out['ilce'] ?? '').(! empty($out['il']) ? ' / '.$out['il'] : ''), ' /');
         $photo = $out['profil_resmi']
-            ?? 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=800&q=80';
+            ?? image_placeholder();
         $clinicImg = $out['galeri'][0]['image']
-            ?? 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=2000&q=85';
+            ?? image_placeholder();
         $svcImg = $out['hizmetler'][0]['image']
-            ?? 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=2000&q=85';
+            ?? image_placeholder();
 
         $slides = [[
             'no' => '01',
@@ -867,7 +891,7 @@ class SiteContentService
             'cta_url' => '/randevu',
             'cta2' => 'İletişim',
             'cta2_url' => '/iletisim',
-            'image' => 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=2000&q=85',
+            'image' => image_placeholder(),
             'thumb' => $photo,
             'badge' => 'Entegrasyon',
             'etiket' => 'Randevu',

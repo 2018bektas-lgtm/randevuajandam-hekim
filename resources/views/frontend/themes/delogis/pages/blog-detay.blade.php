@@ -10,7 +10,7 @@
     $rawIcerik = $y['icerik_html'] ?? $y['icerik'] ?? $y['content'] ?? $y['ozet'] ?? '';
     $icerik = is_array($rawIcerik)
         ? implode('', array_map(fn ($p) => '<p>'.e(decode_text($p)).'</p>', $rawIcerik))
-        : decode_text($rawIcerik);
+        : safe_html($rawIcerik);   // {!! $icerik !!} ile ham basiliyor
     $img = $y['image'] ?? $y['kapak'] ?? $y['resim'] ?? null;
     $author = decode_text($y['yazar'] ?? trim(($doktor['unvan'] ?? '').' '.($doktor['ad_soyad'] ?? 'Hekim')));
     $rawDate = $y['tarih'] ?? $y['created_at'] ?? $y['yayin_tarihi'] ?? null;
@@ -56,7 +56,7 @@
                 <div class="blog-details__left">
                     @if($img)
                         <div class="blog-details__img">
-                            <img src="{{ $img }}" alt="{{ $title }}">
+                            <img src="{{ $img }}" alt="{{ $title }}" loading="lazy" decoding="async">
                             @if($day !== '—' || $mon !== '')
                                 <div class="blog-details__date">
                                     <p>{{ $day }}<br>{{ $mon }}</p>
@@ -125,7 +125,7 @@
                                     <div class="blog-details__pagenation-left">
                                         @if($pImg)
                                             <div class="blog-details__pagenation-left-img">
-                                                <img src="{{ $pImg }}" alt="{{ $pTitle }}">
+                                                <img src="{{ $pImg }}" alt="{{ $pTitle }}" loading="lazy" decoding="async">
                                             </div>
                                         @endif
                                         <div class="blog-details__pagenation-left-content">
@@ -160,7 +160,7 @@
                                         </div>
                                         @if($nImg)
                                             <div class="blog-details__pagenation-right-img">
-                                                <img src="{{ $nImg }}" alt="{{ $nTitle }}">
+                                                <img src="{{ $nImg }}" alt="{{ $nTitle }}" loading="lazy" decoding="async">
                                             </div>
                                         @endif
                                     </div>
@@ -187,7 +187,7 @@
                                     <li>
                                         @if($pImg)
                                             <div class="sidebar__post-image">
-                                                <img src="{{ $pImg }}" alt="{{ $pTitle }}">
+                                                <img src="{{ $pImg }}" alt="{{ $pTitle }}" loading="lazy" decoding="async">
                                             </div>
                                         @endif
                                         <div class="sidebar__post-content">
