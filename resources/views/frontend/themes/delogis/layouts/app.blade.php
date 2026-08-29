@@ -17,19 +17,22 @@
     $boxedClass = function_exists('delogis_is_boxed') && delogis_is_boxed($temaIdNow) ? 'boxed-wrapper' : '';
 @endphp
 <body class="custom-cursor theme-delogis layout-delogis theme-pack-delogis dg-home-{{ $homeV }} {{ $boxedClass }} {{ request()->routeIs('frontend.anasayfa') ? 'dg-home' : 'dg-inner' }}">
+    @include('frontend.partials.erisilebilirlik')
     @include('frontend.layouts.partials.tracking-body')
 
     <div class="custom-cursor__cursor"></div>
     <div class="custom-cursor__cursor-two"></div>
 
     <div class="preloader" style="display:none">
-        <div class="preloader__image" style="background-image:url({{ $dg }}/images/loader.png)"></div>
+        <div class="preloader__image" style="background-image:url({{ $logo ?: $dg.'/images/loader.png' }})"></div>
     </div>
 
     <div class="page-wrapper">
         @include('frontend.themes.delogis.layouts.partials.header', ['doktor' => $doktor ?? [], 'nav' => $nav])
 
-        @yield('icerik')
+        <main id="ana-icerik" tabindex="-1">
+            @yield('icerik')
+        </main>
 
         @include('frontend.themes.delogis.layouts.partials.footer', ['doktor' => $doktor ?? [], 'nav' => $nav])
     </div>
@@ -41,7 +44,7 @@
             <div class="logo-box">
                 <a href="{{ route('frontend.anasayfa') }}" aria-label="logo">
                     @if($logo)
-                        <img src="{{ $logo }}" alt="{{ $adSoyad }}" class="dg-mobile-drawer__logo">
+                        <img src="{{ $logo }}" alt="{{ $adSoyad }}" class="dg-mobile-drawer__logo" loading="lazy" decoding="async">
                     @else
                         <strong class="dg-mobile-drawer__name">{{ $adSoyad }}</strong>
                     @endif

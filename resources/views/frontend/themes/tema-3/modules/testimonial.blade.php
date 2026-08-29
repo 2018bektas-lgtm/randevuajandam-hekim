@@ -6,7 +6,9 @@
 
         return trim((string) $metin) !== '';
     })->take($limit)->values();
-    $logo = $doktor['logo'] ?? asset('vendor/hipno/images/footer-logo.svg');
+    // Yalnızca panelden yüklenen logo; yoksa hipno demo logosu basılmaz.
+    $logo = filled($doktor['logo'] ?? null) ? $doktor['logo'] : null;
+    $logoAd = trim((string) ($doktor['unvan'] ?? '').' '.(string) ($doktor['ad_soyad'] ?? 'Hekim'));
     $sayi = $yorumlar->count();
 @endphp
 
@@ -30,7 +32,11 @@
             <div class="col-lg-4">
                 <div class="testimonial-review-box">
                     <div class="testimonial-site-logo">
-                        <img src="{{ $logo }}" alt="">
+                        @if($logo)
+                            <img src="{{ $logo }}" alt="{{ $logoAd }}" loading="lazy" decoding="async">
+                        @else
+                            <span class="testimonial-site-wordmark">{{ $logoAd }}</span>
+                        @endif
                     </div>
                     <div class="about-customer-rating">
                         @for($i = 0; $i < 5; $i++)
@@ -44,7 +50,7 @@
                         @foreach(['customer-img-1.jpg','customer-img-2.jpg','customer-img-3.jpg','customer-img-4.jpg'] as $ci)
                             <div class="customer-img">
                                 <figure class="image-anime reveal">
-                                    <img src="{{ asset('vendor/hipno/images/'.$ci) }}" alt="">
+                                    <img src="{{ asset('vendor/hipno/images/'.$ci) }}" alt="" aria-hidden="true" loading="lazy" decoding="async">
                                 </figure>
                             </div>
                         @endforeach
@@ -65,7 +71,7 @@
                                     <div class="testimonial-item">
                                         <div class="testimonial-slider-image">
                                             <figure class="image-anime">
-                                                <img src="{{ $y['foto'] ?? asset('vendor/hipno/images/testimonial-img-1.jpg') }}" alt="{{ $ad }}">
+                                                <img src="{{ $y['foto'] ?? asset('vendor/hipno/images/testimonial-img-1.jpg') }}" alt="{{ $ad }}" loading="lazy" decoding="async">
                                             </figure>
                                         </div>
                                         <div class="testimonial-slider-content">
@@ -96,3 +102,13 @@
     </div>
 </div>
 @endif
+
+<style>
+.testimonial-site-logo .testimonial-site-wordmark{
+    display:inline-block;
+    font-family:var(--display,'Marcellus',serif);
+    font-size:1.15rem;
+    line-height:1.2;
+    color:var(--primary-color,#262626);
+}
+</style>

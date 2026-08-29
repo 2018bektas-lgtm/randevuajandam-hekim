@@ -8,20 +8,15 @@
     $nav = site_nav(is_array($doktor ?? null) ? $doktor : null);
 @endphp
 <body class="theme-{{ $bodyTema }} layout-tema-2">
+    @include('frontend.partials.erisilebilirlik')
+
     @include('frontend.layouts.partials.tracking-body')
 
-    <div class="preloader">
-        <div class="loading-container">
-            <div class="loading"></div>
-            <div id="loading-icon">
-                <img src="{{ asset('vendor/hipno/images/loader.svg') }}" alt="" onerror="this.style.display='none'">
-            </div>
-        </div>
-    </div>
+    @include('frontend.partials.preloader', ['doktor' => $doktor ?? []])
 
     @include('frontend.themes.tema-2.layouts.partials.header', ['doktor' => $doktor ?? [], 'nav' => $nav])
 
-    <main>
+    <main id="ana-icerik" tabindex="-1">
         @yield('icerik')
     </main>
 
