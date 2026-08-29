@@ -2,6 +2,20 @@
 @php
     $tel = $doktor['telefon'] ?? null;
     $telRaw = $doktor['telefon_raw'] ?? preg_replace('/[^0-9+]/', '', (string) $tel);
+
+    /*
+     * Calisma saatleri: once panel ayari, sonra hekimin GERCEK calisma
+     * saatleri ozeti (API'den geliyor).
+     *
+     * Eskiden burada sabit 'Pzt - Cmt 09:00 - 21:00' yaziliydi; hekim baska
+     * saatlerde calissa bile hastaya bu gosteriliyordu. Yanlis bilgi
+     * gostermektense hic gostermemek dogru: ikisi de yoksa blok gizlenir.
+     */
+    $calismaSaatleri = trim((string) (
+        $ayar['calisma_saatleri']
+        ?? $doktor['calisma_saatleri_ozet']
+        ?? ''
+    ));
 @endphp
 
 <div class="our-appointment">
@@ -29,15 +43,17 @@
                                     </div>
                                 </div>
                             @endif
+                            @if($calismaSaatleri !== '')
                             <div class="appointment-item wow fadeInUp" data-wow-delay="0.6s">
                                 <div class="icon-box">
                                     <img src="{{ asset('vendor/hipno/images/icon-appointment-item-2.svg') }}" alt="" aria-hidden="true" loading="lazy" decoding="async">
                                 </div>
                                 <div class="appointment-item-content">
                                     <h3>{{ $ayar['saat_baslik'] ?? 'Çalışma saatleri' }}</h3>
-                                    <p>{{ $ayar['calisma_saatleri'] ?? 'Pzt - Cmt 09:00 - 21:00' }}</p>
+                                    <p>{{ $calismaSaatleri }}</p>
                                 </div>
                             </div>
+                            @endif
                         </div>
                     </div>
                     <div class="appointment-form ra-wizard-embed-wrap">

@@ -6,12 +6,45 @@
         ? (function_exists('media_url') ? media_url($ayar['poster']) : $ayar['poster'])
         : asset('vendor/hipno/images/hero-bg.jpg');
     $varsayilanVideo = asset('vendor/hipno/videos/intro-bg-video.mp4');
-    $sayaclar = [
-        ['sayi' => $ayar['sayac_1_sayi'] ?? '200', 'ek' => $ayar['sayac_1_ek'] ?? 'k', 'etiket' => $ayar['sayac_1_etiket'] ?? 'mutlu danışan'],
-        ['sayi' => $ayar['sayac_2_sayi'] ?? '97', 'ek' => $ayar['sayac_2_ek'] ?? '%', 'etiket' => $ayar['sayac_2_etiket'] ?? 'memnuniyet'],
-        ['sayi' => $ayar['sayac_3_sayi'] ?? '12', 'ek' => $ayar['sayac_3_ek'] ?? '+', 'etiket' => $ayar['sayac_3_etiket'] ?? 'yıllık deneyim'],
-        ['sayi' => $ayar['sayac_4_sayi'] ?? '40', 'ek' => $ayar['sayac_4_ek'] ?? '+', 'etiket' => $ayar['sayac_4_etiket'] ?? 'tedavi programı'],
-    ];
+    /*
+     * Sayaclar.
+     *
+     * ESKIDEN: "200k mutlu danisan", "%97 memnuniyet", "12+ yillik deneyim",
+     * "40+ tedavi programi" SABIT yaziliydi. Bunlar hekimin hic vermedigi,
+     * uydurulmus iddialardi ve saglik alaninda bir sitede gercek gibi
+     * gosteriliyordu.
+     *
+     * SIMDI: once panelde girilen degerler, yoksa hekimin GERCEK verisinden
+     * uretilen istatistikler ($doktor['istatistikler'] — hizmet sayisi, blog
+     * sayisi, ortalama puan, biyografiden cikarilan deneyim yili).
+     * Hicbiri yoksa sayac bolumu HIC gosterilmez; uydurma sayi basilmaz.
+     */
+    $sayaclar = [];
+
+    for ($i = 1; $i <= 4; $i++) {
+        $sayi = trim((string) ($ayar["sayac_{$i}_sayi"] ?? ''));
+        if ($sayi === '') {
+            continue;
+        }
+        $sayaclar[] = [
+            'sayi' => $sayi,
+            'ek' => (string) ($ayar["sayac_{$i}_ek"] ?? ''),
+            'etiket' => (string) ($ayar["sayac_{$i}_etiket"] ?? ''),
+        ];
+    }
+
+    if ($sayaclar === []) {
+        $sayaclar = collect($doktor['istatistikler'] ?? [])
+            ->filter(fn ($s) => is_array($s) && filled($s['deger'] ?? null))
+            ->take(4)
+            ->map(fn ($s) => [
+                'sayi' => (string) $s['deger'],
+                'ek' => (string) ($s['suffix'] ?? ''),
+                'etiket' => (string) ($s['etiket'] ?? ''),
+            ])
+            ->values()
+            ->all();
+    }
 @endphp
 
 <div class="what-we-do">
@@ -55,6 +88,7 @@
                             </a>
                         </div>
                     @endif
+                    @if($sayaclar !== [])
                     <div class="intro-video-counter">
                         @foreach($sayaclar as $s)
                             <div class="video-counter-item">
@@ -63,6 +97,7 @@
                             </div>
                         @endforeach
                     </div>
+                    @endif
                 </div>
             </div>
         </div>
