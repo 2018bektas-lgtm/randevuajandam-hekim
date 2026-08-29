@@ -151,6 +151,37 @@ class SiteSettingsService
     }
 
     /**
+     * Hakkimda sayfasindaki "Yaklasimim" maddeleri.
+     *
+     * Panelde `yaklasim_json` anahtarinda saklanir:
+     *   [{"baslik": "...", "aciklama": "..."}, ...]
+     *
+     * @return array<int, array{baslik: string, aciklama: string}>
+     */
+    public function yaklasimMaddeleri(): array
+    {
+        $ham = (string) $this->option('yaklasim_json', '');
+        if (trim($ham) === '') {
+            return [];
+        }
+
+        $veri = json_decode($ham, true);
+        if (! is_array($veri)) {
+            return [];
+        }
+
+        return collect($veri)
+            ->filter(fn ($m) => is_array($m) && filled($m['baslik'] ?? null))
+            ->map(fn ($m) => [
+                'baslik' => trim((string) $m['baslik']),
+                'aciklama' => trim((string) ($m['aciklama'] ?? '')),
+            ])
+            ->take(6)
+            ->values()
+            ->all();
+    }
+
+    /**
      * Frontend bundle (cached).
      */
     public function frontendBundle(): array
@@ -167,6 +198,9 @@ class SiteSettingsService
                     'tema_id' => $this->option('tema_id', (string) config('themes.default', 'tema-1')),
                     'vitrin_badge' => $this->option('vitrin_badge', ''),
                     'logo' => $this->option('site_logo', ''),
+                    // Hakkimda "Yaklasimim" maddeleri (panelden duzenlenebilir).
+                    // Bos birakilirsa SiteContentService varsayilan metinlere duser.
+                    'yaklasim' => $this->yaklasimMaddeleri(),
                     'favicon' => $this->option('site_favicon', ''),
                     'logo_url' => $this->mediaUrl($this->option('site_logo', '')),
                     'favicon_url' => $this->mediaUrl($this->option('site_favicon', '')),
