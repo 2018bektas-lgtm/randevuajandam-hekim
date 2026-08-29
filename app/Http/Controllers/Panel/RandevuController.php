@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Services\PlatformApiClient;
 use App\Support\ApiData;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use RuntimeException;
 
 class RandevuController extends Controller
@@ -210,21 +211,63 @@ class RandevuController extends Controller
             'end' => ['required', 'date'],
         ]);
 
+        // Entegrasyon hic yapilandirilmamissa API'ye gitmeye gerek yok
+        if (! $this->api->isConfigured()) {
+            return response()->json([
+                'message' => 'API entegrasyonu yapılandırılmamış. Entegrasyon sayfasından anahtarlarınızı girin.',
+                'kod' => 'api_yapilandirilmamis',
+            ], 503);
+        }
+
         try {
             // PlatformApiClient::get appends query; calendar API expects start/end
             $res = $this->api->http(true)->get($this->api->doctorBase().'/takvim/events', [
                 'start' => $request->start,
                 'end' => $request->end,
             ]);
-
-            if ($res->status() === 401) {
-                return response()->json(['message' => 'Oturum sona erdi'], 401);
-            }
-
-            return response()->json($res->json() ?? [], $res->status());
         } catch (\Throwable $e) {
-            return response()->json(['message' => $e->getMessage()], 500);
+            // Ham istisna mesajini istemciye sizdirma; loglayip genel mesaj don.
+            Log::warning('Takvim events: ana sunucuya ulasilamadi', [
+                'doktor_token_var' => (bool) $this->api->token(),
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'message' => 'Ana sunucuya ulaşılamadı. Bağlantınızı kontrol edip tekrar deneyin.',
+                'kod' => 'baglanti_hatasi',
+            ], 502);
         }
+
+        if ($res->status() === 401) {
+            return response()->json([
+                'message' => 'Oturumunuz sona erdi. Lütfen yeniden giriş yapın.',
+                'kod' => 'oturum_bitti',
+            ], 401);
+        }
+
+        if ($res->status() === 403) {
+            // En sik sebep: paketde online_takvim yetkisi yok.
+            // Eskiden bu durum takvimi SESSIZCE bos gosteriyordu.
+            $mesaj = (string) ($res->json('message') ?? '');
+
+            return response()->json([
+                'message' => $mesaj !== ''
+                    ? $mesaj
+                    : 'Online randevu takvimi mevcut paketinizde yer almıyor.',
+                'kod' => 'paket_yetkisi_yok',
+            ], 403);
+        }
+
+        if (! $res->successful()) {
+            Log::warning('Takvim events: beklenmeyen API yaniti', ['status' => $res->status()]);
+
+            return response()->json([
+                'message' => 'Randevular alınamadı. Lütfen birazdan tekrar deneyin.',
+                'kod' => 'api_hatasi',
+            ], 502);
+        }
+
+        return response()->json($res->json() ?? [], 200);
     }
 
     /**

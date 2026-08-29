@@ -68,6 +68,11 @@
     </div>
 
     <div class="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-4 sm:p-6">
+        <div id="takvimUyari" class="hidden mb-3 p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-800 text-sm">
+            <p class="font-bold mb-0.5">Randevular yüklenemedi</p>
+            <p id="takvimUyariMetin" class="text-[13px]"></p>
+            <p id="takvimUyariEylem" class="mt-1.5 text-[12px]"></p>
+        </div>
         <div id="calendar" class="min-h-[720px]"></div>
     </div>
 </div>
@@ -255,6 +260,33 @@
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.20/locales/tr.global.min.js"></script>
 <script>
 (function () {
+    function takvimUyariGizle() {
+        document.getElementById('takvimUyari')?.classList.add('hidden');
+    }
+
+    function takvimUyariGoster(durum, mesaj, kod) {
+        const kutu = document.getElementById('takvimUyari');
+        const metin = document.getElementById('takvimUyariMetin');
+        const eylem = document.getElementById('takvimUyariEylem');
+        if (!kutu || !metin) { return; }
+
+        metin.textContent = mesaj || ('Sunucu ' + durum + ' döndü.');
+
+        let ipucu = '';
+        if (kod === 'oturum_bitti' || durum === 401) {
+            ipucu = 'Sayfayı yenileyip yeniden giriş yapın.';
+        } else if (kod === 'paket_yetkisi_yok' || durum === 403) {
+            ipucu = 'Paketinizi yükselttiğinizde takvim otomatik açılır.';
+        } else if (kod === 'api_yapilandirilmamis') {
+            ipucu = 'Entegrasyon sayfasından API anahtarlarınızı girin.';
+        } else {
+            ipucu = 'Sorun sürerse birazdan tekrar deneyin.';
+        }
+        if (eylem) { eylem.textContent = ipucu; }
+
+        kutu.classList.remove('hidden');
+    }
+
     const routes = {
         events: @json(route('panel.randevular.events')),
         periyot: @json(route('panel.randevular.periyot')),
@@ -623,7 +655,34 @@
             nowIndicator: true,
             selectOverlap: function (ev) { return !ev || ev.display !== 'background'; },
             eventSources: [
-                { url: routes.events },
+                /*
+                 * Duz `{ url: ... }` kullanilmiyor: FullCalendar istek
+                 * basarisiz oldugunda SESSIZCE hicbir sey cizmiyor. Boylece
+                 * oturum bitmesi, paket yetkisi olmamasi veya API'ye
+                 * ulasilamamasi "randevu yok" gibi gorunuyordu — site
+                 * panelinde randevu goruldugu halde burada gorunmemesinin
+                 * sebebi buydu.
+                 */
+                function (info, success, failure) {
+                    const qs = new URLSearchParams({ start: info.startStr, end: info.endStr });
+                    fetch(routes.events + '?' + qs.toString(), {
+                        headers: { 'Accept': 'application/json' },
+                        credentials: 'same-origin',
+                    })
+                        .then(async function (res) {
+                            if (res.ok) {
+                                takvimUyariGizle();
+                                return success(await res.json());
+                            }
+                            const govde = await res.json().catch(() => ({}));
+                            takvimUyariGoster(res.status, govde.message, govde.kod);
+                            success([]);   // takvim yine cizilsin, uyari ustte gorunur
+                        })
+                        .catch(function (e) {
+                            takvimUyariGoster(0, 'Ağ hatası: ' + e.message, 'ag_hatasi');
+                            success([]);
+                        });
+                },
                 {
                     events: function (info, success) {
                         const now = new Date();
