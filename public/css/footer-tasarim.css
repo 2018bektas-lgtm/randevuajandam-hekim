@@ -1,0 +1,546 @@
+/* ============================================================
+   FOOTER TASARIMLARI — tema bazlı, paylaşımlı stil katmanı
+   Katalog : config/footer_tasarimlari.php
+   Blade   : resources/views/frontend/partials/footer/**
+   Renkler : head.blade.php içindeki :root değişkenleri
+             (--primary-color, --accent-color, --secondary-color,
+              --text-color, --font, --display)
+   Not: Tüm sınıflar .ftr- ön ekiyle scoped; tema CSS'lerine dokunmaz.
+   ============================================================ */
+
+/* Token'lar :root'ta da tanımlı — paylaşılan parçalar (_logo, _iletisim …)
+   tema paketlerinin kendi footer'ları içinde de kullanılıyor. */
+:root,
+.ftr,
+.ftr-klasik {
+  --ftr-bg: var(--secondary-color, #f7f6f3);
+  --ftr-fg: var(--primary-color, #1f2430);
+  --ftr-muted: var(--text-color, #6b7280);
+  --ftr-line: rgba(0, 0, 0, .09);
+  --ftr-kart: #ffffff;
+  --ftr-accent: var(--accent-color, var(--brand-600, #9b9a84));
+  --ftr-accent-fg: #ffffff;
+  --ftr-pad: clamp(48px, 6vw, 84px);
+}
+
+.ftr {
+  position: relative;
+  background: var(--ftr-bg);
+  color: var(--ftr-muted);
+  font-family: var(--font, var(--default-font, system-ui, sans-serif));
+}
+
+/* Koyu zeminler: kendi tasarımımız + delogis'in orijinal footer'ı */
+.ftr--koyu,
+.site-footer {
+  --ftr-bg: var(--primary-color, #1c1b19);
+  --ftr-fg: #ffffff;
+  --ftr-muted: rgba(255, 255, 255, .70);
+  --ftr-line: rgba(255, 255, 255, .13);
+  --ftr-kart: rgba(255, 255, 255, .055);
+}
+.site-footer { --ftr-accent: var(--delogis-base, var(--accent-color, #976147)); }
+
+/* Koyu tasarımda CTA şeridi gövdeyle aynı renk olmasın */
+.ftr--koyu .ftr-cta {
+  background: rgba(255, 255, 255, .05);
+  border-bottom: 1px solid var(--ftr-line);
+}
+
+.ftr * { box-sizing: border-box; }
+
+.ftr-govde { padding: var(--ftr-pad) 0 0; }
+
+/* ---------- Üst randevu şeridi ---------- */
+.ftr-cta {
+  background: var(--primary-color, #1c1b19);
+  padding: clamp(22px, 3vw, 34px) 0;
+  position: relative;
+  overflow: hidden;
+}
+.ftr-cta::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, rgba(255, 255, 255, .06), transparent 55%);
+  pointer-events: none;
+}
+.ftr-cta__inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px 28px;
+}
+.ftr-cta__baslik {
+  margin: 0;
+  color: #fff;
+  font-family: var(--display, var(--accent-font, serif));
+  font-weight: 400;
+  font-size: clamp(1.3rem, 2.4vw, 2rem);
+  line-height: 1.25;
+  letter-spacing: -.01em;
+  max-width: 34ch;
+}
+.ftr-cta__btns { display: flex; flex-wrap: wrap; gap: 12px; }
+
+/* ---------- Butonlar ---------- */
+.ftr-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 13px 26px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: .875rem;
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: transform .18s ease, background-color .18s ease, border-color .18s ease, color .18s ease;
+}
+.ftr-btn i { font-size: 1em; }
+.ftr-btn--solid {
+  background: var(--ftr-accent);
+  color: var(--ftr-accent-fg);
+}
+.ftr-btn--solid:hover,
+.ftr-btn--solid:focus-visible {
+  background: #fff;
+  color: var(--primary-color, #1c1b19);
+  transform: translateY(-2px);
+}
+.ftr-btn--ghost {
+  background: rgba(255, 255, 255, .10);
+  border-color: rgba(255, 255, 255, .28);
+  color: #fff;
+}
+.ftr-btn--ghost:hover,
+.ftr-btn--ghost:focus-visible {
+  background: rgba(255, 255, 255, .2);
+  color: #fff;
+  transform: translateY(-2px);
+}
+.ftr-btn--blok { width: 100%; }
+
+/* ---------- Logo alanı ---------- */
+.ftr-logo { margin: 0 0 18px; }
+.ftr-logo--orta { text-align: center; }
+.ftr-logo__link {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  max-width: 100%;
+}
+.ftr-logo__link img {
+  width: auto;
+  max-width: min(240px, 100%);
+  object-fit: contain;
+}
+.ftr-wordmark { display: flex; flex-direction: column; line-height: 1.15; }
+.ftr-wordmark__unvan {
+  font-size: .7rem;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ftr-accent);
+}
+.ftr-wordmark__ad {
+  font-family: var(--display, var(--accent-font, serif));
+  font-size: clamp(1.4rem, 2.4vw, 1.85rem);
+  font-weight: 400;
+  color: var(--ftr-fg);
+  margin-top: 3px;
+}
+.ftr--koyu .ftr-wordmark__ad { color: #fff; }
+
+/* delogis orijinal footer logosu da aynı görünsün */
+.dg-footer-logo-text {
+  font-family: var(--display, serif);
+  font-size: 1.5rem;
+  color: #fff;
+}
+
+/* ---------- Marka / slogan ---------- */
+.ftr-marka {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 14px 40px;
+  padding-bottom: clamp(26px, 3.5vw, 40px);
+  border-bottom: 1px solid var(--ftr-line);
+  margin-bottom: clamp(30px, 4vw, 48px);
+}
+.ftr-marka .ftr-logo { margin-bottom: 0; }
+.ftr-slogan {
+  margin: 0;
+  flex: 1 1 340px;
+  font-family: var(--display, var(--accent-font, serif));
+  font-weight: 400;
+  font-size: clamp(1.35rem, 2.8vw, 2.35rem);
+  line-height: 1.22;
+  letter-spacing: -.015em;
+  color: var(--ftr-fg);
+}
+.ftr-slogan--orta { flex: none; text-align: center; margin: 0 auto; max-width: 22ch; }
+
+.ftr-tepe {
+  text-align: center;
+  padding-bottom: clamp(28px, 3.5vw, 44px);
+  border-bottom: 1px solid var(--ftr-line);
+  margin-bottom: clamp(30px, 4vw, 46px);
+}
+.ftr-tepe .ftr-logo { margin-bottom: 14px; }
+
+.ftr-aciklama {
+  margin: 0 0 22px;
+  font-size: .925rem;
+  line-height: 1.75;
+  color: var(--ftr-muted);
+  max-width: 46ch;
+}
+.ftr-aciklama--orta { margin: 14px auto 22px; text-align: center; }
+
+/* ---------- Sütun ızgarası ---------- */
+.ftr-grid {
+  display: grid;
+  gap: clamp(28px, 3.5vw, 46px);
+  padding-bottom: clamp(34px, 4vw, 52px);
+}
+.ftr-grid--zarif { grid-template-columns: 1.5fr 1fr 1.4fr; }
+.ftr-grid--4 { grid-template-columns: 1.3fr .85fr 1.4fr 1fr; }
+.ftr-grid--3 { grid-template-columns: 1fr 1.2fr 1fr; }
+
+.ftr-baslik {
+  margin: 0 0 18px;
+  font-family: var(--display, var(--accent-font, serif));
+  font-size: 1.075rem;
+  font-weight: 400;
+  letter-spacing: .005em;
+  color: var(--ftr-fg);
+  position: relative;
+  padding-bottom: 12px;
+}
+.ftr-baslik::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 32px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--ftr-accent);
+}
+.ftr-baslik--sm {
+  font-size: .72rem;
+  font-family: var(--font, sans-serif);
+  font-weight: 700;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  color: var(--ftr-muted);
+  padding-bottom: 0;
+  margin-bottom: 12px;
+}
+.ftr-baslik--sm::after { display: none; }
+
+/* ---------- Keşfet listesi ---------- */
+.ftr-nav { list-style: none; margin: 0; padding: 0; }
+.ftr-nav li + li { margin-top: 11px; }
+.ftr-nav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: .9rem;
+  color: var(--ftr-muted);
+  text-decoration: none;
+  transition: color .18s ease, transform .18s ease;
+}
+.ftr-nav a::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--ftr-accent);
+  opacity: .55;
+  transition: opacity .18s ease, transform .18s ease;
+  flex: none;
+}
+.ftr-nav a:hover,
+.ftr-nav a:focus-visible { color: var(--ftr-accent); transform: translateX(3px); }
+.ftr-nav a:hover::before { opacity: 1; transform: scale(1.35); }
+
+/* ---------- İletişim ---------- */
+.ftr-iletisim { list-style: none; margin: 0; padding: 0; }
+.ftr-iletisim li {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+}
+.ftr-iletisim li + li { margin-top: 14px; }
+.ftr-iletisim__ikon {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 11px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .82rem;
+  color: var(--ftr-accent);
+  background: var(--ftr-kart);
+  border: 1px solid var(--ftr-line);
+}
+.ftr-iletisim__govde { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.ftr-iletisim__etiket {
+  font-size: .66rem;
+  font-weight: 700;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+  color: var(--ftr-muted);
+  opacity: .8;
+}
+.ftr-iletisim__deger {
+  font-size: .9rem;
+  line-height: 1.5;
+  color: var(--ftr-fg);
+  text-decoration: none;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  transition: color .18s ease;
+}
+a.ftr-iletisim__deger:hover,
+a.ftr-iletisim__deger:focus-visible { color: var(--ftr-accent); }
+
+.ftr-iletisim--kart li {
+  background: var(--ftr-kart);
+  border: 1px solid var(--ftr-line);
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+.ftr-iletisim--kart li + li { margin-top: 10px; }
+.ftr-iletisim--kart .ftr-iletisim__ikon { background: transparent; border-color: transparent; }
+
+/* ---------- Randevu kutusu ---------- */
+.ftr-randevu p {
+  margin: 0 0 16px;
+  font-size: .9rem;
+  line-height: 1.7;
+  color: var(--ftr-muted);
+}
+.ftr-randevu__tel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  font-size: .95rem;
+  font-weight: 600;
+  color: var(--ftr-fg);
+  text-decoration: none;
+}
+.ftr-randevu__tel i { color: var(--ftr-accent); }
+.ftr-randevu__tel:hover { color: var(--ftr-accent); }
+
+/* ---------- Sosyal ---------- */
+.ftr-sosyal {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.ftr-sosyal a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--ftr-line);
+  background: var(--ftr-kart);
+  color: var(--ftr-fg);
+  font-size: .95rem;
+  text-decoration: none;
+  transition: background-color .2s ease, color .2s ease, border-color .2s ease, transform .2s ease;
+}
+.ftr-sosyal a:hover,
+.ftr-sosyal a:focus-visible {
+  background: var(--ftr-accent);
+  border-color: var(--ftr-accent);
+  color: #fff;
+  transform: translateY(-3px);
+}
+.ftr-sosyal--pill { justify-content: center; }
+.ftr-sosyal--pill a { width: 44px; height: 44px; border-radius: 14px; }
+.ftr-sosyal-satir { display: flex; justify-content: center; margin: 26px 0 4px; }
+
+/* ---------- Merkezî tasarım ---------- */
+.ftr-yatay-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 30px;
+  padding: 4px 0;
+}
+.ftr-yatay-nav a {
+  font-family: var(--display, var(--accent-font, serif));
+  font-size: 1rem;
+  color: var(--ftr-fg);
+  text-decoration: none;
+  transition: color .18s ease;
+}
+.ftr-yatay-nav a:hover,
+.ftr-yatay-nav a:focus-visible { color: var(--ftr-accent); }
+
+.ftr-cipler {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 12px;
+  margin-top: 26px;
+}
+.ftr-cip {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--ftr-line);
+  background: var(--ftr-kart);
+  font-size: .85rem;
+  color: var(--ftr-fg);
+  text-decoration: none;
+  transition: border-color .18s ease, color .18s ease;
+}
+.ftr-cip i { color: var(--ftr-accent); font-size: .85em; }
+a.ftr-cip:hover,
+a.ftr-cip:focus-visible { border-color: var(--ftr-accent); color: var(--ftr-accent); }
+
+/* ---------- Alt şerit ---------- */
+.ftr-alt {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 26px;
+  padding: 22px 0 26px;
+  border-top: 1px solid var(--ftr-line);
+}
+.ftr-alt__telif { margin: 0; font-size: .8rem; color: var(--ftr-muted); }
+.ftr-alt__linkler { display: flex; flex-wrap: wrap; gap: 8px 20px; }
+.ftr-alt__linkler a {
+  font-size: .8rem;
+  color: var(--ftr-muted);
+  text-decoration: none;
+  transition: color .18s ease;
+}
+.ftr-alt__linkler a:hover,
+.ftr-alt__linkler a:focus-visible { color: var(--ftr-accent); }
+.ftr-alt__marka { font-weight: 600; }
+
+/* ---------- WhatsApp yüzen buton ---------- */
+.ftr-wa {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 9999;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #25d366;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 22px rgba(37, 211, 102, .38);
+  transition: transform .2s ease;
+}
+.ftr-wa i { color: #fff; font-size: 26px; line-height: 1; }
+.ftr-wa:hover { transform: scale(1.08); color: #fff; }
+
+/* ---------- Hipno Klasik tasarımı için düzeltmeler ---------- */
+.ftr-klasik .footer-contact-item h3 a { color: inherit; text-decoration: none; overflow-wrap: break-word; word-break: break-word; }
+.ftr-klasik .footer-contact-item h3 a:hover { color: var(--accent-color); }
+.ftr-klasik .footer-contact-box { flex-wrap: wrap; align-items: flex-start; gap: 24px 50px; }
+.ftr-klasik .footer-contact-item { min-width: 160px; max-width: 320px; }
+.ftr-klasik .footer-menu ul { display: flex; flex-wrap: wrap; gap: .35rem 1.5rem; }
+.ftr-klasik .footer-menu ul li { margin-right: 0 !important; }
+.ftr-klasik .footer-logo .ftr-logo { margin-bottom: 0; }
+.ftr-klasik .footer-copyright-text a { color: var(--accent-color); text-decoration: none; }
+.ftr-klasik .footer-copyright-text a:hover { text-decoration: underline; }
+.ftr-klasik .ftr-logo__link,
+.site-footer .ftr-logo__link { color: inherit; }
+.footer-cta-btn { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 12px; }
+.footer-cta-btn .btn-default.btn-comment { margin-left: 0; }
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 1199px) {
+  .ftr-grid--zarif { grid-template-columns: 1.3fr 1fr 1.3fr; }
+  .ftr-grid--4 { grid-template-columns: 1.2fr .85fr 1.4fr; }
+  .ftr-kol--randevu { grid-column: 1 / -1; }
+  .ftr-kol--randevu .ftr-btn--blok { width: auto; }
+}
+
+@media (max-width: 991px) {
+  .ftr-cta__inner { justify-content: center; text-align: center; }
+  .ftr-cta__baslik { flex: 1 1 100%; }
+  .ftr-cta__btns { width: 100%; justify-content: center; }
+  .ftr-grid--zarif,
+  .ftr-grid--4,
+  .ftr-grid--3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ftr-kol--marka { grid-column: 1 / -1; }
+  .ftr-kol--randevu { grid-column: auto; }
+  .ftr-marka { align-items: flex-start; }
+  .ftr-aciklama { max-width: none; }
+}
+
+@media (max-width: 640px) {
+  .ftr { --ftr-pad: 44px; }
+  .ftr-grid--zarif,
+  .ftr-grid--4,
+  .ftr-grid--3 { grid-template-columns: 1fr; }
+  .ftr-kol--randevu,
+  .ftr-kol--marka { grid-column: auto; }
+  .ftr-cta__btns { flex-direction: column; }
+  .ftr-cta__btns .ftr-btn { width: 100%; }
+  .ftr-marka { gap: 16px; }
+  .ftr-alt { flex-direction: column; align-items: flex-start; text-align: left; }
+  .ftr--merkezi .ftr-alt,
+  .ftr--koyuvitrin .ftr-alt { align-items: center; text-align: center; }
+  .ftr-yatay-nav { gap: 10px 20px; }
+  .ftr-cip { font-size: .8rem; padding: 9px 14px; }
+  .ftr-wa { right: 18px; bottom: 18px; }
+  .ftr-iletisim--kart li { padding: 12px 14px; }
+}
+
+/* ============================================================
+   Font Awesome kurtarma
+   public/css/themes/delogis.css icindeki genis
+   "body.theme-delogis span { font-family: var(--delogis-font) }"
+   kurali, FA'nin ".fa/.fas/.far" kuralindan daha spesifik oldugu icin
+   <span class="fas ..."> ikonlari kutu (tofu) olarak ciziliyordu.
+   Asagidaki kural yalnizca footer icindeki FA span'larini onarir.
+   Iki surum de listeleniyor: delogis FA5, hipno FA6 yukluyor.
+   ============================================================ */
+.site-footer span.fa,
+.site-footer span.fas,
+.site-footer span.far,
+.ftr span.fa,
+.ftr span.fas,
+.ftr span.far,
+.ftr-klasik span.fa,
+.ftr-klasik span.fas,
+.ftr-klasik span.far {
+  font-family: "Font Awesome 5 Free", "Font Awesome 6 Free" !important;
+}
+.site-footer span.fab,
+.ftr span.fab,
+.ftr-klasik span.fab {
+  font-family: "Font Awesome 5 Brands", "Font Awesome 6 Brands" !important;
+  font-weight: 400 !important;
+}

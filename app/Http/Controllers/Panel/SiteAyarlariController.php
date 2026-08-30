@@ -9,6 +9,7 @@ use App\Models\SiteMenuItem;
 use App\Models\SitePage;
 use App\Models\SiteSliderSlide;
 use App\Services\SiteBuilderService;
+use App\Services\SiteFooterService;
 use App\Services\SiteSettingsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -18,6 +19,7 @@ class SiteAyarlariController extends Controller
     public function __construct(
         protected SiteSettingsService $settings,
         protected SiteBuilderService $builder,
+        protected SiteFooterService $footerService,
     ) {}
 
     public function index()
@@ -136,12 +138,89 @@ class SiteAyarlariController extends Controller
 
     public function footer()
     {
+        $temaId = (string) $this->settings->option('tema_id', (string) config('themes.default', 'tema-1'));
+        $tema = resolve_site_theme($temaId);
+        $ayarlar = $this->footerService->ayarlar($tema['id']);
+
         return view('panel.site-ayarlari.footer', [
             'group' => 'footer',
             'items' => $this->settings->footerItems(),
             'pageOptions' => $this->internalPageOptions(),
             'pageGroups' => $this->internalPageGroups(),
+
+            // Tema bazli footer tasarimi
+            'tema' => $tema,
+            'footerGrup' => $this->footerService->grup($tema['id']),
+            'tasarimlar' => $this->footerService->tasarimlar($tema['id']),
+            'aktifTasarim' => $ayarlar['tasarim'],
+            'footerAyar' => $ayarlar,
+            'logoSecenekleri' => (array) config('footer_tasarimlari.ayarlar.footer_logo_tip.secenekler', []),
+            'siteLogoUrl' => $this->settings->mediaUrl($this->settings->option('site_logo', '')),
         ]);
+    }
+
+    /**
+     * Footer tasarimi + gorunum ayarlari (tema bazli).
+     */
+    public function footerTasarimKaydet(Request $request)
+    {
+        $temaId = (string) $this->settings->option('tema_id', (string) config('themes.default', 'tema-1'));
+        $tema = resolve_site_theme($temaId);
+        $tasarimlar = $this->footerService->tasarimlar($tema['id']);
+
+        $request->validate([
+            'footer_tasarim' => ['required', 'string', 'in:'.implode(',', array_keys($tasarimlar))],
+            // SVG kabul edilmiyor (bkz. kaydetGenel): depolanmis XSS riski.
+            'footer_logo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,gif', 'max:4096'],
+            'footer_logo_yukseklik' => ['nullable', 'integer', 'min:20', 'max:140'],
+            'footer_aciklama' => ['nullable', 'string', 'max:400'],
+            'footer_telif' => ['nullable', 'string', 'max:200'],
+        ]);
+
+        $logoTipleri = array_keys((array) config('footer_tasarimlari.ayarlar.footer_logo_tip.secenekler', []));
+        $logoTip = (string) $request->input('footer_logo_tip', 'site');
+        if (! in_array($logoTip, $logoTipleri, true)) {
+            $logoTip = 'site';
+        }
+
+        $pairs = [
+            $this->footerService->secimAnahtari($tema['id']) => (string) $request->input('footer_tasarim'),
+            'footer_logo_tip' => $logoTip,
+            'footer_logo_yukseklik' => (string) ((int) $request->input('footer_logo_yukseklik', 52) ?: 52),
+        ];
+
+        foreach (['footer_aciklama', 'footer_telif', 'footer_baslik_kesfet', 'footer_baslik_iletisim', 'footer_baslik_sosyal', 'footer_cta_baslik'] as $key) {
+            $pairs[$key] = trim((string) $request->input($key, ''));
+        }
+
+        // Yalnizca formda AKTIF olarak gosterilen bloklar guncellenir.
+        // Aktif tasarimin desteklemedigi anahtarlar disabled render edilir ve
+        // istekle gelmez; hepsini yazsaydik kayitli degerleri sifirlanirdi.
+        $gonderilen = array_filter((array) $request->input('footer_bloklar', []), 'is_string');
+        foreach (array_keys((array) config('footer_tasarimlari.ayarlar', [])) as $key) {
+            if (str_ends_with($key, '_goster') && in_array($key, $gonderilen, true)) {
+                $pairs[$key] = $request->boolean($key);
+            }
+        }
+
+        $this->settings->setOptions($pairs);
+
+        // Footer'a ozel logo
+        if ($request->boolean('footer_logo_sil')) {
+            $this->settings->deleteMediaIfOwned($this->settings->option('footer_logo', ''));
+            $this->settings->setOption('footer_logo', '');
+        } elseif ($request->hasFile('footer_logo')) {
+            $eski = $this->settings->option('footer_logo', '');
+            $path = $request->file('footer_logo')->store('site', 'public');
+            if ($path) {
+                $this->settings->deleteMediaIfOwned($eski);
+                $this->settings->setOption('footer_logo', $path);
+            }
+        }
+
+        $this->settings->forgetCache();
+
+        return back()->with('basari', 'Footer tasarimi ve ayarlari kaydedildi: '.($tasarimlar[$request->input('footer_tasarim')]['ad'] ?? ''));
     }
 
     public function footerKaydet(Request $request)

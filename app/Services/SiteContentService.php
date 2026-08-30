@@ -213,6 +213,8 @@ class SiteContentService
         if (! empty($genel['footer_metin'])) {
             $out['footer_metin'] = $genel['footer_metin'];
         }
+        // Tema bazli footer tasarimi + gorunum ayarlari (SiteFooterService okur)
+        $out['footer_ayarlari'] = is_array($footer['ayarlar'] ?? null) ? $footer['ayarlar'] : [];
         if (! empty($genel['tema_renk'])) {
             $out['tema_renk'] = $genel['tema_renk'];
         }

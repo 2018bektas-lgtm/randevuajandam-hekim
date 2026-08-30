@@ -84,6 +84,8 @@
 
 @include('frontend.themes.delogis.layouts.partials.assets-css')
 <link rel="stylesheet" href="{{ rtrim((string) request()->getBasePath(), '/') }}/css/themes/delogis.css?v=19">
+{{-- Footer tasarim katmani: config/footer_tasarimlari.php --}}
+<link rel="stylesheet" href="{{ rtrim((string) request()->getBasePath(), '/') }}/css/footer-tasarim.css?v=1">
 <style>
 :root {
   --brand-500: {{ $theme }};

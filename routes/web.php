@@ -126,6 +126,7 @@ Route::prefix('yonetim')->name('panel.')->group(function () {
             Route::post('/menu/{id}/sil', [SiteAyarlariController::class, 'menuSil'])->whereNumber('id')->name('menu.sil');
             Route::get('/footer', [SiteAyarlariController::class, 'footer'])->name('footer');
             Route::post('/footer', [SiteAyarlariController::class, 'footerKaydet'])->name('footer.kaydet');
+            Route::post('/footer/tasarim', [SiteAyarlariController::class, 'footerTasarimKaydet'])->name('footer.tasarim');
             Route::post('/footer/ekle', [SiteAyarlariController::class, 'footerEkle'])->name('footer.ekle');
             Route::post('/footer/{id}/sil', [SiteAyarlariController::class, 'footerSil'])->whereNumber('id')->name('footer.sil');
             Route::get('/slider', [SiteAyarlariController::class, 'slider'])->name('slider');

@@ -107,6 +107,8 @@
 <link rel="stylesheet" href="{{ asset('css/themes/'.$temaCssId.'.css') }}?v=2">
 {{-- Kucuk ekran duzeltmeleri: tema CSS'i 767px altinda kirilma noktasi icermiyor --}}
 <link rel="stylesheet" href="{{ asset('css/themes/kucuk-ekran.css') }}?v=1">
+{{-- Footer tasarim katmani: config/footer_tasarimlari.php --}}
+<link rel="stylesheet" href="{{ asset('css/footer-tasarim.css') }}?v=1">
 <style>
 :root {
   /* Legacy brand-scale (eski hipno CSS uyumu icin) */

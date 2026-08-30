@@ -19,6 +19,7 @@ class SiteSettingsService
     {
         Cache::forget('doktorsitesi.site_settings.v2');
         Cache::forget('doktorsitesi.site_settings.v3');
+        Cache::forget('doktorsitesi.site_settings.v4');
         try {
             app(SiteContentService::class)->forgetCache();
         } catch (\Throwable) {
@@ -188,7 +189,7 @@ class SiteSettingsService
     {
         $ttl = max(60, (int) config('randevu_api.content_cache_ttl', 300));
 
-        return Cache::remember('doktorsitesi.site_settings.v3', $ttl, function () {
+        return Cache::remember('doktorsitesi.site_settings.v4', $ttl, function () {
             return [
                 'genel' => [
                     'site_baslik_ek' => $this->option('site_baslik_ek', ''),
@@ -229,6 +230,14 @@ class SiteSettingsService
                         'aktif' => (bool) $m->aktif,
                         'sira' => (int) $m->sira,
                     ])->all(),
+                    // Tema bazli footer tasarimi + gorunum ayarlari
+                    'ayarlar' => (function () {
+                        try {
+                            return app(SiteFooterService::class)->ayarlar();
+                        } catch (\Throwable) {
+                            return [];
+                        }
+                    })(),
                 ],
                 'slider' => (function () {
                     // Yalnızca panelden eklenen slaytlar (otomatik API yok)
