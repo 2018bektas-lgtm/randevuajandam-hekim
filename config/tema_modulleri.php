@@ -215,6 +215,8 @@ return [
                     'aciklama' => 'Blog yazılarınızdan seçtiklerinizi vurgulu şekilde gösterir (case study formatında).',
                     'alanlar' => [
                         'ana_baslik' => ['tip' => 'metin', 'label' => 'Ana Başlık', 'varsayilan' => 'Öne Çıkan Makalelerim'],
+                        'buton_metin' => ['tip' => 'metin', 'label' => 'Buton Metni', 'varsayilan' => 'Tüm yazılar'],
+                        'kucuk_baslik' => ['tip' => 'metin', 'label' => 'Küçük Üst Başlık', 'varsayilan' => 'Öne çıkanlar'],
                         'aciklama' => ['tip' => 'uzun_metin', 'label' => 'Açıklama', 'varsayilan' => null],
                         'blog_limiti' => ['tip' => 'sayi', 'label' => 'Gösterilecek Yazı Sayısı', 'varsayilan' => 3],
                         'blog_kaynagi' => ['tip' => 'db_kaynak', 'label' => 'Kaynak: Hekim Paneli → Blog', 'varsayilan' => 'bloglar'],
@@ -252,8 +254,8 @@ return [
                         'aciklama' => ['tip' => 'uzun_metin', 'label' => 'Alt Açıklama', 'varsayilan' => 'Hayatınızda değişim başlatmak için 30 dakika yeter.'],
                         'kucuk_baslik' => ['tip' => 'metin', 'label' => 'Küçük Üst Başlık', 'varsayilan' => 'Randevu'],
                         'buton_metin' => ['tip' => 'metin', 'label' => 'Buton Metni', 'varsayilan' => 'Randevu Al'],
-                        'resim' => ['tip' => 'resim', 'label' => 'CTA görseli (boş = tema görseli)', 'varsayilan' => null],
-                        'arkaplan_resmi' => ['tip' => 'resim', 'label' => 'Arkaplan Resmi (opsiyonel)', 'varsayilan' => null],
+                        'resim' => ['tip' => 'resim', 'label' => 'Bant görseli — banttaki fotoğraf (boş = tema görseli)', 'varsayilan' => null],
+                        'arkaplan_resmi' => ['tip' => 'resim', 'label' => 'Bant arkaplanı — fotoğrafın arkasındaki zemin (opsiyonel)', 'varsayilan' => null],
                     ],
                 ],
 
@@ -267,6 +269,7 @@ return [
                     'alanlar' => [
                         'kucuk_baslik' => ['tip' => 'metin', 'label' => 'Küçük Üst Başlık', 'varsayilan' => 'Danışan Yorumları'],
                         'ana_baslik' => ['tip' => 'metin', 'label' => 'Ana Başlık', 'varsayilan' => 'Danışanlarımın hikayeleri'],
+                        'buton_metin' => ['tip' => 'metin', 'label' => 'Buton Metni', 'varsayilan' => 'İletişim'],
                         'yorum_limiti' => ['tip' => 'sayi', 'label' => 'Slider Yorum Sayısı', 'varsayilan' => 6],
                         'yorum_kaynagi' => ['tip' => 'db_kaynak', 'label' => 'Kaynak: Hekim Paneli → Danışan Yorumları (onaylı olanlar)', 'varsayilan' => 'yorumlar'],
                     ],
@@ -282,6 +285,7 @@ return [
                     'alanlar' => [
                         'kucuk_baslik' => ['tip' => 'metin', 'label' => 'Küçük Üst Başlık', 'varsayilan' => 'S.S.S'],
                         'ana_baslik' => ['tip' => 'metin', 'label' => 'Ana Başlık', 'varsayilan' => 'Sıkça sorulan sorular'],
+                        'cta_baslik' => ['tip' => 'metin', 'label' => 'Alt kutu başlığı', 'varsayilan' => 'Hâlâ sorunuz mu var?'],
                         'sss_limiti' => ['tip' => 'sayi', 'label' => 'Gösterilecek Soru Sayısı', 'varsayilan' => 6],
                         'sss_kaynagi' => ['tip' => 'db_kaynak', 'label' => 'Kaynak: Hekim Paneli → S.S.S.', 'varsayilan' => 'sss'],
                     ],
@@ -297,6 +301,7 @@ return [
                     'alanlar' => [
                         'kucuk_baslik' => ['tip' => 'metin', 'label' => 'Küçük Üst Başlık', 'varsayilan' => 'Blog'],
                         'ana_baslik' => ['tip' => 'metin', 'label' => 'Ana Başlık', 'varsayilan' => 'Son yazılarım'],
+                        'buton_metin' => ['tip' => 'metin', 'label' => 'Buton Metni', 'varsayilan' => 'Tüm yazılar'],
                         'aciklama' => ['tip' => 'uzun_metin', 'label' => 'Açıklama', 'varsayilan' => null],
                         'blog_limiti' => ['tip' => 'sayi', 'label' => 'Gösterilecek Yazı Sayısı', 'varsayilan' => 3],
                         'blog_kaynagi' => ['tip' => 'db_kaynak', 'label' => 'Kaynak: Hekim Paneli → Blog', 'varsayilan' => 'bloglar'],
@@ -456,6 +461,8 @@ return [
                     'aciklama' => 'Blog yazılarınızdan öne çıkanlar.',
                     'alanlar' => [
                         'ana_baslik' => ['tip' => 'metin', 'label' => 'Ana Başlık', 'varsayilan' => 'Öne Çıkan Makalelerim'],
+                        'buton_metin' => ['tip' => 'metin', 'label' => 'Buton Metni', 'varsayilan' => 'Tüm yazılar'],
+                        'kucuk_baslik' => ['tip' => 'metin', 'label' => 'Küçük Üst Başlık', 'varsayilan' => 'Öne çıkanlar'],
                         'aciklama' => ['tip' => 'uzun_metin', 'label' => 'Açıklama', 'varsayilan' => null],
                         'blog_limiti' => ['tip' => 'sayi', 'label' => 'Yazı Sayısı', 'varsayilan' => 3],
                         'blog_kaynagi' => ['tip' => 'db_kaynak', 'label' => 'Kaynak: Blog', 'varsayilan' => 'bloglar'],
@@ -482,9 +489,11 @@ return [
                     'aciklama' => 'Büyük CTA bandı.',
                     'alanlar' => [
                         'baslik' => ['tip' => 'metin', 'label' => 'Ana Mesaj', 'varsayilan' => 'İlk adımı bugün atın'],
+                        'kucuk_baslik' => ['tip' => 'metin', 'label' => 'Küçük Üst Başlık', 'varsayilan' => 'Randevu'],
                         'aciklama' => ['tip' => 'uzun_metin', 'label' => 'Alt Açıklama', 'varsayilan' => 'Hayatınızda değişim başlatmak için 30 dakika yeter.'],
                         'buton_metin' => ['tip' => 'metin', 'label' => 'Buton Metni', 'varsayilan' => 'Randevu Al'],
-                        'arkaplan_resmi' => ['tip' => 'resim', 'label' => 'Arkaplan Resmi', 'varsayilan' => null],
+                        'resim' => ['tip' => 'resim', 'label' => 'Bant görseli — banttaki fotoğraf (boş = tema görseli)', 'varsayilan' => null],
+                        'arkaplan_resmi' => ['tip' => 'resim', 'label' => 'Bant arkaplanı — fotoğrafın arkasındaki zemin (opsiyonel)', 'varsayilan' => null],
                     ],
                 ],
                 'testimonial' => [
@@ -494,6 +503,7 @@ return [
                     'alanlar' => [
                         'kucuk_baslik' => ['tip' => 'metin', 'label' => 'Küçük Üst Başlık', 'varsayilan' => 'Danışan Yorumları'],
                         'ana_baslik' => ['tip' => 'metin', 'label' => 'Ana Başlık', 'varsayilan' => 'Danışanlarımın hikayeleri'],
+                        'buton_metin' => ['tip' => 'metin', 'label' => 'Buton Metni', 'varsayilan' => 'İletişim'],
                         'yorum_limiti' => ['tip' => 'sayi', 'label' => 'Yorum Sayısı', 'varsayilan' => 6],
                         'yorum_kaynagi' => ['tip' => 'db_kaynak', 'label' => 'Kaynak: Yorumlar', 'varsayilan' => 'yorumlar'],
                     ],
@@ -505,6 +515,7 @@ return [
                     'alanlar' => [
                         'kucuk_baslik' => ['tip' => 'metin', 'label' => 'Küçük Üst Başlık', 'varsayilan' => 'S.S.S'],
                         'ana_baslik' => ['tip' => 'metin', 'label' => 'Ana Başlık', 'varsayilan' => 'Sıkça sorulan sorular'],
+                        'cta_baslik' => ['tip' => 'metin', 'label' => 'Alt kutu başlığı', 'varsayilan' => 'Hâlâ sorunuz mu var?'],
                         'sss_limiti' => ['tip' => 'sayi', 'label' => 'Soru Sayısı', 'varsayilan' => 6],
                         'sss_kaynagi' => ['tip' => 'db_kaynak', 'label' => 'Kaynak: S.S.S.', 'varsayilan' => 'sss'],
                     ],
@@ -516,6 +527,7 @@ return [
                     'alanlar' => [
                         'kucuk_baslik' => ['tip' => 'metin', 'label' => 'Küçük Üst Başlık', 'varsayilan' => 'Blog'],
                         'ana_baslik' => ['tip' => 'metin', 'label' => 'Ana Başlık', 'varsayilan' => 'Son yazılarım'],
+                        'buton_metin' => ['tip' => 'metin', 'label' => 'Buton Metni', 'varsayilan' => 'Tüm yazılar'],
                         'aciklama' => ['tip' => 'uzun_metin', 'label' => 'Açıklama', 'varsayilan' => null],
                         'blog_limiti' => ['tip' => 'sayi', 'label' => 'Yazı Sayısı', 'varsayilan' => 3],
                         'blog_kaynagi' => ['tip' => 'db_kaynak', 'label' => 'Kaynak: Blog', 'varsayilan' => 'bloglar'],
@@ -668,6 +680,8 @@ return [
                     'aktif_varsayilan' => true, 'silinebilir' => true, 'aciklama' => 'Blog seçkileri.',
                     'alanlar' => [
                         'ana_baslik' => ['tip' => 'metin', 'label' => 'Ana Başlık', 'varsayilan' => 'Öne Çıkan Makalelerim'],
+                        'buton_metin' => ['tip' => 'metin', 'label' => 'Buton Metni', 'varsayilan' => 'Tüm yazılar'],
+                        'kucuk_baslik' => ['tip' => 'metin', 'label' => 'Küçük Üst Başlık', 'varsayilan' => 'Öne çıkanlar'],
                         'aciklama' => ['tip' => 'uzun_metin', 'label' => 'Açıklama', 'varsayilan' => null],
                         'blog_limiti' => ['tip' => 'sayi', 'label' => 'Yazı Sayısı', 'varsayilan' => 3],
                         'blog_kaynagi' => ['tip' => 'db_kaynak', 'label' => 'Kaynak: Blog', 'varsayilan' => 'bloglar'],
@@ -692,9 +706,11 @@ return [
                     'aktif_varsayilan' => true, 'silinebilir' => true, 'aciklama' => 'Büyük CTA.',
                     'alanlar' => [
                         'baslik' => ['tip' => 'metin', 'label' => 'Ana Mesaj', 'varsayilan' => 'İlk adımı bugün atın'],
+                        'kucuk_baslik' => ['tip' => 'metin', 'label' => 'Küçük Üst Başlık', 'varsayilan' => 'Randevu'],
                         'aciklama' => ['tip' => 'uzun_metin', 'label' => 'Alt Açıklama', 'varsayilan' => '30 dakika yeter.'],
                         'buton_metin' => ['tip' => 'metin', 'label' => 'Buton Metni', 'varsayilan' => 'Randevu Al'],
-                        'arkaplan_resmi' => ['tip' => 'resim', 'label' => 'Arkaplan Resmi', 'varsayilan' => null],
+                        'resim' => ['tip' => 'resim', 'label' => 'Bant görseli — banttaki fotoğraf (boş = tema görseli)', 'varsayilan' => null],
+                        'arkaplan_resmi' => ['tip' => 'resim', 'label' => 'Bant arkaplanı — fotoğrafın arkasındaki zemin (opsiyonel)', 'varsayilan' => null],
                     ],
                 ],
                 'testimonial' => [
@@ -703,6 +719,7 @@ return [
                     'alanlar' => [
                         'kucuk_baslik' => ['tip' => 'metin', 'label' => 'Küçük Üst Başlık', 'varsayilan' => 'Danışan Yorumları'],
                         'ana_baslik' => ['tip' => 'metin', 'label' => 'Ana Başlık', 'varsayilan' => 'Danışanlarımın hikayeleri'],
+                        'buton_metin' => ['tip' => 'metin', 'label' => 'Buton Metni', 'varsayilan' => 'İletişim'],
                         'yorum_limiti' => ['tip' => 'sayi', 'label' => 'Yorum Sayısı', 'varsayilan' => 6],
                         'yorum_kaynagi' => ['tip' => 'db_kaynak', 'label' => 'Kaynak: Yorumlar', 'varsayilan' => 'yorumlar'],
                     ],
@@ -713,6 +730,7 @@ return [
                     'alanlar' => [
                         'kucuk_baslik' => ['tip' => 'metin', 'label' => 'Küçük Üst Başlık', 'varsayilan' => 'S.S.S'],
                         'ana_baslik' => ['tip' => 'metin', 'label' => 'Ana Başlık', 'varsayilan' => 'Sıkça sorulan sorular'],
+                        'cta_baslik' => ['tip' => 'metin', 'label' => 'Alt kutu başlığı', 'varsayilan' => 'Hâlâ sorunuz mu var?'],
                         'sss_limiti' => ['tip' => 'sayi', 'label' => 'Soru Sayısı', 'varsayilan' => 6],
                         'sss_kaynagi' => ['tip' => 'db_kaynak', 'label' => 'Kaynak: S.S.S.', 'varsayilan' => 'sss'],
                     ],
@@ -723,6 +741,7 @@ return [
                     'alanlar' => [
                         'kucuk_baslik' => ['tip' => 'metin', 'label' => 'Küçük Üst Başlık', 'varsayilan' => 'Blog'],
                         'ana_baslik' => ['tip' => 'metin', 'label' => 'Ana Başlık', 'varsayilan' => 'Son yazılarım'],
+                        'buton_metin' => ['tip' => 'metin', 'label' => 'Buton Metni', 'varsayilan' => 'Tüm yazılar'],
                         'aciklama' => ['tip' => 'uzun_metin', 'label' => 'Açıklama', 'varsayilan' => null],
                         'blog_limiti' => ['tip' => 'sayi', 'label' => 'Yazı Sayısı', 'varsayilan' => 3],
                         'blog_kaynagi' => ['tip' => 'db_kaynak', 'label' => 'Kaynak: Blog', 'varsayilan' => 'bloglar'],
@@ -735,6 +754,8 @@ return [
                         'kucuk_baslik' => ['tip' => 'metin', 'label' => 'Küçük Üst Başlık', 'varsayilan' => 'Randevu'],
                         'ana_baslik' => ['tip' => 'metin', 'label' => 'Ana Başlık', 'varsayilan' => 'Hemen randevu alın'],
                         'aciklama' => ['tip' => 'uzun_metin', 'label' => 'Açıklama', 'varsayilan' => 'Takvimimden size uygun saati seçin.'],
+                        'saat_baslik' => ['tip' => 'metin', 'label' => 'Saat başlığı', 'varsayilan' => 'Çalışma saatleri'],
+                        'calisma_saatleri' => ['tip' => 'metin', 'label' => 'Çalışma saatleri (boş = gerçek çalışma saatlerim)', 'varsayilan' => ''],
                     ],
                 ],
             ],

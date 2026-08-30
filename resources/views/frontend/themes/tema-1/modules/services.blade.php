@@ -12,6 +12,9 @@
                 <div class="section-title">
                     <h3 class="wow fadeInUp">{{ $ayar['kucuk_baslik'] ?? 'Hizmetler' }}</h3>
                     <h2 class="text-anime-style-2" data-cursor="-opaque">{{ $ayar['bolum_baslik'] ?? 'Sunduğum Hizmetler' }}</h2>
+                    @if(!empty($ayar['aciklama']))
+                        <p class="wow fadeInUp" data-wow-delay="0.2s">{{ $ayar['aciklama'] }}</p>
+                    @endif
                 </div>
             </div>
             <div class="col-lg-6 col-md-3">

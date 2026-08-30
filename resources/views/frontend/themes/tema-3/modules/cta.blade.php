@@ -3,13 +3,21 @@
     $resim = filled($ayar['resim'] ?? null)
         ? (function_exists('media_url') ? media_url($ayar['resim']) : $ayar['resim'])
         : asset('vendor/hipno/images/cta-img.png');
+
+    /*
+     * Arkaplan resmi panelde tanimliydi ama blade onu HIC okumuyordu:
+     * hekim gorseli yukluyor, kaydediliyor, sayfada hicbir sey degismiyordu.
+     */
+    $arkaplan = filled($ayar['arkaplan_resmi'] ?? null)
+        ? (function_exists('media_url') ? media_url($ayar['arkaplan_resmi']) : $ayar['arkaplan_resmi'])
+        : null;
 @endphp
 
 <div class="cta-section">
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
-                <div class="cta-box">
+                <div class="cta-box"@if($arkaplan) style="background-image:url('{{ $arkaplan }}');background-size:cover;background-position:center"@endif>
                     <div class="cta-box-image">
                         <img src="{{ $resim }}" alt="{{ trim((string) ($doktor['unvan'] ?? '').' '.(string) ($doktor['ad_soyad'] ?? 'Hekim')) }}" loading="lazy" decoding="async">
                     </div>

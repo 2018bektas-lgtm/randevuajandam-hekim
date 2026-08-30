@@ -1,5 +1,12 @@
 @php extract(delogis_modul_ctx($ayar ?? [], $doktor ?? [])); @endphp
 @php
+    /*
+     * Baslik alanlari panelde tanimliydi ama blade onlari HIC basmiyordu:
+     * hekim yaziyor, kaydediliyor, sayfada gorunmuyordu.
+     */
+    $ozKucuk = trim((string) ($ayar['kucuk_baslik'] ?? ''));
+    $ozBaslik = trim((string) ($ayar['ana_baslik'] ?? ''));
+
     $kartlar = collect($ayar['kartlar'] ?? [])->filter(fn ($k) => is_array($k) && filled($k['baslik'] ?? null))->take(3)->values();
     if ($kartlar->isEmpty()) {
         $kartlar = collect($doktor['ozellikler'] ?? [])->filter(fn ($o) => is_array($o) && filled($o['baslik'] ?? null))->take(3)->values()
@@ -16,6 +23,16 @@
 @if($v === 1)
 <section class="feature-one">
     <div class="container">
+        @if($ozKucuk !== '' || $ozBaslik !== '')
+            <div class="section-title text-center">
+                @if($ozKucuk !== '')
+                    <span class="section-title__tagline">{{ decode_text($ozKucuk) }}</span>
+                @endif
+                @if($ozBaslik !== '')
+                    <h2 class="section-title__title">{{ decode_text($ozBaslik) }}</h2>
+                @endif
+            </div>
+        @endif
         <div class="row">
             @foreach ($kartlar as $idx => $k)
                 @php
@@ -59,6 +76,16 @@
 @elseif($v === 5)
 <section class="feature-six">
     <div class="container">
+        @if($ozKucuk !== '' || $ozBaslik !== '')
+            <div class="section-title text-center">
+                @if($ozKucuk !== '')
+                    <span class="section-title__tagline">{{ decode_text($ozKucuk) }}</span>
+                @endif
+                @if($ozBaslik !== '')
+                    <h2 class="section-title__title">{{ decode_text($ozBaslik) }}</h2>
+                @endif
+            </div>
+        @endif
         <div class="row gutter-y-30">
             @foreach ($kartlar as $idx => $k)
                 @php $ikon = $k['ikon'] ?? $iconsTwo[$idx % count($iconsTwo)]; @endphp
@@ -78,6 +105,16 @@
 @else
 <section class="feature-two">
     <div class="container">
+        @if($ozKucuk !== '' || $ozBaslik !== '')
+            <div class="section-title text-center">
+                @if($ozKucuk !== '')
+                    <span class="section-title__tagline">{{ decode_text($ozKucuk) }}</span>
+                @endif
+                @if($ozBaslik !== '')
+                    <h2 class="section-title__title">{{ decode_text($ozBaslik) }}</h2>
+                @endif
+            </div>
+        @endif
         <div class="row">
             @foreach ($kartlar as $idx => $k)
                 @php

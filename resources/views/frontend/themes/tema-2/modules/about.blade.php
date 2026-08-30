@@ -1,5 +1,12 @@
 {{-- Hakkımda — tek foto --}}
 @php
+    /*
+     * Ikinci gorsel panelde tanimliydi ama blade okumuyordu.
+     */
+    $resimIki = filled($ayar['resim_2'] ?? null)
+        ? (function_exists('media_url') ? media_url($ayar['resim_2']) : $ayar['resim_2'])
+        : null;
+
     $doktorAd = trim(($doktor['unvan'] ?? '').' '.($doktor['ad_soyad'] ?? 'Hekim'));
     $coz = static function ($path) {
         if (! filled($path)) {
@@ -20,12 +27,19 @@
         <div class="row align-items-center">
             <div class="col-lg-6">
                 @if($img)
-                    <div class="about-us-images is-single">
+                    <div class="about-us-images @if(! $resimIki) is-single @endif">
                         <div class="about-img-1">
                             <figure class="image-anime">
                                 <img src="{{ $img }}" alt="{{ $doktorAd }}" loading="lazy" decoding="async">
                             </figure>
                         </div>
+                        @if($resimIki)
+                            <div class="about-img-2">
+                                <figure class="image-anime">
+                                    <img src="{{ $resimIki }}" alt="{{ $doktorAd }}" loading="lazy" decoding="async">
+                                </figure>
+                            </div>
+                        @endif
                     </div>
                 @endif
             </div>
