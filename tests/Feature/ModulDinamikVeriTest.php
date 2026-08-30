@@ -163,6 +163,63 @@ class ModulDinamikVeriTest extends TestCase
         $this->assertStringContainsString('Ortalama Puan', $html);
     }
 
+
+    // ------------------------------------------------- delogis (tema-4…9)
+
+    /**
+     * @return array<string, array{0: string}>
+     */
+    public static function delogisUydurmaSaglayici(): array
+    {
+        return [
+            'Mutlu danisan' => ['Mutlu danışan'],
+            'Memnuniyet %' => ['Memnuniyet %'],
+            'Yillik deneyim' => ['Yıllık deneyim'],
+        ];
+    }
+
+    /**
+     * Delogis (tema-4…9) counters modulu de ayni uydurma sayilari
+     * basiyordu: 200 / 97 / 12.
+     */
+    #[DataProvider('delogisUydurmaSaglayici')]
+    public function test_delogis_uydurma_istatistik_basilmaz(string $metin): void
+    {
+        $html = $this->modulCiz('delogis', 'counters', $this->doktor());
+
+        $this->assertStringNotContainsString($metin, $html, "Delogis: uydurma istatistik hala var: {$metin}");
+    }
+
+    public function test_delogis_istatistik_yoksa_bolum_gizlenir(): void
+    {
+        $html = $this->modulCiz('delogis', 'counters', $this->doktor());
+
+        $this->assertStringNotContainsString('counter-one', $html);
+    }
+
+    public function test_delogis_gercek_istatistikler_gosterilir(): void
+    {
+        $html = $this->modulCiz('delogis', 'counters', $this->doktor([
+            'istatistikler' => [
+                ['deger' => 9, 'suffix' => '+', 'etiket' => 'Yıllık Deneyim'],
+                ['deger' => 4.7, 'suffix' => '', 'etiket' => 'Ortalama Puan'],
+            ],
+        ]));
+
+        $this->assertStringContainsString('counter-one', $html);
+        $this->assertStringContainsString('Yıllık Deneyim', $html);
+    }
+
+    public function test_delogis_panel_sayaci_oncelikli(): void
+    {
+        $html = $this->modulCiz('delogis', 'counters', $this->doktor([
+            'istatistikler' => [['deger' => 9, 'suffix' => '+', 'etiket' => 'Yıllık Deneyim']],
+        ]), ['sayac_1_sayi' => '20', 'sayac_1_etiket' => 'Yıl']);
+
+        $this->assertStringContainsString('Yıl', $html);
+        $this->assertStringNotContainsString('Yıllık Deneyim', $html);
+    }
+
     public function test_panel_sayaci_gercek_veriden_oncelikli(): void
     {
         $html = $this->modulCiz('tema-2', 'what_we_do', $this->doktor([

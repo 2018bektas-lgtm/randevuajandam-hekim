@@ -4,16 +4,37 @@
     $baslik = $ayar['ana_baslik'] ?? 'Her yeni süreçte hazırım';
     $cta = $ayar['cta_metin'] ?? 'Hikayenizi dinlemeye hazırım';
     $btn = $ayar['buton_metin'] ?? 'Randevu Al';
-    $stats = collect($doktor['istatistikler'] ?? [])->filter(fn ($s) => is_array($s) && filled($s['etiket'] ?? null))->take(3)->values();
-    if ($stats->isEmpty()) {
-        $stats = collect([
-            ['deger' => $ayar['sayac_1_sayi'] ?? 200, 'etiket' => $ayar['sayac_1_etiket'] ?? 'Mutlu danışan', 'ikon' => 'icon-checking'],
-            ['deger' => $ayar['sayac_2_sayi'] ?? 97, 'etiket' => $ayar['sayac_2_etiket'] ?? 'Memnuniyet %', 'ikon' => 'icon-recommend'],
-            ['deger' => $ayar['sayac_3_sayi'] ?? 12, 'etiket' => $ayar['sayac_3_etiket'] ?? 'Yıllık deneyim', 'ikon' => 'icon-consulting'],
+    /*
+     * Sayaclar: panel > hekimin gercek verisi > HIC GOSTERME.
+     *
+     * Eskiden veri yoksa 200 "Mutlu danisan", 97 "Memnuniyet %",
+     * 12 "Yillik deneyim" sabit degerleri basiliyordu. Bunlar hekimin hic
+     * vermedigi, uydurulmus iddialardi ve saglik alanindaki bir sitede
+     * gercek gibi gorunuyordu. Artik uydurma sayi basilmiyor; veri yoksa
+     * bolum tamamen gizleniyor.
+     */
+    $stats = collect();
+    for ($i = 1; $i <= 3; $i++) {
+        $sayi = trim((string) ($ayar["sayac_{$i}_sayi"] ?? ''));
+        if ($sayi === '') {
+            continue;
+        }
+        $stats->push([
+            'deger' => $sayi,
+            'etiket' => (string) ($ayar["sayac_{$i}_etiket"] ?? ''),
+            'ikon' => 'icon-checking',
         ]);
+    }
+
+    if ($stats->isEmpty()) {
+        $stats = collect($doktor['istatistikler'] ?? [])
+            ->filter(fn ($s) => is_array($s) && filled($s['etiket'] ?? null))
+            ->take(3)
+            ->values();
     }
     $statIcons = ['icon-checking', 'icon-recommend', 'icon-consulting'];
 @endphp
+@if($stats->isNotEmpty())
 <section class="counter-one">
     <div class="counter-one__bg jarallax" data-jarallax data-speed="0.2" data-imgposition="50% 0%" style="background-image: url({{ $dg }}/images/backgrounds/counter-one-bg.jpg);"></div>
     <div class="container">
@@ -54,3 +75,4 @@
         </div>
     </div>
 </section>
+@endif
