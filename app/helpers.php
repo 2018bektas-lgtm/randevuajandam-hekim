@@ -888,3 +888,52 @@ if (! function_exists('site_footer_nav')) {
         return $nav;
     }
 }
+
+if (! function_exists('platform_site_url')) {
+    /**
+     * Platformun halka açık site adresi (API kökü değil).
+     *
+     * Hekim hesapları hekim sitesinde değil platformda tutulur; şifre
+     * sıfırlama gibi hesap akışları oraya yönlendirilmelidir.
+     *
+     * Öncelik: config('randevu_api.site_url') → platform_base'ten türetme.
+     * Türetme, API kökünün yol kısmını (/api/v1) ve varsa "api." alt alan
+     * adını atar:
+     *   https://api.randevuajandam.com/api/v1 → https://randevuajandam.com
+     *   http://127.0.0.1:8001/api/v1          → http://127.0.0.1:8001
+     *
+     * Adres çözülemezse null döner; çağıran taraf linki gizlemelidir.
+     *
+     * @param  string  $path  Eklenecek yol (ör. "/sifremi-unuttum")
+     */
+    function platform_site_url(string $path = ''): ?string
+    {
+        $base = rtrim((string) config('randevu_api.site_url', ''), '/');
+
+        if ($base === '') {
+            $platform = (string) config('randevu_api.platform_base', '');
+            $parts = $platform !== '' ? parse_url($platform) : false;
+            if (! is_array($parts) || empty($parts['host']) || empty($parts['scheme'])) {
+                return null;
+            }
+
+            $host = $parts['host'];
+            // "api." öneki yalnızca gerçek bir alan adında atılır; "api.localhost"
+            // gibi tek etiketli kalıntılar üretmemek için nokta sayısı korunur.
+            if (str_starts_with($host, 'api.') && substr_count($host, '.') >= 2) {
+                $host = substr($host, 4);
+            }
+
+            $base = $parts['scheme'].'://'.$host;
+            if (! empty($parts['port'])) {
+                $base .= ':'.$parts['port'];
+            }
+        }
+
+        if ($path === '') {
+            return $base;
+        }
+
+        return $base.'/'.ltrim($path, '/');
+    }
+}

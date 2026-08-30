@@ -239,6 +239,22 @@
             color: #6b7280;
             margin-bottom: .4rem;
         }
+        .form-label-row {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: .75rem;
+        }
+        .form-label-row .form-label { margin-bottom: .4rem; }
+        .form-label-link {
+            font-size: .68rem;
+            font-weight: 600;
+            color: #6b7280;
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: color .15s, border-color .15s;
+        }
+        .form-label-link:hover { color: var(--accent); border-bottom-color: currentColor; }
 
         .form-input {
             width: 100%;
@@ -326,6 +342,7 @@
             .login-title { color: #fff; }
             .login-sub { color: rgba(255,255,255,.5); }
             .form-label { color: rgba(255,255,255,.5); }
+            .form-label-link { color: rgba(255,255,255,.55); }
             .form-input { background: #1e1e1e; border-color: var(--divider); color: #fff; }
             .form-input:focus { background: #222; }
             .form-input::placeholder { color: #555; }
@@ -444,7 +461,14 @@
                            autocomplete="username">
                 </div>
                 <div class="form-group">
-                    <label class="form-label" for="sifre">Şifre</label>
+                    <div class="form-label-row">
+                        <label class="form-label" for="sifre">Şifre</label>
+                        {{-- Hekim hesabı platformda tutulur; sıfırlama da orada yapılır. --}}
+                        @if($sifreSifirlaUrl ?? null)
+                            <a class="form-label-link" href="{{ $sifreSifirlaUrl }}"
+                               target="_blank" rel="noopener">Şifremi unuttum</a>
+                        @endif
+                    </div>
                     <input class="form-input" type="password" id="sifre" name="sifre"
                            required placeholder="••••••••" autocomplete="current-password">
                 </div>

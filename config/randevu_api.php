@@ -12,6 +12,18 @@ return [
     'base_url' => rtrim(env('RANDEVU_API_BASE_URL', 'http://127.0.0.1:8001/api/v1/public'), '/'),
 
     /*
+    |--------------------------------------------------------------------------
+    | Platformun HALKA AÇIK site adresi (API kökü değil)
+    |--------------------------------------------------------------------------
+    | Hekim hesapları bu sitede tutulur; şifre sıfırlama gibi akışlar oraya
+    | yönlendirilir. Boş bırakılırsa platform_base'ten türetilir:
+    |   https://api.randevuajandam.com/api/v1 → https://randevuajandam.com
+    |   http://127.0.0.1:8001/api/v1          → http://127.0.0.1:8001
+    | Türetme yanlışsa RANDEVU_SITE_URL ile açıkça verin.
+    */
+    'site_url' => rtrim((string) env('RANDEVU_SITE_URL', ''), '/'),
+
+    /*
     | Hekim sitesi API anahtarları (platformda oluşturulan api_keys kaydı)
     | api_key  → X-Api-Key
     | secret   → X-Api-Secret (kayıtta secret varsa zorunlu)

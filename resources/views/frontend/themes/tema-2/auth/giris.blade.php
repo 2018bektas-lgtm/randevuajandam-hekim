@@ -201,6 +201,14 @@
             text-transform:uppercase;letter-spacing:.08em;
             color:#9ca3af;margin-bottom:.35rem;
         }
+        .field-label-row{
+            display:flex;align-items:baseline;justify-content:space-between;gap:.75rem;
+        }
+        .field-label-link{
+            font-size:.66rem;font-weight:600;color:#9ca3af;text-decoration:none;
+            border-bottom:1px solid transparent;transition:color .15s,border-color .15s;
+        }
+        .field-label-link:hover{color:var(--accent);border-bottom-color:currentColor}
         .field input{
             width:100%;
             padding:.7rem .95rem;
@@ -259,6 +267,7 @@
             .form-title{color:#fff}
             .form-sub{color:rgba(255,255,255,.4)}
             .field label{color:rgba(255,255,255,.4)}
+            .field-label-link{color:rgba(255,255,255,.45)}
             .field input{
                 background:#1e1e1e;border-color:rgba(255,255,255,.1);color:#fff;
             }
@@ -347,7 +356,14 @@
                            autocomplete="username">
                 </div>
                 <div class="field">
-                    <label for="sifre">Şifre</label>
+                    <div class="field-label-row">
+                        <label for="sifre">Şifre</label>
+                        {{-- Hekim hesabı platformda tutulur; sıfırlama da orada yapılır. --}}
+                        @if($sifreSifirlaUrl ?? null)
+                            <a class="field-label-link" href="{{ $sifreSifirlaUrl }}"
+                               target="_blank" rel="noopener">Şifremi unuttum</a>
+                        @endif
+                    </div>
                     <input type="password" id="sifre" name="sifre"
                            required placeholder="••••••••"
                            autocomplete="current-password">

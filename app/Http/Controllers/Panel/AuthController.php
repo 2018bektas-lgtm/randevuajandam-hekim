@@ -46,6 +46,10 @@ class AuthController extends Controller
             'apiMasked' => $this->apiConfig->maskedKey(),
             'showLocalHints' => $this->shouldShowLocalHints(),
             'localAdminEmail' => $this->localAdminEmail(),
+            // Hekim hesabi bu sitede degil platformda tutulur (giris de API
+            // uzerinden yapilir), bu yuzden sifre sifirlama platforma gider.
+            // Platform adresi cozulemezse link basilmaz.
+            'sifreSifirlaUrl' => $this->sifreSifirlamaUrl(),
         ]);
     }
 
@@ -188,6 +192,24 @@ class AuthController extends Controller
         session()->forget(['panel_auth', 'doctor_api_user', 'doctor_api_token']);
 
         return redirect()->route('panel.giris')->with('basari', 'Çıkış yapıldı.');
+    }
+
+    /**
+     * Platformdaki hekim sifre sifirlama sayfasi.
+     *
+     * Hesaplar platformda (randevuajandam.com) tutulur; oradaki
+     * ForgotPasswordController "type" alaniyla calisir, hekim icin
+     * "hekim" secili gelsin diye query string ile gonderilir.
+     */
+    protected function sifreSifirlamaUrl(): ?string
+    {
+        if (! $this->apiConfig->isConfigured()) {
+            return null;
+        }
+
+        $url = platform_site_url('/sifremi-unuttum');
+
+        return $url ? $url.'?type=hekim' : null;
     }
 
     protected function shouldShowLocalHints(): bool
