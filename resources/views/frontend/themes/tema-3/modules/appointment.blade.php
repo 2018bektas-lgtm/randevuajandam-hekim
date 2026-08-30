@@ -11,11 +11,10 @@
      * saatlerde calissa bile hastaya bu gosteriliyordu. Yanlis bilgi
      * gostermektense hic gostermemek dogru: ikisi de yoksa blok gizlenir.
      */
-    $calismaSaatleri = trim((string) (
-        $ayar['calisma_saatleri']
-        ?? $doktor['calisma_saatleri_ozet']
-        ?? ''
-    ));
+    $calismaSaatleri = trim((string) ($ayar['calisma_saatleri'] ?? ''));
+    if ($calismaSaatleri === '') {
+        $calismaSaatleri = trim((string) ($doktor['calisma_saatleri_ozet'] ?? ''));
+    }
 @endphp
 
 <div class="our-appointment">

@@ -3,8 +3,27 @@
     $img = $media($ayar['resim'] ?? null) ?: $photo;
     $kucuk = $ayar['kucuk_baslik'] ?? 'Hakkımda';
     $baslik = $ayar['ana_baslik'] ?? $ad;
-    $aciklama = $ayar['aciklama'] ?? plain_text($doktor['kisa_bio'] ?? $doktor['bio'] ?? '', 280);
-    $maddeler = collect(preg_split("/\r\n|\n|\r/", (string) ($ayar['maddeler'] ?? '')))->map(fn ($s) => trim($s))->filter()->values();
+    $aciklama = filled($ayar['aciklama'] ?? null)
+        ? $ayar['aciklama']
+        : plain_text($doktor['kisa_bio'] ?? $doktor['bio'] ?? '', 280);
+    /*
+     * Maddeler panelde bos birakilirsa hekimin GERCEK "yaklasimim"
+     * maddeleri kullanilir. Eskiden sabit bir liste varsayilan geliyor
+     * ve hekimin kendi verisi hic gorunmuyordu.
+     */
+    $maddeler = collect(preg_split("/\r\n|\n|\r/", (string) ($ayar['maddeler'] ?? '')))
+        ->map(fn ($s) => trim($s))
+        ->filter()
+        ->values();
+
+    if ($maddeler->isEmpty()) {
+        $maddeler = collect($doktor['ozellikler'] ?? [])
+            ->pluck('baslik')
+            ->map(fn ($s) => trim((string) $s))
+            ->filter()
+            ->take(4)
+            ->values();
+    }
     $deneyim = (int) ($ayar['deneyim_sayi'] ?? 0);
     $deneyimEtiket = $ayar['deneyim_etiket'] ?? "Yıllık\nDeneyim";
     $btn = $ayar['buton_metin'] ?? 'Randevu Al';

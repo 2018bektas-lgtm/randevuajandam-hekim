@@ -6,11 +6,26 @@
 @php
     $doktorAd = trim(($doktor['unvan'] ?? '').' '.($doktor['ad_soyad'] ?? 'Hekim'));
     $arkaplan = $ayar['arkaplan_resmi'] ?: ($doktor['profil_resmi'] ?? null);
+    /*
+     * Panelde uzmanlik listesi bos birakilirsa hekimin GERCEK hizmetleri
+     * kullanilir. Eskiden burada sabit bir liste (Cift Terapisi, Aile
+     * Terapisi vb.) varsayilan geliyordu; hekimin sunmadigi hizmetleri
+     * sunuyormus gibi gostermek yanlisti.
+     */
     $uzmanliklar = collect(preg_split("/\r\n|\n|\r/", (string) ($ayar['uzmanlik_listesi'] ?? '')))
         ->map(fn ($s) => trim($s))
         ->filter()
-        ->take(6)
         ->values();
+
+    if ($uzmanliklar->isEmpty()) {
+        $uzmanliklar = collect($doktor['hizmetler'] ?? [])
+            ->pluck('baslik')
+            ->map(fn ($s) => trim((string) $s))
+            ->filter()
+            ->values();
+    }
+
+    $uzmanliklar = $uzmanliklar->take(6);
 @endphp
 
 <div class="hero parallaxie"@if($arkaplan) style="background-image:url('{{ $arkaplan }}')"@endif>
@@ -20,7 +35,7 @@
                 <div class="hero-content">
                     <div class="section-title">
                         <h3 class="wow fadeInUp">{{ $ayar['ust_baslik'] ?? '' }}</h3>
-                        <h1 class="text-anime-style-2" data-cursor="-opaque">{{ $ayar['ana_baslik'] ?? $doktorAd }}</h1>
+                        <h1 class="text-anime-style-2" data-cursor="-opaque">{{ filled($ayar['ana_baslik'] ?? null) ? $ayar['ana_baslik'] : $doktorAd }}</h1>
                         @if(!empty($ayar['aciklama']))
                             <p class="wow fadeInUp" data-wow-delay="0.2s">{{ $ayar['aciklama'] }}</p>
                         @endif
@@ -29,7 +44,7 @@
                         <div class="hero-btn wow fadeInUp" data-wow-delay="0.4s">
                             <a href="{{ route('frontend.randevu') }}" class="btn-default">{{ $ayar['cta_metin'] ?? 'Randevu Al' }}</a>
                         </div>
-                        @if(!empty($ayar['sosyal_kanit_goster']) && !empty($ayar['sosyal_kanit_sayi']))
+                        @if(!empty($ayar['sosyal_kanit_goster']) && !empty($ayar['sosyal_kanit_sayi']) && !empty($ayar['sosyal_kanit_metin']))
                             <div class="hero-client-box">
                                 <div class="customer-images">
                                     @foreach(['customer-img-1.jpg','customer-img-2.jpg'] as $ci)
@@ -44,7 +59,7 @@
                                     </div>
                                 </div>
                                 <div class="hero-client-content">
-                                    <p>{{ $ayar['sosyal_kanit_metin'] ?? 'Mutlu danışan' }}</p>
+                                    <p>{{ $ayar['sosyal_kanit_metin'] }}</p>
                                 </div>
                             </div>
                         @endif

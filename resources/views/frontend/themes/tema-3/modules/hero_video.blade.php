@@ -34,7 +34,7 @@
                 <div class="hero-content">
                     <div class="section-title">
                         <h3 class="wow fadeInUp">{{ $ayar['ust_baslik'] ?? '' }}</h3>
-                        <h1 class="text-anime-style-2" data-cursor="-opaque">{{ $ayar['ana_baslik'] ?? $doktorAd }}</h1>
+                        <h1 class="text-anime-style-2" data-cursor="-opaque">{{ filled($ayar['ana_baslik'] ?? null) ? $ayar['ana_baslik'] : $doktorAd }}</h1>
                         @if(!empty($ayar['aciklama']))
                             <p class="wow fadeInUp" data-wow-delay="0.2s">{{ $ayar['aciklama'] }}</p>
                         @endif
@@ -43,10 +43,10 @@
                         <div class="hero-btn wow fadeInUp" data-wow-delay="0.4s">
                             <a href="{{ route('frontend.randevu') }}" class="btn-default">{{ $ayar['cta_metin'] ?? 'Randevu Al' }}</a>
                         </div>
-                        @if(!empty($ayar['sosyal_kanit_goster']) && !empty($ayar['sosyal_kanit_sayi']))
+                        @if(!empty($ayar['sosyal_kanit_goster']) && !empty($ayar['sosyal_kanit_sayi']) && !empty($ayar['sosyal_kanit_metin']))
                             <div class="hero-client-box">
                                 <div class="hero-client-content">
-                                    <p><span class="counter">{{ (int) $ayar['sosyal_kanit_sayi'] }}</span>+ <span>{{ $ayar['sosyal_kanit_metin'] ?? 'Danışan' }}</span></p>
+                                    <p><span class="counter">{{ (int) $ayar['sosyal_kanit_sayi'] }}</span>+ <span>{{ $ayar['sosyal_kanit_metin'] }}</span></p>
                                 </div>
                             </div>
                         @endif

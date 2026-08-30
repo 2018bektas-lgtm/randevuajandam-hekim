@@ -263,6 +263,17 @@ class SayfaBuilderTest extends TestCase
             'bloglar' => [['baslik' => 'İlk yazı', 'slug' => 'ilk-yazi']],
             'galeri' => [['image' => '/themes/delogis/images/gallery/gallery-page-1-1.jpg', 'baslik' => 'Klinik']],
             'sss' => [['soru' => 'Seans kaç dakika?', 'cevap' => '45-50 dakika.']],
+            // counters modulu artik UYDURMA sayilar basmiyor; sayac
+            // varsayilanlari bosaltildi ve modul yalnizca hekimin GERCEK
+            // istatistikleriyle ciziliyor. Gercek veri yoksa bolum bilerek
+            // gizleniyor (bkz. ModulVarsayilanVeriTest).
+            'istatistikler' => [
+                ['deger' => 9, 'suffix' => '+', 'etiket' => 'Yıllık Deneyim'],
+                ['deger' => 4.8, 'suffix' => '', 'etiket' => 'Ortalama Puan'],
+            ],
+            'ozellikler' => [
+                ['baslik' => 'Gizlilik esaslı görüşme', 'aciklama' => 'Bilgileriniz korunur.'],
+            ],
         ];
 
         foreach (['tema-4', 'tema-5', 'tema-6', 'tema-7', 'tema-8', 'tema-9'] as $temaId) {

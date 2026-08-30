@@ -33,7 +33,7 @@
                 <div class="about-us-content">
                     <div class="section-title">
                         <h3 class="wow fadeInUp">{{ $ayar['kucuk_baslik'] ?? 'Hakkımda' }}</h3>
-                        <h2 class="text-anime-style-2" data-cursor="-opaque">{{ $ayar['ana_baslik'] ?? $doktorAd }}</h2>
+                        <h2 class="text-anime-style-2" data-cursor="-opaque">{{ filled($ayar['ana_baslik'] ?? null) ? $ayar['ana_baslik'] : $doktorAd }}</h2>
                         @if(!empty($ayar['aciklama']))
                             <p class="wow fadeInUp" data-wow-delay="0.2s">{{ $ayar['aciklama'] }}</p>
                         @endif
